@@ -36,10 +36,18 @@ class Boid(object):
         neighbours = self.get_nearby_boids(self)
 
         if len(neighbours) > 0:
-            cohesion_x, cohesion_y = self.COHESION_WEIGHT * self.calculate_cohesion_force(neighbours)
+            cohesion_x, cohesion_y = self.calculate_cohesion_force(neighbours)
+            separation_x, separation_y = self.calculate_separation_force(neighbours)
+            alignment_x, alignment_y = self.calculate_alignment_force(neighbours)
 
-            self.dx += cohesion_x
-            self.dy += cohesion_y
+            self.dx += self.COHESION_WEIGHT * cohesion_x
+            self.dy += self.COHESION_WEIGHT * cohesion_y
+
+            self.dx += self.SEPARATION_WEIGHT * separation_x
+            self.dy += self.SEPARATION_WEIGHT * separation_y
+
+            self.dx += self.ALIGNMENT_WEIGHT * alignment_x
+            self.dy += self.ALIGNMENT_WEIGHT * alignment_y
 
             # normalize velocity
             velocity_vector_length = math.sqrt(self.dx ** 2 + self.dy ** 2)
@@ -61,6 +69,30 @@ class Boid(object):
         force_x, force_y = pos_x - self.x, pos_y - self.y
         force_vector_length = math.sqrt(force_x ** 2 + force_y ** 2)
         force_x, force_y = force_x / force_vector_length, force_y / force_vector_length  # normalize
+        return force_x, force_y
+
+    def calculate_separation_force(self, neighbours):
+        pos_x, pos_y = 0, 0
+        for boid in neighbours:
+            pos_x += boid.x - self.x
+            pos_y += boid.y - self.y
+        pos_x /= len(neighbours)
+        pos_y /= len(neighbours)
+        pos_x *= -1
+        pos_y *= -1
+        force_vector_length = math.sqrt(pos_x ** 2 + pos_y ** 2)
+        force_x, force_y = pos_x / force_vector_length, pos_x / force_vector_length  # normalize
+        return force_x, force_y
+
+    def calculate_alignment_force(self, neighbours):
+        dx, dy = 0, 0
+        for boid in neighbours:
+            dx += boid.dx
+            dy += boid.dy
+        dx /= len(neighbours)
+        dy /= len(neighbours)
+        force_vector_length = math.sqrt(dx ** 2 + dy ** 2)
+        force_x, force_y = dx / force_vector_length, dy / force_vector_length  # normalize
         return force_x, force_y
 
     def get_x(self):
