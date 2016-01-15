@@ -4,11 +4,11 @@ import math
 
 
 class Boid(object):
-    SPEED = 8
-    NEIGHBOUR_DISTANCE_THRESHOLD = 50
-    SEPARATION_WEIGHT = 1
+    DEFAULT_SPEED = 8
+    NEIGHBOUR_DISTANCE_THRESHOLD = 90
+    SEPARATION_WEIGHT = 10
     ALIGNMENT_WEIGHT = 1
-    COHESION_WEIGHT = 1
+    COHESION_WEIGHT = .02
 
     id_counter = 1
     all_boids = None
@@ -29,33 +29,37 @@ class Boid(object):
 
     def set_random_velocity(self):
         angle = random.random() * 2 * math.pi
-        self.dx = self.SPEED * math.cos(angle)
-        self.dy = self.SPEED * math.sin(angle)
+        self.dx = self.DEFAULT_SPEED * math.cos(angle)
+        self.dy = self.DEFAULT_SPEED * math.sin(angle)
 
     def update(self):
         neighbours = self.get_nearby_boids(self)
 
         if len(neighbours) > 0:
+            # calculate forces
             cohesion_x, cohesion_y = self.calculate_cohesion_force(neighbours)
             separation_x, separation_y = self.calculate_separation_force(neighbours)
             alignment_x, alignment_y = self.calculate_alignment_force(neighbours)
 
+            # apply forces
             self.dx += self.COHESION_WEIGHT * cohesion_x
             self.dy += self.COHESION_WEIGHT * cohesion_y
-
             self.dx += self.SEPARATION_WEIGHT * separation_x
             self.dy += self.SEPARATION_WEIGHT * separation_y
-
             self.dx += self.ALIGNMENT_WEIGHT * alignment_x
             self.dy += self.ALIGNMENT_WEIGHT * alignment_y
 
-            # normalize velocity
-            velocity_vector_length = math.sqrt(self.dx ** 2 + self.dy ** 2)
-            self.dx = self.SPEED * self.dx / velocity_vector_length
-            self.dy = self.SPEED * self.dy / velocity_vector_length
+            # normalize and damp the speed
+            speed = math.sqrt(self.dx ** 2 + self.dy ** 2)
+            speed_deviation = speed - self.DEFAULT_SPEED
+            target_speed = speed - 0.7 * speed_deviation
+            self.dx = target_speed * self.dx / speed
+            self.dy = target_speed * self.dy / speed
 
+        # move
         self.x += self.dx
         self.y += self.dy
+        # wrap around
         self.x = self.x % Gfx.width
         self.y = self.y % Gfx.height
 
@@ -67,22 +71,17 @@ class Boid(object):
         pos_x /= len(neighbours)
         pos_y /= len(neighbours)
         force_x, force_y = pos_x - self.x, pos_y - self.y
-        force_vector_length = math.sqrt(force_x ** 2 + force_y ** 2)
-        force_x, force_y = force_x / force_vector_length, force_y / force_vector_length  # normalize
         return force_x, force_y
 
     def calculate_separation_force(self, neighbours):
-        pos_x, pos_y = 0, 0
+        fx, fy = 0, 0
         for boid in neighbours:
-            pos_x += boid.x - self.x
-            pos_y += boid.y - self.y
-        pos_x /= len(neighbours)
-        pos_y /= len(neighbours)
-        pos_x *= -1
-        pos_y *= -1
-        force_vector_length = math.sqrt(pos_x ** 2 + pos_y ** 2)
-        force_x, force_y = pos_x / force_vector_length, pos_x / force_vector_length  # normalize
-        return force_x, force_y
+            direction = math.atan2(boid.y - self.y, boid.x - self.x)
+            distance = self.get_distance_to(boid)
+            force_scalar = 1 / (1 + distance)
+            fx -= force_scalar * math.cos(direction)
+            fy -= force_scalar * math.sin(direction)
+        return fx, fy
 
     def calculate_alignment_force(self, neighbours):
         dx, dy = 0, 0
