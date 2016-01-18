@@ -57,13 +57,17 @@ class Predator(Boid):
 
 
 def add_predator(self):
-    object_collection.ObjectCollection.all_predators.append(Predator())
+    num_predators = int(0.1 * len(object_collection.ObjectCollection.all_predators)) + 1
+    for i in range(num_predators):
+        object_collection.ObjectCollection.all_predators.append(Predator())
 
 gfx.Gfx.add_predator = add_predator
 
 
 def remove_predator(self):
-    if len(object_collection.ObjectCollection.all_predators) > 0:
-        object_collection.ObjectCollection.all_predators.pop()
+    num_predators = int(0.1 * len(object_collection.ObjectCollection.all_predators)) + 1
+    for i in range(num_predators):
+        if len(object_collection.ObjectCollection.all_predators) > 0:
+            object_collection.ObjectCollection.all_predators.pop()
 
 gfx.Gfx.remove_predator = remove_predator
