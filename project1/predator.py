@@ -1,6 +1,7 @@
 from boid import Boid
 import math
-from gfx import Gfx
+import gfx
+import object_collection
 
 
 class Predator(Boid):
@@ -51,5 +52,18 @@ class Predator(Boid):
         self.x += self.dx
         self.y += self.dy
         # wrap around
-        self.x = self.x % Gfx.width
-        self.y = self.y % Gfx.height
+        self.x = self.x % gfx.Gfx.width
+        self.y = self.y % gfx.Gfx.height
+
+
+def add_predator(self):
+    object_collection.ObjectCollection.all_predators.append(Predator())
+
+gfx.Gfx.add_predator = add_predator
+
+
+def remove_predator(self):
+    if len(object_collection.ObjectCollection.all_predators) > 0:
+        object_collection.ObjectCollection.all_predators.pop()
+
+gfx.Gfx.remove_predator = remove_predator

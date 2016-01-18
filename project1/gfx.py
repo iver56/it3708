@@ -1,6 +1,7 @@
 import sys
 import pygame
-from object_collection import ObjectCollection
+import object_collection
+
 
 pygame.display.init()
 
@@ -13,6 +14,9 @@ class Gfx(object):
 
     WHITE = 255, 255, 255
     BLACK = 0, 0, 0
+
+    add_predator = None
+    remove_predator = None
 
     def __init__(self, fps=30.0):
         self.screen = pygame.display.set_mode(self.size)
@@ -30,15 +34,19 @@ class Gfx(object):
                     self.fps *= 2  # double the fps
                     if self.fps > 256.0:
                         self.fps = 256.0
+                if event.key == pygame.K_w and Gfx.add_predator:
+                    self.add_predator()
+                if event.key == pygame.K_s and Gfx.remove_predator:
+                    self.remove_predator()
 
         self.clock.tick(self.fps)
 
         self.screen.fill(self.BLACK)
 
-        for boid in ObjectCollection.all_boids:
-            boid.draw(pygame.draw, self.screen)
+        for obj in object_collection.ObjectCollection.all_boids:
+            obj.draw(pygame.draw, self.screen)
 
-        for predator in ObjectCollection.all_predators:
-            predator.draw(pygame.draw, self.screen)
+        for obj in object_collection.ObjectCollection.all_predators:
+            obj.draw(pygame.draw, self.screen)
 
         pygame.display.flip()

@@ -1,7 +1,7 @@
-from gfx import Gfx
 import random
 import math
-from object_collection import ObjectCollection
+import gfx
+import object_collection
 
 
 class Boid(object):
@@ -41,8 +41,8 @@ class Boid(object):
         self.set_random_velocity()
 
     def set_random_position(self):
-        self.x = random.randint(0, Gfx.width)
-        self.y = random.randint(0, Gfx.height)
+        self.x = random.randint(0, gfx.Gfx.width)
+        self.y = random.randint(0, gfx.Gfx.height)
 
     def set_random_velocity(self):
         angle = random.random() * 2 * math.pi
@@ -83,8 +83,8 @@ class Boid(object):
         self.x += self.dx
         self.y += self.dy
         # wrap around
-        self.x = self.x % Gfx.width
-        self.y = self.y % Gfx.height
+        self.x = self.x % gfx.Gfx.width
+        self.y = self.y % gfx.Gfx.height
 
     def calculate_cohesion_force(self, neighbours):
         pos_x, pos_y = 0, 0
@@ -149,7 +149,7 @@ class Boid(object):
 
     def get_nearby_boids(self):
         nearby_boids = []
-        for other_boid in ObjectCollection.all_boids:
+        for other_boid in object_collection.ObjectCollection.all_boids:
             if self == other_boid:
                 continue
             if self.get_distance_to(other_boid) < self.BOID_NEIGHBOUR_DISTANCE_THRESHOLD:
@@ -159,7 +159,7 @@ class Boid(object):
     @staticmethod
     def get_nearby_predators(boid):
         nearby_predators = []
-        for predator in ObjectCollection.all_predators:
+        for predator in object_collection.ObjectCollection.all_predators:
             if boid.get_distance_to(predator) < Boid.PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD:
                 nearby_predators.append(predator)
         return nearby_predators

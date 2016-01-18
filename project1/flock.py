@@ -1,33 +1,31 @@
-from boid import Boid
-from gfx import Gfx
-from object_collection import ObjectCollection
-from predator import Predator
+import object_collection
+import boid
+import predator
+import gfx
 
 
 class Flock(object):
     instance = None
 
     def __init__(self):
-        self.gfx = Gfx()
-        ObjectCollection.all_boids = []
+        self.gfx = gfx.Gfx()
+        object_collection.ObjectCollection.all_boids = []
         for i in range(100):
-            boid = Boid()
-            ObjectCollection.all_boids.append(boid)
+            object_collection.ObjectCollection.all_boids.append(boid.Boid())
 
-        ObjectCollection.all_predators = []
+        object_collection.ObjectCollection.all_predators = []
         for i in range(2):
-            predator = Predator()
-            ObjectCollection.all_predators.append(predator)
+            object_collection.ObjectCollection.all_predators.append(predator.Predator())
 
         self.run()
 
     def run(self):
         while True:
-            for boid in ObjectCollection.all_boids:
-                boid.update()
+            for dat_boid in object_collection.ObjectCollection.all_boids:
+                dat_boid.update()
 
-            for predator in ObjectCollection.all_predators:
-                predator.update()
+            for dat_predator in object_collection.ObjectCollection.all_predators:
+                dat_predator.update()
 
             self.gfx.draw()
 
