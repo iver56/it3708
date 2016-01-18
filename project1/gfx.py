@@ -15,6 +15,8 @@ class Gfx(object):
     WHITE = 255, 255, 255
     BLACK = 0, 0, 0
 
+    add_boids = None
+    remove_boids = None
     add_predator = None
     remove_predator = None
 
@@ -34,6 +36,10 @@ class Gfx(object):
                     self.fps *= 2  # double the fps
                     if self.fps > 256.0:
                         self.fps = 256.0
+                if event.key == pygame.K_q and Gfx.add_boids:
+                    self.add_boids()
+                if event.key == pygame.K_a and Gfx.remove_boids:
+                    self.remove_boids()
                 if event.key == pygame.K_w and Gfx.add_predator:
                     self.add_predator()
                 if event.key == pygame.K_s and Gfx.remove_predator:

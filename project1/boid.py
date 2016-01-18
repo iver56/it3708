@@ -163,3 +163,20 @@ class Boid(object):
             if boid.get_distance_to(predator) < Boid.PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD:
                 nearby_predators.append(predator)
         return nearby_predators
+
+
+def add_boids(self):
+    num_boids = int(0.1 * len(object_collection.ObjectCollection.all_boids)) + 1
+    for i in range(num_boids):
+        object_collection.ObjectCollection.all_boids.append(Boid())
+
+gfx.Gfx.add_boids = add_boids
+
+
+def remove_boids(self):
+    num_boids = int(0.1 * len(object_collection.ObjectCollection.all_boids)) + 1
+    for i in range(num_boids):
+        if len(object_collection.ObjectCollection.all_boids) > 0:
+            object_collection.ObjectCollection.all_boids.pop()
+
+gfx.Gfx.remove_boids = remove_boids
