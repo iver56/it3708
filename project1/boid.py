@@ -169,6 +169,7 @@ def add_boids(self):
     num_boids = int(0.1 * len(object_collection.ObjectCollection.all_boids)) + 1
     for i in range(num_boids):
         object_collection.ObjectCollection.all_boids.append(Boid())
+    print '#boids:', len(object_collection.ObjectCollection.all_boids)
 
 gfx.Gfx.add_boids = add_boids
 
@@ -178,5 +179,6 @@ def remove_boids(self):
     for i in range(num_boids):
         if len(object_collection.ObjectCollection.all_boids) > 0:
             object_collection.ObjectCollection.all_boids.pop()
+    print '#boids:', len(object_collection.ObjectCollection.all_boids)
 
 gfx.Gfx.remove_boids = remove_boids

@@ -60,6 +60,7 @@ def add_predator(self):
     num_predators = int(0.1 * len(object_collection.ObjectCollection.all_predators)) + 1
     for i in range(num_predators):
         object_collection.ObjectCollection.all_predators.append(Predator())
+    print '#predators:', len(object_collection.ObjectCollection.all_predators)
 
 gfx.Gfx.add_predator = add_predator
 
@@ -69,5 +70,6 @@ def remove_predator(self):
     for i in range(num_predators):
         if len(object_collection.ObjectCollection.all_predators) > 0:
             object_collection.ObjectCollection.all_predators.pop()
+    print '#predators:', len(object_collection.ObjectCollection.all_predators)
 
 gfx.Gfx.remove_predator = remove_predator
