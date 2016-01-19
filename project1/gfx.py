@@ -19,6 +19,8 @@ class Gfx(object):
     remove_boids = None
     add_predator = None
     remove_predator = None
+    add_obstacle = None
+    remove_all_obstacles = None
 
     def __init__(self, fps=30.0):
         self.screen = pygame.display.set_mode(self.size)
@@ -44,6 +46,12 @@ class Gfx(object):
                     self.add_predator()
                 if event.key == pygame.K_s and Gfx.remove_predator:
                     self.remove_predator()
+            if pygame.mouse.get_pressed()[0]:  # left click
+                mouse_pos = pygame.mouse.get_pos()
+                self.add_obstacle(*mouse_pos)
+            if pygame.mouse.get_pressed()[2]:  # right click
+                self.remove_all_obstacles()
+
 
         self.clock.tick(self.fps)
 
@@ -53,6 +61,9 @@ class Gfx(object):
             obj.draw(pygame.draw, self.screen)
 
         for obj in object_collection.ObjectCollection.all_predators:
+            obj.draw(pygame.draw, self.screen)
+
+        for obj in object_collection.ObjectCollection.all_obstacles:
             obj.draw(pygame.draw, self.screen)
 
         pygame.display.flip()

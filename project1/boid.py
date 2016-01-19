@@ -6,13 +6,15 @@ import object_collection
 
 class Boid(object):
     DEFAULT_SPEED = 8
-    BOID_NEIGHBOUR_DISTANCE_THRESHOLD = 90
+    BOID_NEIGHBOUR_DISTANCE_THRESHOLD = 150
     PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD = 150
-    SEPARATION_WEIGHT = 10
+    OBSTACLE_NEIGHBOUR_DISTANCE_THRESHOLD = 150
+    SEPARATION_WEIGHT = 15
     ALIGNMENT_WEIGHT = 1
-    COHESION_WEIGHT = .02
+    COHESION_WEIGHT = .04
 
     PREDATOR_SEPARATION_WEIGHT = 250
+    OBSTACLE_SEPARATION_WEIGHT = 50
 
     id_counter = 1
 
@@ -72,6 +74,13 @@ class Boid(object):
             self.dx += self.PREDATOR_SEPARATION_WEIGHT * separation_x
             self.dy += self.PREDATOR_SEPARATION_WEIGHT * separation_y
 
+        nearby_obstacles = self.get_nearby_obstacles(self)
+        if len(nearby_obstacles) > 0:
+            separation_x, separation_y = self.calculate_separation_force(nearby_obstacles)
+
+            self.dx += self.OBSTACLE_SEPARATION_WEIGHT * separation_x
+            self.dy += self.OBSTACLE_SEPARATION_WEIGHT * separation_y
+
         # normalize and damp the speed
         speed = math.sqrt(self.dx ** 2 + self.dy ** 2)
         speed_deviation = speed - self.DEFAULT_SPEED
@@ -126,8 +135,8 @@ class Boid(object):
     def get_direction(self):
         return math.atan2(self.dy, self.dx)
 
-    def get_distance_to(self, other_boid):
-        return math.sqrt((self.x - other_boid.x) ** 2 + (self.y - other_boid.y) ** 2)
+    def get_distance_to(self, other_object):
+        return math.sqrt((self.x - other_object.x) ** 2 + (self.y - other_object.y) ** 2)
 
     def __eq__(self, other_boid):
         return self.id == other_boid.id
@@ -163,6 +172,14 @@ class Boid(object):
             if boid.get_distance_to(predator) < Boid.PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD:
                 nearby_predators.append(predator)
         return nearby_predators
+
+    @staticmethod
+    def get_nearby_obstacles(boid):
+        nearby_obstacles = []
+        for obstacle in object_collection.ObjectCollection.all_obstacles:
+            if boid.get_distance_to(obstacle) < Boid.OBSTACLE_NEIGHBOUR_DISTANCE_THRESHOLD:
+                nearby_obstacles.append(obstacle)
+        return nearby_obstacles
 
 
 def add_boids(self):

@@ -1,3 +1,4 @@
 class ObjectCollection(object):
-    all_boids = None
-    all_predators = None
+    all_boids = []
+    all_predators = []
+    all_obstacles = []

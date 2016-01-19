@@ -1,6 +1,7 @@
 import object_collection
 import boid
 import predator
+import obstacle
 import gfx
 
 

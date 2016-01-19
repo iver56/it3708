@@ -8,9 +8,10 @@ class Predator(Boid):
     DEFAULT_SPEED = 8
     BOID_COHESION_WEIGHT = .02
     BOID_ALIGNMENT_WEIGHT = 1
-    PREDATOR_SEPARATION_WEIGHT = 12
     BOID_NEIGHBOUR_DISTANCE_THRESHOLD = 150
-    PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD = 60
+
+    PREDATOR_SEPARATION_WEIGHT = 30
+    PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD = 90
 
     id_counter = 1
 
@@ -40,6 +41,13 @@ class Predator(Boid):
 
             self.dx += self.PREDATOR_SEPARATION_WEIGHT * separation_x
             self.dy += self.PREDATOR_SEPARATION_WEIGHT * separation_y
+
+        nearby_obstacles = self.get_nearby_obstacles(self)
+        if len(nearby_obstacles) > 0:
+            separation_x, separation_y = self.calculate_separation_force(nearby_obstacles)
+
+            self.dx += self.OBSTACLE_SEPARATION_WEIGHT * separation_x
+            self.dy += self.OBSTACLE_SEPARATION_WEIGHT * separation_y
 
         # normalize and damp the speed
         speed = math.sqrt(self.dx ** 2 + self.dy ** 2)
