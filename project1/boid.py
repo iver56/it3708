@@ -196,6 +196,17 @@ def change_multiplier(self, attr_name, factor):
 gfx.Gfx.change_boid_weight_multiplier = change_multiplier
 
 
+def reset_multipliers(self):
+    Boid.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER = 1.0
+    Boid.PREDATOR_SEPARATION_WEIGHT_MULTIPLIER = 1.0
+    Boid.ALIGNMENT_WEIGHT_MULTIPLIER = 1.0
+    Boid.COHESION_WEIGHT_MULTIPLIER = 1.0
+    Boid.SEPARATION_WEIGHT_MULTIPLIER = 1.0
+    print "Boid multipliers reset"
+
+gfx.Gfx.reset_boid_weight_multipliers = reset_multipliers
+
+
 def add_boids(self):
     num_boids = int(0.1 * len(object_collection.ObjectCollection.all_boids)) + 1
     for i in range(num_boids):

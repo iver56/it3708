@@ -22,7 +22,9 @@ class Gfx(object):
     add_obstacle = None
     remove_all_obstacles = None
     change_boid_weight_multiplier = None
+    reset_boid_weight_multipliers = None
     change_predator_weight_multiplier = None
+    reset_predator_weight_multipliers = None
 
     INCREASE_WEIGHT_MULTIPLIER_FACTOR = 1.25
     DECREASE_WEIGHT_MULTIPLIER_FACTOR = 0.8
@@ -81,6 +83,10 @@ class Gfx(object):
                     self.change_predator_weight_multiplier('BOID_ALIGNMENT_WEIGHT_MULTIPLIER', self.INCREASE_WEIGHT_MULTIPLIER_FACTOR)
                 if event.key == pygame.K_l and Gfx.change_boid_weight_multiplier:
                     self.change_predator_weight_multiplier('BOID_ALIGNMENT_WEIGHT_MULTIPLIER', self.DECREASE_WEIGHT_MULTIPLIER_FACTOR)
+
+                if event.key == pygame.K_0 and Gfx.reset_predator_weight_multipliers and Gfx.reset_boid_weight_multipliers:
+                    self.reset_predator_weight_multipliers()
+                    self.reset_boid_weight_multipliers()
 
             if pygame.mouse.get_pressed()[0]:  # left click
                 mouse_pos = pygame.mouse.get_pos()

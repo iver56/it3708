@@ -75,6 +75,14 @@ def change_multiplier(self, attr_name, factor):
 gfx.Gfx.change_predator_weight_multiplier = change_multiplier
 
 
+def reset_multipliers(self):
+    Predator.BOID_COHESION_WEIGHT_MULTIPLIER = 1.0
+    Predator.BOID_ALIGNMENT_WEIGHT_MULTIPLIER = 1.0
+    print "Predator multipliers reset"
+
+gfx.Gfx.reset_predator_weight_multipliers = reset_multipliers
+
+
 def add_predator(self):
     num_predators = int(0.1 * len(object_collection.ObjectCollection.all_predators)) + 1
     for i in range(num_predators):
