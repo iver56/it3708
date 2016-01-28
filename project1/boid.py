@@ -10,11 +10,16 @@ class Boid(object):
     PREDATOR_NEIGHBOUR_DISTANCE_THRESHOLD = 150
     OBSTACLE_NEIGHBOUR_DISTANCE_THRESHOLD = 150
     SEPARATION_WEIGHT = 15
+    SEPARATION_WEIGHT_MULTIPLIER = 1.0
     ALIGNMENT_WEIGHT = 1
+    ALIGNMENT_WEIGHT_MULTIPLIER = 1.0
     COHESION_WEIGHT = .04
+    COHESION_WEIGHT_MULTIPLIER = 1.0
 
     PREDATOR_SEPARATION_WEIGHT = 250
+    PREDATOR_SEPARATION_WEIGHT_MULTIPLIER = 1.0
     OBSTACLE_SEPARATION_WEIGHT = 50
+    OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER = 1.0
 
     id_counter = 1
 
@@ -60,26 +65,26 @@ class Boid(object):
             alignment_x, alignment_y = self.calculate_alignment_force(nearby_boids)
 
             # apply forces
-            self.dx += self.COHESION_WEIGHT * cohesion_x
-            self.dy += self.COHESION_WEIGHT * cohesion_y
-            self.dx += self.SEPARATION_WEIGHT * separation_x
-            self.dy += self.SEPARATION_WEIGHT * separation_y
-            self.dx += self.ALIGNMENT_WEIGHT * alignment_x
-            self.dy += self.ALIGNMENT_WEIGHT * alignment_y
+            self.dx += self.COHESION_WEIGHT * self.COHESION_WEIGHT_MULTIPLIER * cohesion_x
+            self.dy += self.COHESION_WEIGHT * self.COHESION_WEIGHT_MULTIPLIER * cohesion_y
+            self.dx += self.SEPARATION_WEIGHT * self.SEPARATION_WEIGHT_MULTIPLIER * separation_x
+            self.dy += self.SEPARATION_WEIGHT * self.SEPARATION_WEIGHT_MULTIPLIER * separation_y
+            self.dx += self.ALIGNMENT_WEIGHT * self.ALIGNMENT_WEIGHT_MULTIPLIER * alignment_x
+            self.dy += self.ALIGNMENT_WEIGHT * self.ALIGNMENT_WEIGHT_MULTIPLIER * alignment_y
 
         nearby_predators = self.get_nearby_predators(self)
         if len(nearby_predators) > 0:
             separation_x, separation_y = self.calculate_separation_force(nearby_predators)
 
-            self.dx += self.PREDATOR_SEPARATION_WEIGHT * separation_x
-            self.dy += self.PREDATOR_SEPARATION_WEIGHT * separation_y
+            self.dx += self.PREDATOR_SEPARATION_WEIGHT * self.PREDATOR_SEPARATION_WEIGHT_MULTIPLIER * separation_x
+            self.dy += self.PREDATOR_SEPARATION_WEIGHT * self.PREDATOR_SEPARATION_WEIGHT_MULTIPLIER * separation_y
 
         nearby_obstacles = self.get_nearby_obstacles(self)
         if len(nearby_obstacles) > 0:
             separation_x, separation_y = self.calculate_separation_force(nearby_obstacles)
 
-            self.dx += self.OBSTACLE_SEPARATION_WEIGHT * separation_x
-            self.dy += self.OBSTACLE_SEPARATION_WEIGHT * separation_y
+            self.dx += self.OBSTACLE_SEPARATION_WEIGHT * self.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER * separation_x
+            self.dy += self.OBSTACLE_SEPARATION_WEIGHT * self.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER * separation_y
 
         # normalize and damp the speed
         speed = math.sqrt(self.dx ** 2 + self.dy ** 2)
@@ -180,6 +185,15 @@ class Boid(object):
             if boid.get_distance_to(obstacle) < Boid.OBSTACLE_NEIGHBOUR_DISTANCE_THRESHOLD:
                 nearby_obstacles.append(obstacle)
         return nearby_obstacles
+
+
+def change_multiplier(self, attr_name, factor):
+    current_weight_multiplier = getattr(Boid, attr_name, 1.0)
+    new_weight_multiplier = min(max(current_weight_multiplier * factor, 0), 10)
+    setattr(Boid, attr_name, new_weight_multiplier)
+    print "Boid", attr_name, new_weight_multiplier
+
+gfx.Gfx.change_boid_weight_multiplier = change_multiplier
 
 
 def add_boids(self):

@@ -7,7 +7,9 @@ import object_collection
 class Predator(Boid):
     DEFAULT_SPEED = 8
     BOID_COHESION_WEIGHT = .02
+    BOID_COHESION_WEIGHT_MULTIPLIER = 1.0
     BOID_ALIGNMENT_WEIGHT = 1
+    BOID_ALIGNMENT_WEIGHT_MULTIPLIER = 1.0
     BOID_NEIGHBOUR_DISTANCE_THRESHOLD = 150
 
     PREDATOR_SEPARATION_WEIGHT = 30
@@ -30,10 +32,10 @@ class Predator(Boid):
             alignment_x, alignment_y = self.calculate_alignment_force(nearby_boids)
 
             # apply forces
-            self.dx += self.BOID_COHESION_WEIGHT * cohesion_x
-            self.dy += self.BOID_COHESION_WEIGHT * cohesion_y
-            self.dx += self.BOID_ALIGNMENT_WEIGHT * alignment_x
-            self.dy += self.BOID_ALIGNMENT_WEIGHT * alignment_y
+            self.dx += self.BOID_COHESION_WEIGHT * self.BOID_COHESION_WEIGHT_MULTIPLIER * cohesion_x
+            self.dy += self.BOID_COHESION_WEIGHT * self.BOID_COHESION_WEIGHT_MULTIPLIER * cohesion_y
+            self.dx += self.BOID_ALIGNMENT_WEIGHT * self.BOID_ALIGNMENT_WEIGHT_MULTIPLIER * alignment_x
+            self.dy += self.BOID_ALIGNMENT_WEIGHT * self.BOID_ALIGNMENT_WEIGHT_MULTIPLIER * alignment_y
 
         nearby_predators = self.get_nearby_predators(self)
         if len(nearby_predators) > 0:
@@ -62,6 +64,15 @@ class Predator(Boid):
         # wrap around
         self.x = self.x % gfx.Gfx.width
         self.y = self.y % gfx.Gfx.height
+
+
+def change_multiplier(self, attr_name, factor):
+    current_weight_multiplier = getattr(Predator, attr_name, 1.0)
+    new_weight_multiplier = min(max(current_weight_multiplier * factor, 0), 10)
+    setattr(Predator, attr_name, new_weight_multiplier)
+    print "Predator", attr_name, new_weight_multiplier
+
+gfx.Gfx.change_predator_weight_multiplier = change_multiplier
 
 
 def add_predator(self):
