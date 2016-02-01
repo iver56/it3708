@@ -18,8 +18,11 @@ class Boid(object):
 
     PREDATOR_SEPARATION_WEIGHT = 250
     PREDATOR_SEPARATION_WEIGHT_MULTIPLIER = 1.0
-    OBSTACLE_SEPARATION_WEIGHT = 50
+    OBSTACLE_SEPARATION_WEIGHT = 20
+    OBSTACLE_AVOIDANCE_WEIGHT = 40
     OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER = 1.0
+
+    OBSTACLE_AVOIDANCE_ANGLE = 0.5 * math.pi
 
     id_counter = 1
 
@@ -82,9 +85,13 @@ class Boid(object):
         nearby_obstacles = self.get_nearby_obstacles(self)
         if len(nearby_obstacles) > 0:
             separation_x, separation_y = self.calculate_separation_force(nearby_obstacles)
+            avoidance_x, avoidance_y = self.calculate_avoidance_force(nearby_obstacles)
 
             self.dx += self.OBSTACLE_SEPARATION_WEIGHT * self.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER * separation_x
             self.dy += self.OBSTACLE_SEPARATION_WEIGHT * self.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER * separation_y
+
+            self.dx += self.OBSTACLE_AVOIDANCE_WEIGHT * self.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER * avoidance_x
+            self.dy += self.OBSTACLE_AVOIDANCE_WEIGHT * self.OBSTACLE_SEPARATION_WEIGHT_MULTIPLIER * avoidance_y
 
         # normalize and damp the speed
         speed = math.sqrt(self.dx ** 2 + self.dy ** 2)
@@ -118,6 +125,19 @@ class Boid(object):
             force_scalar = 1 / (1 + distance)
             fx -= force_scalar * math.cos(direction)
             fy -= force_scalar * math.sin(direction)
+        return fx, fy
+
+    def calculate_avoidance_force(self, obstacles):
+        fx, fy = 0, 0
+        self_direction = self.get_direction()
+        for obstacle in obstacles:
+            direction = math.atan2(obstacle.y - self.y, obstacle.x - self.x)
+            angle_diff = ((self_direction - direction + math.pi) % (2 * math.pi)) - math.pi
+            if abs(angle_diff) < self.OBSTACLE_AVOIDANCE_ANGLE:
+                distance = max(self.get_distance_to(obstacle) - self.SIZE, 1)
+                force_scalar = 1 / (1 + distance)
+                fx += force_scalar * math.cos(self_direction + 0.5 * math.pi * (1 if angle_diff > 0 else -1))
+                fy += force_scalar * math.sin(self_direction + 0.5 * math.pi * (1 if angle_diff > 0 else -1))
         return fx, fy
 
     def calculate_alignment_force(self, neighbours):

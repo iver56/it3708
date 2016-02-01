@@ -15,7 +15,7 @@ class Flock(object):
             object_collection.ObjectCollection.all_boids.append(boid.Boid())
 
         object_collection.ObjectCollection.all_predators = []
-        for i in range(2):
+        for i in range(0):
             object_collection.ObjectCollection.all_predators.append(predator.Predator())
 
         self.run()
