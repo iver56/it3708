@@ -94,7 +94,6 @@ class Gfx(object):
             if pygame.mouse.get_pressed()[2]:  # right click
                 self.remove_all_obstacles()
 
-
         self.clock.tick(self.fps)
 
         self.screen.fill(self.BLACK)
