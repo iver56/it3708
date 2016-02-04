@@ -1,0 +1,34 @@
+Left mouse button: Add obstacle at mouse position
+Right mouse butt: Remove all obstacles
+
+Q: Add boid(s)
+A: Remove boid(s)
+
+W: Add predator(s)
+S: Remove predator(s)
+
+E: Increase boid separation
+D: Decrease boid separation
+
+R: Increase boid cohesion
+F: Decrease boid cohesion
+
+T: Increase boid alignment
+G: Decrease boid alignment
+
+Y: Increase boid separation from predators
+H: Decrease boid separation from predators
+
+U: Increase obstacle avoidance
+J: Decrease obstacle avoidance
+
+I: Increase predator to boids cohesion
+K: Decrease predator to boids cohesion
+
+O: Increase predator to boids alignment
+L: Decrease predator to boids alignment
+
+0 (zero): Reset all weights
+
+Up arrow key: Raise FPS cap
+Down arrow key: Lower FPS cap
