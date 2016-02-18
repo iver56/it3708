@@ -1,22 +1,19 @@
+from individual import Individual
+from problem import Problem
 
 
-class OneMaxFitness(object):
-    @staticmethod
-    def evaluate(phenotype):
-        return sum(phenotype.data)
-
-
-class LolzFitness(object):
+class LolzProblem(Problem):
+    GENOTYPE_SIZE = 6
     ZERO_CAP = 4
 
     @staticmethod
-    def evaluate(phenotype):
+    def calculate_fitness(individual):
         zero_score = 0
         one_score = 0
         zero_streak = True
         one_streak = True
 
-        for x in phenotype.data:
+        for x in individual.phenotype:
             if x == 0 and zero_streak:
                 zero_score += 1
                 one_streak = False
@@ -26,13 +23,12 @@ class LolzFitness(object):
             else:
                 break
 
-        if zero_score > LolzFitness.ZERO_CAP:
-            zero_score = LolzFitness.ZERO_CAP
+        if zero_score > LolzProblem.ZERO_CAP:
+            zero_score = LolzProblem.ZERO_CAP
 
         return max(zero_score, one_score)
 
 
-class SurprisingSequencesFitness(object):
-    @staticmethod
-    def evaluate(phenotype):
-        pass  # TODO
+class LolzIndividual(Individual):
+    def calculate_phenotype(self):
+        self.phenotype = map(lambda x: 1 if x else 0, self.genotype.dna)

@@ -1,34 +1,36 @@
 from genotype import Genotype
-from phenotype import Phenotype
+from individual import Individual
 import random
 
 
 class Population(object):
     NUM_PARENTS = 4
 
-    def __init__(self, genotypes):
+    def __init__(self, genotypes, problem_class, individual_class):
         self.genotypes = genotypes
-        self.phenotypes = None
+        self.problem_class = problem_class
+        self.individual_class = individual_class
+        self.individuals = None
         self.population_size = len(genotypes)
         self.selected_parents = None
 
     @staticmethod
-    def get_random_population(population_size, dna_size):
+    def get_random_population(population_size, problem_class, individual_class):
         genotypes = []
         for x in range(population_size):
-            genotype = Genotype.get_random_genotype(dna_size)
+            genotype = Genotype.get_random_genotype(problem_class.GENOTYPE_SIZE)
             genotypes.append(genotype)
-        return Population(genotypes)
+        return Population(genotypes, problem_class, individual_class)
 
     def generate_phenotypes(self):
-        self.phenotypes = []
+        self.individuals = []
         for genotype in self.genotypes:
-            phenotype = Phenotype(genotype)
-            self.phenotypes.append(phenotype)
+            phenotype = self.individual_class(genotype)
+            self.individuals.append(phenotype)
 
-    def evaluate_all(self, fitness_class):
-        for phenotype in self.phenotypes:
-            fitness = fitness_class.evaluate(phenotype)
+    def evaluate_all(self):
+        for phenotype in self.individuals:
+            fitness = self.problem_class.calculate_fitness(phenotype)
             phenotype.set_fitness(fitness)
 
     def get_fittest_phenotype(self):
@@ -36,9 +38,9 @@ class Population(object):
         May raise an exception if the population is not evaluated
         :return:
         """
-        max_fitness = self.phenotypes[0].fitness
-        fittest_phenotype = self.phenotypes[0]
-        for phenotype in self.phenotypes:
+        max_fitness = self.individuals[0].fitness
+        fittest_phenotype = self.individuals[0]
+        for phenotype in self.individuals:
             if phenotype.fitness > max_fitness:
                 max_fitness = phenotype.fitness
                 fittest_phenotype = phenotype
@@ -50,18 +52,18 @@ class Population(object):
         :return:
         """
         fitness_sum = 0
-        for phenotype in self.phenotypes:
+        for phenotype in self.individuals:
             fitness_sum += phenotype.fitness
-        return float(fitness_sum) / len(self.phenotypes)
+        return float(fitness_sum) / len(self.individuals)
 
     def get_age_stats(self):
-        max_age = self.phenotypes[0].genotype.age
+        max_age = self.individuals[0].genotype.age
         age_sum = 0
-        for phenotype in self.phenotypes:
+        for phenotype in self.individuals:
             age_sum += phenotype.genotype.age
             if phenotype.genotype.age > max_age:
                 max_age = phenotype.genotype.age
-        avg_age = float(age_sum) / len(self.phenotypes)
+        avg_age = float(age_sum) / len(self.individuals)
         return avg_age, max_age
 
     def print_stats(self):
@@ -78,7 +80,7 @@ class Population(object):
         self.reproduce()
 
     def select_parents(self):
-        sorted_phenotypes = sorted(self.phenotypes, key=lambda p: p.fitness, reverse=True)
+        sorted_phenotypes = sorted(self.individuals, key=lambda p: p.fitness, reverse=True)
         self.selected_parents = sorted_phenotypes[0:self.NUM_PARENTS]
 
     def reproduce(self):

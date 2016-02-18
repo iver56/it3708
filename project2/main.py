@@ -1,5 +1,4 @@
 from population import Population
-import fitness
 import argparse
 
 
@@ -35,21 +34,25 @@ class Main(object):
 
         self.args = arg_parser.parse_args()
 
-        self.dna_size = None
         if self.args.problem == 'onemax':
-            self.dna_size = 20
-            self.fitness_class = fitness.OneMaxFitness
+            import one_max
+            self.problem_class = one_max.OneMaxProblem
+            self.individual_class = one_max.OneMaxIndividual
         elif self.args.problem == 'lolz':
-            self.dna_size = 6
-            self.fitness_class = fitness.LolzFitness
-        elif self.args.problem == 'ss':
-            self.fitness_class = fitness.SurprisingSequencesFitness
-            # self.dna_size = ...  # TODO
+            import lolz
+            self.problem_class = lolz.LolzProblem
+            self.individual_class = lolz.LolzIndividual
+        elif self.args.problem == 'ss':  # surprising sequences
+            pass  # TODO
 
         self.run()
 
     def run(self):
-        population = Population.get_random_population(self.args.population_size, self.dna_size)
+        population = Population.get_random_population(
+            self.args.population_size,
+            self.problem_class,
+            self.individual_class
+        )
 
         for generation in range(self.args.num_generations):
             print '---------'
@@ -57,7 +60,7 @@ class Main(object):
 
             population.generate_phenotypes()
 
-            population.evaluate_all(self.fitness_class)
+            population.evaluate_all()
 
             population.print_stats()
 
