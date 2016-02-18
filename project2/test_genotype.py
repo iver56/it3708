@@ -5,20 +5,21 @@ from genotype import Genotype
 class TestGenotype(unittest.TestCase):
     def test_mutation(self):
         g1 = Genotype(6)
-        g1.bit_array = [0, 0, 0, 0, 0, 0]
+        g1.dna = [False, False, False, False, False, False]
         g1.mutate()
-        self.assertNotEqual(g1.bit_array, [0, 0, 0, 0, 0, 0])
+        self.assertNotEqual(g1.dna, [False, False, False, False, False, False])
 
     def test_crossover(self):
-        g1 = Genotype(6)
-        g2 = Genotype(6)
-        g1.bit_array = [0, 0, 0, 0, 0, 0]
-        g2.bit_array = [1, 1, 1, 1, 1, 1]
+        size = 6
+        g1 = Genotype(size)
+        g2 = Genotype(size)
+        g1.dna = [False, False, False, False, False, False]
+        g2.dna = [True, True, True, True, True, True]
 
         g1.crossover(g2)
-        self.assertTrue(0 in g1.bit_array)
-        self.assertTrue(1 in g1.bit_array)
-        self.assertEqual(len(g1.bit_array), 6)
+        self.assertTrue(False in g1.dna)
+        self.assertTrue(True in g1.dna)
+        self.assertEqual(len(g1.dna), size)
 
 
 if __name__ == '__main__':
