@@ -1,6 +1,4 @@
 from population import Population
-import genotype
-import phenotype
 import fitness
 import argparse
 
@@ -23,7 +21,7 @@ class Main(object):
             help='Number of genotypes in a population',
             type=int,
             required=False,
-            default=50
+            default=20
         )
         arg_parser.add_argument(
             '-g',
@@ -32,7 +30,7 @@ class Main(object):
             help='Number of generations',
             type=int,
             required=False,
-            default=50
+            default=20
         )
 
         self.args = arg_parser.parse_args()
@@ -54,15 +52,17 @@ class Main(object):
         population = Population.get_random_population(self.args.population_size, self.dna_size)
 
         for generation in range(self.args.num_generations):
-            print 'generation', generation
-            population.evaluate_all(self.fitness_class)
-            fittest_phenotype = population.get_fittest_phenotype()
-            average_fitness = population.get_average_fitness()
-            print 'max fitness', fittest_phenotype.fitness
-            print 'avg fitness', average_fitness
             print '---------'
+            print 'generation', generation
 
-            population.advance(method=None)  # TODO
+            population.generate_phenotypes()
+
+            population.evaluate_all(self.fitness_class)
+
+            population.print_stats()
+
+            # Advance to the next generation
+            population.advance()
 
 
 if __name__ == '__main__':

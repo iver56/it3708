@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 
 
 class Genotype(object):
@@ -7,6 +8,7 @@ class Genotype(object):
             raise Exception('Genotype size must be at least 2')
         self.size = dna_size
         self.dna = [False] * dna_size
+        self.age = 0
 
     def mutate(self):
         i = random.randint(0, self.size - 1)
@@ -16,9 +18,17 @@ class Genotype(object):
         i = random.randint(1, self.size - 2)
         self.dna = self.dna[0:i] + other_genotype.dna[i:]
 
+    def increase_age(self):
+        self.age += 1
+
     @staticmethod
     def get_random_genotype(dna_size):
         genotype = Genotype(dna_size)
         for i in range(dna_size):
             genotype.dna[i] = True if random.random() > 0.5 else False
         return genotype
+
+    def clone(self):
+        cloned_genotype = Genotype(self.size)
+        cloned_genotype.dna = deepcopy(self.dna)
+        return cloned_genotype
