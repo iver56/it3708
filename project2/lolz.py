@@ -1,10 +1,36 @@
 from individual import Individual
 from problem import Problem
+import argparse
 
 
 class LolzProblem(Problem):
     GENOTYPE_SIZE = 6
     ZERO_CAP = 4
+
+    @staticmethod
+    def parse_args():
+        arg_parser = argparse.ArgumentParser()
+        arg_parser.add_argument(
+            '-gs',
+            '--genotype_size',
+            dest='genotype_size',
+            help='Number of bits in a genotype',
+            type=int,
+            required=False,
+            default=LolzProblem.GENOTYPE_SIZE
+        )
+        arg_parser.add_argument(
+            '-z',
+            '--zero_cap',
+            dest='zero_cap',
+            help='The variable referred to as \'z\' in the project description',
+            type=int,
+            required=False,
+            default=LolzProblem.ZERO_CAP
+        )
+        args, unknown_args = arg_parser.parse_known_args()
+        LolzProblem.GENOTYPE_SIZE = args.genotype_size
+        LolzProblem.ZERO_CAP = args.zero_cap
 
     @staticmethod
     def calculate_fitness(individual):

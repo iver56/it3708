@@ -32,14 +32,16 @@ class Main(object):
             default=20
         )
 
-        self.args = arg_parser.parse_args()
+        self.args, unknown_args = arg_parser.parse_known_args()
 
         if self.args.problem == 'onemax':
             import one_max
+            one_max.OneMaxProblem.parse_args()
             self.problem_class = one_max.OneMaxProblem
             self.individual_class = one_max.OneMaxIndividual
         elif self.args.problem == 'lolz':
             import lolz
+            lolz.LolzProblem.parse_args()
             self.problem_class = lolz.LolzProblem
             self.individual_class = lolz.LolzIndividual
         elif self.args.problem == 'ss':  # surprising sequences

@@ -1,9 +1,25 @@
 from individual import Individual
 from problem import Problem
+import argparse
 
 
 class OneMaxProblem(Problem):
     GENOTYPE_SIZE = 20
+
+    @staticmethod
+    def parse_args():
+        arg_parser = argparse.ArgumentParser()
+        arg_parser.add_argument(
+            '-gs',
+            '--genotype_size',
+            dest='genotype_size',
+            help='Number of bits in a genotype',
+            type=int,
+            required=False,
+            default=OneMaxProblem.GENOTYPE_SIZE
+        )
+        args = arg_parser.parse_args()
+        OneMaxProblem.GENOTYPE_SIZE = args.genotype_size
 
     @staticmethod
     def calculate_fitness(individual):
