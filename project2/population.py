@@ -62,24 +62,11 @@ class Population(object):
             fitness_sum += phenotype.fitness
         return float(fitness_sum) / len(self.individuals)
 
-    def get_age_stats(self):
-        max_age = self.individuals[0].genotype.age
-        age_sum = 0
-        for phenotype in self.individuals:
-            age_sum += phenotype.genotype.age
-            if phenotype.genotype.age > max_age:
-                max_age = phenotype.genotype.age
-        avg_age = float(age_sum) / len(self.individuals)
-        return avg_age, max_age
-
     def print_stats(self):
         fittest_phenotype = self.get_fittest_phenotype()
         average_fitness = self.get_average_fitness()
-        avg_age, max_age = self.get_age_stats()
+        print 'fittest phenotype', fittest_phenotype
         print 'avg fitness', average_fitness
-        print 'max fitness', fittest_phenotype.fitness
-        print 'avg age', avg_age
-        print 'max age', max_age
 
     def advance(self):
         self.select_adults()
@@ -92,8 +79,9 @@ class Population(object):
             phenotype.genotype.increase_age()
 
     def generational_mixing(self):
-        sorted_phenotypes = sorted(self.individuals, key=lambda p: p.fitness, reverse=True)
-        self.adults = sorted_phenotypes[0:self.MAX_ADULT_POOL_SIZE]
+        all_individuals = (self.adults if self.adults else []) + self.individuals
+        sorted_individuals = sorted(all_individuals, key=lambda p: p.fitness, reverse=True)
+        self.adults = sorted_individuals[0:self.MAX_ADULT_POOL_SIZE]
 
     def over_production(self):
         children = filter(lambda individual: individual.genotype.age == 0, self.individuals)

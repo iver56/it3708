@@ -41,7 +41,6 @@ class Main(object):
             default=20
         )
 
-
         self.args, unknown_args = arg_parser.parse_known_args()
 
         if self.args.problem == 'onemax':
