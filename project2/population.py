@@ -1,11 +1,13 @@
 from genotype import Genotype
 import random
+import statistics
 
 
 class Population(object):
-    MAX_ADULT_POOL_SIZE = 4
+    MAX_ADULT_POOL_SIZE = 4  # TODO: have a command line argument for this
 
-    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method='gm'):
+    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method='gm',
+                 parent_selection_method='fp'):
         self.genotypes = genotypes
         self.problem_class = problem_class
         self.individual_class = individual_class
@@ -19,6 +21,15 @@ class Population(object):
             self.adult_selection_method = self.over_production
         else:
             self.adult_selection_method = self.full_generational_replacement
+
+        if parent_selection_method == 'fp':
+            self.parent_selection_method = self.fitness_proportionate
+        elif parent_selection_method == 'ts':
+            self.parent_selection_method = self.tournament_selection
+        elif parent_selection_method == 'ss':
+            self.parent_selection_method = self.sigma_scaling
+        elif parent_selection_method == 'bs':
+            self.parent_selection_method = self.boltzmann_selection
 
     @staticmethod
     def get_random_population(population_size, problem_class, individual_class):
@@ -67,6 +78,7 @@ class Population(object):
         average_fitness = self.get_average_fitness()
         print 'fittest phenotype', fittest_phenotype
         print 'avg fitness', average_fitness
+        print 'fitness standard deviation', self.get_population_fitness_std_dev()
 
     def advance(self):
         self.select_adults()
@@ -92,7 +104,46 @@ class Population(object):
         self.adults = self.individuals
 
     def select_parents(self):
-        self.parents = self.adults
+        self.parent_selection_method()
+
+    def get_adults_fitness_sum(self):
+        return sum([individual.fitness for individual in self.adults])
+
+    def get_adults_fitness_std_dev(self):
+        return statistics.pstdev([individual.fitness for individual in self.adults])
+
+    def get_population_fitness_std_dev(self):
+        return statistics.pstdev([individual.fitness for individual in self.individuals])
+
+    def roulette_selection(self):
+        r = random.random()
+
+        # TODO: Could use binary search instead of linear search
+        for adult in self.adults:
+            if adult.cumulative_fitness > r:
+                return adult
+
+    def fitness_proportionate(self):
+        adult_fitness_sum = self.get_adults_fitness_sum()
+
+        cumulative_fitness_sum = 0
+        for adult in self.adults:
+            cumulative_fitness_sum += adult.fitness
+            adult.cumulative_fitness = float(cumulative_fitness_sum) / adult_fitness_sum
+
+        self.parents = []
+        for i in range(self.population_size):
+            parent = self.roulette_selection()
+            self.parents.append(parent)
+
+    def sigma_scaling(self):
+        return self.fitness_proportionate()  # TODO: implement
+
+    def boltzmann_selection(self):
+        return self.fitness_proportionate()  # TODO: implement
+
+    def tournament_selection(self):
+        return self.fitness_proportionate()  # TODO: implement
 
     def reproduce(self):
         num_children = self.population_size
