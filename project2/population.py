@@ -1,18 +1,24 @@
 from genotype import Genotype
-from individual import Individual
 import random
 
 
 class Population(object):
-    NUM_PARENTS = 4
+    MAX_ADULT_POOL_SIZE = 4
 
-    def __init__(self, genotypes, problem_class, individual_class):
+    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method='gm'):
         self.genotypes = genotypes
         self.problem_class = problem_class
         self.individual_class = individual_class
         self.individuals = None
         self.population_size = len(genotypes)
-        self.selected_parents = None
+        self.adults = None
+        self.parents = None
+        if adult_selection_method == 'gm':
+            self.adult_selection_method = self.generational_mixing
+        elif adult_selection_method == 'op':
+            self.adult_selection_method = self.over_production
+        else:
+            self.adult_selection_method = self.full_generational_replacement
 
     @staticmethod
     def get_random_population(population_size, problem_class, individual_class):
@@ -76,23 +82,37 @@ class Population(object):
         print 'max age', max_age
 
     def advance(self):
+        self.select_adults()
         self.select_parents()
         self.reproduce()
 
-    def select_parents(self):
+    def select_adults(self):
+        self.adult_selection_method()
+        for phenotype in self.adults:
+            phenotype.genotype.increase_age()
+
+    def generational_mixing(self):
         sorted_phenotypes = sorted(self.individuals, key=lambda p: p.fitness, reverse=True)
-        self.selected_parents = sorted_phenotypes[0:self.NUM_PARENTS]
+        self.adults = sorted_phenotypes[0:self.MAX_ADULT_POOL_SIZE]
+
+    def over_production(self):
+        children = filter(lambda individual: individual.genotype.age == 0, self.individuals)
+        sorted_phenotypes = sorted(children, key=lambda p: p.fitness, reverse=True)
+        self.adults = sorted_phenotypes[0:self.MAX_ADULT_POOL_SIZE]
+
+    def full_generational_replacement(self):
+        self.adults = self.individuals
+
+    def select_parents(self):
+        self.parents = self.adults
 
     def reproduce(self):
-        num_children = self.population_size - self.NUM_PARENTS
+        num_children = self.population_size
 
         self.genotypes = []
-        for phenotype in self.selected_parents:
-            phenotype.genotype.increase_age()
-            self.genotypes.append(phenotype.genotype)
 
         for i in range(num_children):
-            random_parent = random.choice(self.selected_parents)
+            random_parent = random.choice(self.adults)
             new_genotype = random_parent.genotype.clone()
             new_genotype.mutate()
             self.genotypes.append(new_genotype)

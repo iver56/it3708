@@ -14,6 +14,15 @@ class Main(object):
             default="onemax"
         )
         arg_parser.add_argument(
+            '-a',
+            '--adult-selection-method',
+            dest='adult_selection_method',
+            type=str,
+            choices=['fgr', 'op', 'gm'],
+            required=False,
+            default="onemax"
+        )
+        arg_parser.add_argument(
             '-p',
             '--population-size',
             dest='population_size',
@@ -31,6 +40,7 @@ class Main(object):
             required=False,
             default=20
         )
+
 
         self.args, unknown_args = arg_parser.parse_known_args()
 

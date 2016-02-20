@@ -10,7 +10,7 @@ class OneMaxProblem(Problem):
     def parse_args():
         arg_parser = argparse.ArgumentParser()
         arg_parser.add_argument(
-            '-gs',
+            '-s',
             '--genotype_size',
             dest='genotype_size',
             help='Number of bits in a genotype',
@@ -18,7 +18,7 @@ class OneMaxProblem(Problem):
             required=False,
             default=OneMaxProblem.GENOTYPE_SIZE
         )
-        args = arg_parser.parse_args()
+        args, unknown_args = arg_parser.parse_known_args()
         OneMaxProblem.GENOTYPE_SIZE = args.genotype_size
 
     @staticmethod
