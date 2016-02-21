@@ -20,7 +20,15 @@ class Main(object):
             type=str,
             choices=['fgr', 'op', 'gm'],
             required=False,
-            default="onemax"
+            default="gm"
+        )
+        arg_parser.add_argument(
+            '--parent-selection-method',
+            dest='parent_selection_method',
+            type=str,
+            choices=['fitness_proportionate', 'sigma_scaling', 'boltzmann_scaling', 'tournament_selection'],
+            required=False,
+            default="fitness_proportionate"
         )
         arg_parser.add_argument(
             '-p',
@@ -62,7 +70,9 @@ class Main(object):
         population = Population.get_random_population(
             self.args.population_size,
             self.problem_class,
-            self.individual_class
+            self.individual_class,
+            self.args.adult_selection_method,
+            self.args.parent_selection_method
         )
 
         for generation in range(self.args.num_generations):

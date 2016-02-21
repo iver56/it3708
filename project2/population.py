@@ -6,8 +6,7 @@ import statistics
 class Population(object):
     MAX_ADULT_POOL_SIZE = 4  # TODO: have a command line argument for this
 
-    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method='gm',
-                 parent_selection_method='fp'):
+    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method):
         self.genotypes = genotypes
         self.problem_class = problem_class
         self.individual_class = individual_class
@@ -22,22 +21,23 @@ class Population(object):
         else:
             self.adult_selection_method = self.full_generational_replacement
 
-        if parent_selection_method == 'fp':
+        if parent_selection_method == 'fitness_proportionate':
             self.parent_selection_method = self.fitness_proportionate
-        elif parent_selection_method == 'ts':
-            self.parent_selection_method = self.tournament_selection
-        elif parent_selection_method == 'ss':
+        elif parent_selection_method == 'sigma_scaling':
             self.parent_selection_method = self.sigma_scaling
-        elif parent_selection_method == 'bs':
+        elif parent_selection_method == 'boltzmann_scaling':
             self.parent_selection_method = self.boltzmann_selection
+        elif parent_selection_method == 'tournament_selection':
+            self.parent_selection_method = self.tournament_selection
 
     @staticmethod
-    def get_random_population(population_size, problem_class, individual_class):
+    def get_random_population(population_size, problem_class, individual_class, adult_selection_method,
+                              parent_selection_method):
         genotypes = []
         for x in range(population_size):
             genotype = Genotype.get_random_genotype(problem_class.GENOTYPE_SIZE)
             genotypes.append(genotype)
-        return Population(genotypes, problem_class, individual_class)
+        return Population(genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method)
 
     def generate_phenotypes(self):
         self.individuals = []
@@ -109,13 +109,16 @@ class Population(object):
     def get_adults_fitness_sum(self):
         return sum([individual.fitness for individual in self.adults])
 
+    def get_adults_fitness_avg(self):
+        return float(self.get_adults_fitness_sum()) / len(self.adults)
+
     def get_adults_fitness_std_dev(self):
         return statistics.pstdev([individual.fitness for individual in self.adults])
 
     def get_population_fitness_std_dev(self):
         return statistics.pstdev([individual.fitness for individual in self.individuals])
 
-    def roulette_selection(self):
+    def roulette_wheel_selection(self):
         r = random.random()
 
         # TODO: Could use binary search instead of linear search
@@ -133,11 +136,31 @@ class Population(object):
 
         self.parents = []
         for i in range(self.population_size):
-            parent = self.roulette_selection()
+            parent = self.roulette_wheel_selection()
             self.parents.append(parent)
 
     def sigma_scaling(self):
-        return self.fitness_proportionate()  # TODO: implement
+        fitness_avg = self.get_adults_fitness_avg()
+        fitness_std_dev = self.get_adults_fitness_std_dev()
+
+        if fitness_std_dev == 0:
+            for adult in self.adults:
+                adult.scaled_fitness = 1.0
+        else:
+            for adult in self.adults:
+                adult.scaled_fitness = 1 + (adult.fitness - fitness_avg) / (2 * fitness_std_dev)
+
+        scaled_fitness_sum = sum([individual.scaled_fitness for individual in self.adults])
+
+        cumulative_fitness_sum = 0
+        for adult in self.adults:
+            cumulative_fitness_sum += adult.scaled_fitness
+            adult.cumulative_fitness = float(cumulative_fitness_sum) / scaled_fitness_sum
+
+        self.parents = []
+        for i in range(self.population_size):
+            parent = self.roulette_wheel_selection()
+            self.parents.append(parent)
 
     def boltzmann_selection(self):
         return self.fitness_proportionate()  # TODO: implement
