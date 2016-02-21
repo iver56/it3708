@@ -14,11 +14,10 @@ class Main(object):
             default="onemax"
         )
         arg_parser.add_argument(
-            '-a',
             '--adult-selection-method',
             dest='adult_selection_method',
             type=str,
-            choices=['fgr', 'op', 'gm'],
+            choices=['fgr', 'op', 'gm'],  # full generational replacement, over production or generational mixing
             required=False,
             default="gm"
         )
@@ -29,6 +28,14 @@ class Main(object):
             choices=['fitness_proportionate', 'sigma_scaling', 'boltzmann_scaling', 'tournament_selection'],
             required=False,
             default="fitness_proportionate"
+        )
+        arg_parser.add_argument(
+            '--adult-pool-size',
+            dest='adult_pool_size',
+            help='Max number of adults in the adult pool',
+            type=int,
+            required=False,
+            default=10
         )
         arg_parser.add_argument(
             '-p',
@@ -51,6 +58,9 @@ class Main(object):
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
+        if self.args.adult_pool_size < 1 or self.args.adult_pool_size > self.args.population_size:
+            raise Exception('adult_pool_size must be a positive integer that is not greater than population_size')
+
         if self.args.problem == 'onemax':
             import one_max
             one_max.OneMaxProblem.parse_args()
@@ -72,7 +82,8 @@ class Main(object):
             self.problem_class,
             self.individual_class,
             self.args.adult_selection_method,
-            self.args.parent_selection_method
+            self.args.parent_selection_method,
+            self.args.adult_pool_size
         )
 
         for generation in range(self.args.num_generations):

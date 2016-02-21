@@ -4,13 +4,13 @@ import statistics
 
 
 class Population(object):
-    MAX_ADULT_POOL_SIZE = 4  # TODO: have a command line argument for this
-
-    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method):
+    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method,
+                 adult_pool_size):
         self.genotypes = genotypes
         self.problem_class = problem_class
         self.individual_class = individual_class
         self.individuals = None
+        self.adult_pool_size = adult_pool_size
         self.population_size = len(genotypes)
         self.adults = None
         self.parents = None
@@ -32,12 +32,13 @@ class Population(object):
 
     @staticmethod
     def get_random_population(population_size, problem_class, individual_class, adult_selection_method,
-                              parent_selection_method):
+                              parent_selection_method, adult_pool_size):
         genotypes = []
         for x in range(population_size):
             genotype = Genotype.get_random_genotype(problem_class.GENOTYPE_SIZE)
             genotypes.append(genotype)
-        return Population(genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method)
+        return Population(genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method,
+                          adult_pool_size)
 
     def generate_phenotypes(self):
         self.individuals = []
@@ -93,12 +94,12 @@ class Population(object):
     def generational_mixing(self):
         all_individuals = (self.adults if self.adults else []) + self.individuals
         sorted_individuals = sorted(all_individuals, key=lambda p: p.fitness, reverse=True)
-        self.adults = sorted_individuals[0:self.MAX_ADULT_POOL_SIZE]
+        self.adults = sorted_individuals[0:self.adult_pool_size]
 
     def over_production(self):
         children = filter(lambda individual: individual.genotype.age == 0, self.individuals)
         sorted_phenotypes = sorted(children, key=lambda p: p.fitness, reverse=True)
-        self.adults = sorted_phenotypes[0:self.MAX_ADULT_POOL_SIZE]
+        self.adults = sorted_phenotypes[0:self.adult_pool_size]
 
     def full_generational_replacement(self):
         self.adults = self.individuals
