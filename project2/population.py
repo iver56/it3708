@@ -2,6 +2,7 @@ from genotype import Genotype
 import random
 import statistics
 import math
+import argparse
 
 
 class Population(object):
@@ -38,6 +39,26 @@ class Population(object):
             self.parent_selection_method = self.boltzmann_selection
         elif parent_selection_method == 'tournament_selection':
             self.parent_selection_method = self.tournament_selection
+            arg_parser = argparse.ArgumentParser()
+            arg_parser.add_argument(
+                '--tournament-selection-k',
+                dest='tournament_selection_k',
+                help='Number of contestants in tournament selection',
+                type=int,
+                required=False,
+                default=2
+            )
+            arg_parser.add_argument(
+                '--tournament-selection-epsilon',
+                dest='tournament_selection_epsilon',
+                help='probability of random choice in tournament selection',
+                type=float,
+                required=False,
+                default=0.1
+            )
+            args, unknown_args = arg_parser.parse_known_args()
+            self.tournament_selection_k = args.tournament_selection_k
+            self.tournament_selection_epsilon = args.tournament_selection_epsilon
 
     def generate_phenotypes(self):
         self.individuals = []
@@ -166,7 +187,19 @@ class Population(object):
         self.roulette_wheel_selection()
 
     def tournament_selection(self):
-        return self.fitness_proportionate()  # TODO: implement
+        self.parents = []
+        for i in range(self.population_size):
+            parent = self.do_one_tournament()
+            self.parents.append(parent)
+
+    def do_one_tournament(self):
+        contestants = random.sample(self.adults, self.tournament_selection_k)
+        r = random.random()
+        if r < self.tournament_selection_epsilon:
+            return random.choice(contestants)
+        else:
+            sorted_contestants = sorted(contestants, key=lambda p: p.fitness, reverse=True)
+            return sorted_contestants[0]
 
     def reproduce(self):
         num_children = self.population_size
