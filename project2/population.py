@@ -58,6 +58,14 @@ class Population(object):
                 default=0.1
             )
             args, unknown_args = arg_parser.parse_known_args()
+
+            if args.tournament_selection_k < 2:
+                raise Exception('tournament_selection_k must be at least 2')
+            elif args.tournament_selection_k > self.adult_pool_size:
+                raise Exception('tournament_selection_k cannot be larger than adult_pool_size')
+            if args.tournament_selection_epsilon < 0.0 or args.tournament_selection_epsilon > 1.0:
+                raise Exception('tournament_selection_epsilon must be between 0.0 and 1.0')
+
             self.tournament_selection_k = args.tournament_selection_k
             self.tournament_selection_epsilon = args.tournament_selection_epsilon
 
