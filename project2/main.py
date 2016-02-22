@@ -1,5 +1,6 @@
 from population import Population
 import argparse
+import json
 
 
 class Main(object):
@@ -82,8 +83,13 @@ class Main(object):
         elif self.args.problem == 'ss':  # surprising sequences
             pass  # TODO
 
+        logs = []
         for i in range(self.args.num_runs):
-            self.run()
+            population = self.run()
+            logs.append(population.log)
+
+        with open('logs.json', 'w') as log_file:
+            json.dump(logs, log_file)
 
     def run(self):
         population = Population(
@@ -100,18 +106,14 @@ class Main(object):
             print 'generation', generation
 
             population.set_generation(generation)
-
             population.generate_phenotypes()
-
             population.evaluate_all()
-
             population.select_adults()
-
-            population.print_stats()
-
+            population.log_stats()
             population.select_parents()
-
             population.reproduce()
+
+        return population
 
 
 if __name__ == '__main__':

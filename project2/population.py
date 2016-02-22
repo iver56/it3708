@@ -24,6 +24,7 @@ class Population(object):
         self.generation = 0
         self.adults = None
         self.parents = None
+        self.log = []
         if adult_selection_method == 'gm':
             self.adult_selection_method = self.generational_mixing
         elif adult_selection_method == 'op':
@@ -84,12 +85,19 @@ class Population(object):
                 fittest_individual = individual
         return fittest_individual
 
-    def print_stats(self):
+    def log_stats(self):
         fittest_individual = self.get_fittest_individual()
         average_fitness = self.get_adults_fitness_avg()
+        fitness_std_dev = self.get_adults_fitness_std_dev()
         print 'fittest phenotype', fittest_individual
         print 'avg fitness', average_fitness
-        print 'fitness standard deviation', self.get_adults_fitness_std_dev()
+        print 'fitness standard deviation', fitness_std_dev
+        log_item = {
+            'max_fitness': fittest_individual.fitness,
+            'avg_fitness': average_fitness,
+            'fitness_std_dev': fitness_std_dev
+        }
+        self.log.append(log_item)
 
     def select_adults(self):
         self.adult_selection_method()
