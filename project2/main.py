@@ -77,7 +77,7 @@ class Main(object):
         self.run()
 
     def run(self):
-        population = Population.get_random_population(
+        population = Population(
             self.args.population_size,
             self.problem_class,
             self.individual_class,

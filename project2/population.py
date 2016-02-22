@@ -4,14 +4,21 @@ import statistics
 
 
 class Population(object):
-    def __init__(self, genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method,
-                 adult_pool_size):
-        self.genotypes = genotypes
+    def __init__(self, population_size, problem_class, individual_class, adult_selection_method, parent_selection_method,
+                 adult_pool_size, initial_temperature=0.0, temperature_delta=0.0):
+
+        self.genotypes = []
+        for x in range(population_size):
+            genotype = Genotype.get_random_genotype(problem_class.GENOTYPE_SIZE)
+            self.genotypes.append(genotype)
+
         self.problem_class = problem_class
         self.individual_class = individual_class
         self.individuals = None
         self.adult_pool_size = adult_pool_size
-        self.population_size = len(genotypes)
+        self.population_size = population_size
+        self.temperature = initial_temperature
+        self.temperature_delta = temperature_delta
         self.adults = None
         self.parents = None
         if adult_selection_method == 'gm':
@@ -29,16 +36,6 @@ class Population(object):
             self.parent_selection_method = self.boltzmann_selection
         elif parent_selection_method == 'tournament_selection':
             self.parent_selection_method = self.tournament_selection
-
-    @staticmethod
-    def get_random_population(population_size, problem_class, individual_class, adult_selection_method,
-                              parent_selection_method, adult_pool_size):
-        genotypes = []
-        for x in range(population_size):
-            genotype = Genotype.get_random_genotype(problem_class.GENOTYPE_SIZE)
-            genotypes.append(genotype)
-        return Population(genotypes, problem_class, individual_class, adult_selection_method, parent_selection_method,
-                          adult_pool_size)
 
     def generate_phenotypes(self):
         self.individuals = []
@@ -164,6 +161,7 @@ class Population(object):
             self.parents.append(parent)
 
     def boltzmann_selection(self):
+
         return self.fitness_proportionate()  # TODO: implement
 
     def tournament_selection(self):

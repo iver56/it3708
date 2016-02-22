@@ -12,7 +12,7 @@ class LolzProblem(Problem):
         arg_parser = argparse.ArgumentParser()
         arg_parser.add_argument(
             '-s',
-            '--genotype_size',
+            '--genotype-size',
             dest='genotype_size',
             help='Number of bits in a genotype',
             type=int,
@@ -21,7 +21,7 @@ class LolzProblem(Problem):
         )
         arg_parser.add_argument(
             '-z',
-            '--zero_cap',
+            '--zero-cap',
             dest='zero_cap',
             help='The variable referred to as \'z\' in the project description',
             type=int,

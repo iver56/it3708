@@ -11,7 +11,7 @@ class OneMaxProblem(Problem):
         arg_parser = argparse.ArgumentParser()
         arg_parser.add_argument(
             '-s',
-            '--genotype_size',
+            '--genotype-size',
             dest='genotype_size',
             help='Number of bits in a genotype',
             type=int,
