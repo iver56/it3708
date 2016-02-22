@@ -1,11 +1,12 @@
 from genotype import Genotype
 import random
 import statistics
+import math
 
 
 class Population(object):
     def __init__(self, population_size, problem_class, individual_class, adult_selection_method, parent_selection_method,
-                 adult_pool_size, initial_temperature=0.0, temperature_delta=0.0):
+                 adult_pool_size, initial_temperature=10.0, cooling_rate=1.0):
 
         self.genotypes = []
         for x in range(population_size):
@@ -17,8 +18,9 @@ class Population(object):
         self.individuals = None
         self.adult_pool_size = adult_pool_size
         self.population_size = population_size
-        self.temperature = initial_temperature
-        self.temperature_delta = temperature_delta
+        self.initial_temperature = initial_temperature
+        self.cooling_rate = cooling_rate
+        self.generation = 0
         self.adults = None
         self.parents = None
         if adult_selection_method == 'gm':
@@ -32,7 +34,7 @@ class Population(object):
             self.parent_selection_method = self.fitness_proportionate
         elif parent_selection_method == 'sigma_scaling':
             self.parent_selection_method = self.sigma_scaling
-        elif parent_selection_method == 'boltzmann_scaling':
+        elif parent_selection_method == 'boltzmann_selection':
             self.parent_selection_method = self.boltzmann_selection
         elif parent_selection_method == 'tournament_selection':
             self.parent_selection_method = self.tournament_selection
@@ -48,40 +50,25 @@ class Population(object):
             fitness = self.problem_class.calculate_fitness(phenotype)
             phenotype.set_fitness(fitness)
 
-    def get_fittest_phenotype(self):
+    def get_fittest_individual(self):
         """
         May raise an exception if the population is not evaluated
         :return:
         """
-        max_fitness = self.individuals[0].fitness
-        fittest_phenotype = self.individuals[0]
-        for phenotype in self.individuals:
-            if phenotype.fitness > max_fitness:
-                max_fitness = phenotype.fitness
-                fittest_phenotype = phenotype
-        return fittest_phenotype
-
-    def get_average_fitness(self):
-        """
-        May raise an exception if the population is not evaluated
-        :return:
-        """
-        fitness_sum = 0
-        for phenotype in self.individuals:
-            fitness_sum += phenotype.fitness
-        return float(fitness_sum) / len(self.individuals)
+        max_fitness = self.adults[0].fitness
+        fittest_individual = self.adults[0]
+        for individual in self.adults:
+            if individual.fitness > max_fitness:
+                max_fitness = individual.fitness
+                fittest_individual = individual
+        return fittest_individual
 
     def print_stats(self):
-        fittest_phenotype = self.get_fittest_phenotype()
-        average_fitness = self.get_average_fitness()
-        print 'fittest phenotype', fittest_phenotype
+        fittest_individual = self.get_fittest_individual()
+        average_fitness = self.get_adults_fitness_avg()
+        print 'fittest phenotype', fittest_individual
         print 'avg fitness', average_fitness
-        print 'fitness standard deviation', self.get_population_fitness_std_dev()
-
-    def advance(self):
-        self.select_adults()
-        self.select_parents()
-        self.reproduce()
+        print 'fitness standard deviation', self.get_adults_fitness_std_dev()
 
     def select_adults(self):
         self.adult_selection_method()
@@ -113,10 +100,13 @@ class Population(object):
     def get_adults_fitness_std_dev(self):
         return statistics.pstdev([individual.fitness for individual in self.adults])
 
-    def get_population_fitness_std_dev(self):
-        return statistics.pstdev([individual.fitness for individual in self.individuals])
-
     def roulette_wheel_selection(self):
+        self.parents = []
+        for i in range(self.population_size):
+            parent = self.spin_roulette_wheel_once()
+            self.parents.append(parent)
+
+    def spin_roulette_wheel_once(self):
         r = random.random()
 
         # TODO: Could use binary search instead of linear search
@@ -132,10 +122,7 @@ class Population(object):
             cumulative_fitness_sum += adult.fitness
             adult.cumulative_fitness = float(cumulative_fitness_sum) / adult_fitness_sum
 
-        self.parents = []
-        for i in range(self.population_size):
-            parent = self.roulette_wheel_selection()
-            self.parents.append(parent)
+        self.roulette_wheel_selection()
 
     def sigma_scaling(self):
         fitness_avg = self.get_adults_fitness_avg()
@@ -155,14 +142,28 @@ class Population(object):
             cumulative_fitness_sum += adult.scaled_fitness
             adult.cumulative_fitness = float(cumulative_fitness_sum) / scaled_fitness_sum
 
-        self.parents = []
-        for i in range(self.population_size):
-            parent = self.roulette_wheel_selection()
-            self.parents.append(parent)
+        self.roulette_wheel_selection()
+
+    def set_generation(self, generation):
+        self.generation = generation
+
+    def get_temperature(self):
+        return self.initial_temperature / (1 + self.generation * self.cooling_rate)
 
     def boltzmann_selection(self):
+        temperature = self.get_temperature()
 
-        return self.fitness_proportionate()  # TODO: implement
+        for adult in self.adults:
+            adult.scaled_fitness = math.exp(adult.fitness / temperature)
+
+        scaled_fitness_sum = sum([individual.scaled_fitness for individual in self.adults])
+
+        cumulative_fitness_sum = 0
+        for adult in self.adults:
+            cumulative_fitness_sum += adult.scaled_fitness
+            adult.cumulative_fitness = float(cumulative_fitness_sum) / scaled_fitness_sum
+
+        self.roulette_wheel_selection()
 
     def tournament_selection(self):
         return self.fitness_proportionate()  # TODO: implement

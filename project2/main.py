@@ -25,7 +25,7 @@ class Main(object):
             '--parent-selection-method',
             dest='parent_selection_method',
             type=str,
-            choices=['fitness_proportionate', 'sigma_scaling', 'boltzmann_scaling', 'tournament_selection'],
+            choices=['fitness_proportionate', 'sigma_scaling', 'boltzmann_selection', 'tournament_selection'],
             required=False,
             default="fitness_proportionate"
         )
@@ -90,14 +90,19 @@ class Main(object):
             print '---------'
             print 'generation', generation
 
+            population.set_generation(generation)
+
             population.generate_phenotypes()
 
             population.evaluate_all()
 
+            population.select_adults()
+
             population.print_stats()
 
-            # Advance to the next generation
-            population.advance()
+            population.select_parents()
+
+            population.reproduce()
 
 
 if __name__ == '__main__':
