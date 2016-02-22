@@ -55,6 +55,14 @@ class Main(object):
             required=False,
             default=20
         )
+        arg_parser.add_argument(
+            '--num-runs',
+            dest='num_runs',
+            help='Number of runs',
+            type=int,
+            required=False,
+            default=1
+        )
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
@@ -74,7 +82,8 @@ class Main(object):
         elif self.args.problem == 'ss':  # surprising sequences
             pass  # TODO
 
-        self.run()
+        for i in range(self.args.num_runs):
+            self.run()
 
     def run(self):
         population = Population(
