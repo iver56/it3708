@@ -33,6 +33,8 @@ class SurprisingSequencesGenotype(Genotype):
 
 
 class SurprisingSequencesProblem(Problem):
+    MODE = 'global'
+
     @staticmethod
     def parse_args():
         arg_parser = argparse.ArgumentParser()
@@ -53,21 +55,32 @@ class SurprisingSequencesProblem(Problem):
             required=False,
             default=3
         )
+        arg_parser.add_argument(
+            '--surprising-sequences-mode',
+            dest='surprising_sequences_mode',
+            help='In local mode only subsequences of distance = 0 are considered',
+            choices=['global', 'local'],
+            type=str,
+            required=False,
+            default=SurprisingSequencesProblem.MODE
+        )
         args, unknown_args = arg_parser.parse_known_args()
         SurprisingSequencesGenotype.GENOTYPE_SIZE = args.genotype_size
         SurprisingSequencesGenotype.set_alphabet(args.alphabet_size)
+        SurprisingSequencesProblem.MODE = args.surprising_sequences_mode
 
     @staticmethod
     def calculate_fitness(individual):
         num_repeating_patterns = 0
         patterns = set()
 
-        for i in range(len(individual.genotype.dna)):
-            for length in range(1, len(individual.genotype.dna) - i):
+        max_subsequence_length = 2 if SurprisingSequencesProblem.MODE == 'local' else len(individual.genotype.dna)
+
+        for i in range(len(individual.genotype.dna) - 1):
+            for length in range(1, min(len(individual.genotype.dna) - i, max_subsequence_length)):
                 a = individual.genotype.dna[i]
                 b = individual.genotype.dna[i+length]
                 pattern = (a, length, b)
-                print pattern
                 if pattern in patterns:
                     num_repeating_patterns += 1
                 else:
