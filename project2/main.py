@@ -83,7 +83,11 @@ class Main(object):
             self.genotype_class = lolz.LolzGenotype
             self.individual_class = lolz.LolzIndividual
         elif self.args.problem == 'ss':  # surprising sequences
-            pass  # TODO
+            import surprising_sequences
+            surprising_sequences.SurprisingSequencesProblem.parse_args()
+            self.problem_class = surprising_sequences.SurprisingSequencesProblem
+            self.genotype_class = surprising_sequences.SurprisingSequencesGenotype
+            self.individual_class = surprising_sequences.SurprisingSequencesIndividual
 
         logs = []
         for i in range(self.args.num_runs):
