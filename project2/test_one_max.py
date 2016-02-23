@@ -4,10 +4,12 @@ import one_max
 
 class TestOneMaxProblem(unittest.TestCase):
     def test_fitness(self):
-        g1 = one_max.OneMaxGenotype(20)
+        size = 20
+        one_max.OneMaxProblem.TARGET_BIT_PATTERN = [1] * size
+        g1 = one_max.OneMaxGenotype(size)
         g1.dna[5] = 1
         g1.dna[8] = 1
-        g2 = one_max.OneMaxGenotype(20)
+        g2 = one_max.OneMaxGenotype(size)
 
         p1 = one_max.OneMaxIndividual(g1)
         p2 = one_max.OneMaxIndividual(g2)

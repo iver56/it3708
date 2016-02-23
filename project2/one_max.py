@@ -36,7 +36,7 @@ class OneMaxProblem(Problem):
         args, unknown_args = arg_parser.parse_known_args()
         OneMaxGenotype.GENOTYPE_SIZE = args.genotype_size
         if args.target_bit_pattern == 'all_ones':
-            OneMaxProblem.TARGET_BIT_PATTERN = [1 for _ in range(OneMaxGenotype.GENOTYPE_SIZE)]  # TODO: [1] * size
+            OneMaxProblem.TARGET_BIT_PATTERN = [1] * OneMaxGenotype.GENOTYPE_SIZE
         elif args.target_bit_pattern == 'random':
             OneMaxProblem.TARGET_BIT_PATTERN = []
             for i in range(OneMaxGenotype.GENOTYPE_SIZE):
