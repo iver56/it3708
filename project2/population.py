@@ -6,8 +6,7 @@ import parent_selection
 
 class Population(object):
     def __init__(self, population_size, problem_class, genotype_class, individual_class, adult_selection_method,
-                 parent_selection_method, adult_pool_size, crossover_rate, mutation_rate, initial_temperature=10.0,
-                 cooling_rate=1.0):
+                 parent_selection_method, adult_pool_size, crossover_rate, mutation_rate):
         self.genotypes = []
         for x in range(population_size):
             genotype = genotype_class.get_random_genotype(genotype_class.GENOTYPE_SIZE)
@@ -18,8 +17,6 @@ class Population(object):
         self.individuals = None
         self.adult_pool_size = adult_pool_size
         self.population_size = population_size
-        self.initial_temperature = initial_temperature  # TODO
-        self.cooling_rate = cooling_rate  # TODO
         self.generation = 0
         self.adults = None
         self.parents = None

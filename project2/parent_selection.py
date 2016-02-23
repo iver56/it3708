@@ -8,12 +8,38 @@ class ParentSelection(object):
         self.population = population
         if parent_selection_method == 'fitness_proportionate':
             self.parent_selection_method = self.fitness_proportionate
+
         elif parent_selection_method == 'sigma_scaling':
             self.parent_selection_method = self.sigma_scaling
-        elif parent_selection_method == 'boltzmann_selection':
-            # TODO: parse args (initial temperature and cooldown rate)
 
+        elif parent_selection_method == 'boltzmann_selection':
+            self.parent_selection_method = self.tournament_selection
+            arg_parser = argparse.ArgumentParser()
+            arg_parser.add_argument(
+                '--initial-temperature',
+                dest='initial_temperature',
+                help='Initial temperature for boltzmann selection',
+                type=float,
+                required=False,
+                default=10.0
+            )
+            arg_parser.add_argument(
+                '--cooling-rate',
+                dest='cooling_rate',
+                help='Cooling rate (how fast temperature goes down) in boltzmann selection',
+                type=float,
+                required=False,
+                default=1.0
+            )
+            args, unknown_args = arg_parser.parse_known_args()
+
+            if args.initial_temperature <= 0.0:
+                raise Exception('initial_temperature must be greater than 0.0')
+
+            self.initial_temperature = args.initial_temperature
+            self.cooling_rate = args.cooling_rate
             self.parent_selection_method = self.boltzmann_selection
+
         elif parent_selection_method == 'tournament_selection':
             self.parent_selection_method = self.tournament_selection
             arg_parser = argparse.ArgumentParser()
@@ -93,7 +119,7 @@ class ParentSelection(object):
         self.roulette_wheel_selection()
 
     def get_temperature(self):
-        return self.population.initial_temperature / (1 + self.population.generation * self.population.cooling_rate)
+        return self.initial_temperature / (1 + self.population.generation * self.cooling_rate)
 
     def boltzmann_selection(self):
         temperature = self.get_temperature()
