@@ -11,6 +11,8 @@ class ParentSelection(object):
         elif parent_selection_method == 'sigma_scaling':
             self.parent_selection_method = self.sigma_scaling
         elif parent_selection_method == 'boltzmann_selection':
+            # TODO: parse args (initial temperature and cooldown rate)
+
             self.parent_selection_method = self.boltzmann_selection
         elif parent_selection_method == 'tournament_selection':
             self.parent_selection_method = self.tournament_selection

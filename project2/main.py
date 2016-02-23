@@ -64,11 +64,31 @@ class Main(object):
             required=False,
             default=1
         )
+        arg_parser.add_argument(
+            '--crossover-rate',
+            dest='crossover_rate',
+            help='Probability of sexual reproduction (two parents) instead of asexual reproduction (one parent)',
+            type=float,
+            required=False,
+            default=0.3
+        )
+        arg_parser.add_argument(
+            '--mutation-rate',
+            dest='mutation_rate',
+            help='Probability of gene mutation in new genotypes',
+            type=float,
+            required=False,
+            default=0.9
+        )
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
         if self.args.adult_pool_size < 1 or self.args.adult_pool_size > self.args.population_size:
             raise Exception('adult_pool_size must be a positive integer that is not greater than population_size')
+        if self.args.crossover_rate < 0.0 or self.args.crossover_rate > 1.0:
+            raise Exception('crossover_rate must be between 0.0 and 1.0')
+        if self.args.mutation_rate < 0.0 or self.args.mutation_rate > 1.0:
+            raise Exception('mutation_rate must be between 0.0 and 1.0')
 
         if self.args.problem == 'onemax':
             import one_max
@@ -105,7 +125,9 @@ class Main(object):
             self.individual_class,
             self.args.adult_selection_method,
             self.args.parent_selection_method,
-            self.args.adult_pool_size
+            self.args.adult_pool_size,
+            self.args.crossover_rate,
+            self.args.mutation_rate
         )
 
         for generation in range(self.args.num_generations):

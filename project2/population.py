@@ -6,7 +6,8 @@ import parent_selection
 
 class Population(object):
     def __init__(self, population_size, problem_class, genotype_class, individual_class, adult_selection_method,
-                 parent_selection_method, adult_pool_size, initial_temperature=10.0, cooling_rate=1.0):
+                 parent_selection_method, adult_pool_size, crossover_rate, mutation_rate, initial_temperature=10.0,
+                 cooling_rate=1.0):
         self.genotypes = []
         for x in range(population_size):
             genotype = genotype_class.get_random_genotype(genotype_class.GENOTYPE_SIZE)
@@ -17,14 +18,16 @@ class Population(object):
         self.individuals = None
         self.adult_pool_size = adult_pool_size
         self.population_size = population_size
-        self.initial_temperature = initial_temperature
-        self.cooling_rate = cooling_rate
+        self.initial_temperature = initial_temperature  # TODO
+        self.cooling_rate = cooling_rate  # TODO
         self.generation = 0
         self.adults = None
         self.parents = None
         self.log = []
         self.adult_selection_handler = adult_selection.AdultSelection(self, adult_selection_method)
         self.parent_selection_handler = parent_selection.ParentSelection(self, parent_selection_method)
+        self.crossover_rate = crossover_rate
+        self.mutation_rate = mutation_rate
 
     def generate_phenotypes(self):
         self.individuals = []
@@ -77,12 +80,21 @@ class Population(object):
         self.generation = generation
 
     def reproduce(self):
-        num_children = self.population_size
-
         self.genotypes = []
+        for i in range(self.population_size):
+            new_genotype = self.produce_one_child()
+            self.genotypes.append(new_genotype)
 
-        for i in range(num_children):
+    def produce_one_child(self):
+        if random.random() < self.crossover_rate:
+            parents = random.sample(self.adults, 2)
+            new_genotype = parents[0].genotype.clone()
+            new_genotype.crossover(parents[1].genotype)
+        else:
             random_parent = random.choice(self.adults)
             new_genotype = random_parent.genotype.clone()
+
+        if random.random() < self.mutation_rate:
             new_genotype.mutate()
-            self.genotypes.append(new_genotype)
+
+        return new_genotype
