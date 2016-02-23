@@ -115,9 +115,9 @@ class Main(object):
             population.set_generation(generation)
             population.generate_phenotypes()
             population.evaluate_all()
-            population.select_adults()
+            population.adult_selection_handler.select_adults()
             population.log_stats()
-            population.select_parents()
+            population.parent_selection_handler.select_parents()
             population.reproduce()
 
         return population
