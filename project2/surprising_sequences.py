@@ -19,7 +19,6 @@ class SurprisingSequencesGenotype(Genotype):
         ascii_offset = 65  # A
         for i in range(ascii_offset, ascii_offset + alphabet_size):
             SurprisingSequencesGenotype.ALPHABET.append(chr(i))
-        print SurprisingSequencesGenotype.ALPHABET
 
     @staticmethod
     def get_random_genotype(dna_size):
@@ -60,9 +59,21 @@ class SurprisingSequencesProblem(Problem):
 
     @staticmethod
     def calculate_fitness(individual):
-        pass  # TODO
+        num_repeating_patterns = 0
+        patterns = set()
 
-        return 1
+        for i in range(len(individual.genotype.dna)):
+            for length in range(1, len(individual.genotype.dna) - i):
+                a = individual.genotype.dna[i]
+                b = individual.genotype.dna[i+length]
+                pattern = (a, length, b)
+                print pattern
+                if pattern in patterns:
+                    num_repeating_patterns += 1
+                else:
+                    patterns.add(pattern)
+
+        return 1.0 / (1.0 + num_repeating_patterns)
 
 
 class SurprisingSequencesIndividual(Individual):
