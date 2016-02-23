@@ -1,10 +1,14 @@
 from individual import Individual
+from genotype import Genotype
 from problem import Problem
 import argparse
 
 
-class LolzProblem(Problem):
+class LolzGenotype(Genotype):
     GENOTYPE_SIZE = 6
+
+
+class LolzProblem(Problem):
     ZERO_CAP = 4
 
     @staticmethod
@@ -17,7 +21,7 @@ class LolzProblem(Problem):
             help='Number of bits in a genotype',
             type=int,
             required=False,
-            default=LolzProblem.GENOTYPE_SIZE
+            default=LolzGenotype.GENOTYPE_SIZE
         )
         arg_parser.add_argument(
             '-z',

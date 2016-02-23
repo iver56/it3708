@@ -74,11 +74,13 @@ class Main(object):
             import one_max
             one_max.OneMaxProblem.parse_args()
             self.problem_class = one_max.OneMaxProblem
+            self.genotype_class = one_max.OneMaxGenotype
             self.individual_class = one_max.OneMaxIndividual
         elif self.args.problem == 'lolz':
             import lolz
             lolz.LolzProblem.parse_args()
             self.problem_class = lolz.LolzProblem
+            self.genotype_class = lolz.LolzGenotype
             self.individual_class = lolz.LolzIndividual
         elif self.args.problem == 'ss':  # surprising sequences
             pass  # TODO
@@ -95,6 +97,7 @@ class Main(object):
         population = Population(
             self.args.population_size,
             self.problem_class,
+            self.genotype_class,
             self.individual_class,
             self.args.adult_selection_method,
             self.args.parent_selection_method,

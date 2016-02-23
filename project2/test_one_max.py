@@ -1,14 +1,13 @@
 import unittest
 import one_max
-from genotype import Genotype
 
 
 class TestOneMaxProblem(unittest.TestCase):
     def test_fitness(self):
-        g1 = Genotype(20)
+        g1 = one_max.OneMaxGenotype(20)
         g1.dna[5] = 1
         g1.dna[8] = 1
-        g2 = Genotype(20)
+        g2 = one_max.OneMaxGenotype(20)
 
         p1 = one_max.OneMaxIndividual(g1)
         p2 = one_max.OneMaxIndividual(g2)
@@ -18,7 +17,7 @@ class TestOneMaxProblem(unittest.TestCase):
         self.assertGreater(fitness1, fitness2)
 
     def test_phenotype(self):
-        g1 = Genotype(3)
+        g1 = one_max.OneMaxGenotype(3)
         g1.dna = [False, False, True]
         individual = one_max.OneMaxIndividual(g1)
         self.assertEqual(individual.phenotype, [0, 0, 1])

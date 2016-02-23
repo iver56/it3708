@@ -1,14 +1,13 @@
 import unittest
 import lolz
-from genotype import Genotype
 
 
 class TestLolzProblem(unittest.TestCase):
     def test_fitness(self):
         size = 6
-        g1 = Genotype(size)
+        g1 = lolz.LolzGenotype(size)
         g1.dna = [True, True, True, True, True, True]
-        g2 = Genotype(size)
+        g2 = lolz.LolzGenotype(size)
         g2.dna = [False, False, False, False, False, False]
 
         p1 = lolz.LolzIndividual(g1)
@@ -20,7 +19,7 @@ class TestLolzProblem(unittest.TestCase):
         self.assertEqual(fitness2, 4)
 
     def test_phenotype(self):
-        g1 = Genotype(3)
+        g1 = lolz.LolzGenotype(3)
         g1.dna = [False, False, True]
         individual = lolz.LolzIndividual(g1)
         self.assertEqual(individual.phenotype, [0, 0, 1])
