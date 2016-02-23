@@ -41,7 +41,7 @@ class TestSurprisingSequencesProblem(unittest.TestCase):
         g1 = surprising_sequences.SurprisingSequencesGenotype(3)
         g1.dna = ['A', 'B', 'C']
         individual = surprising_sequences.SurprisingSequencesIndividual(g1)
-        self.assertEqual(individual.phenotype, ['A', 'B', 'C'])
+        self.assertEqual(individual.phenotype, [0, 1, 2])
 
 
 if __name__ == '__main__':

@@ -29,6 +29,6 @@ class Genotype(object):
         return genotype
 
     def clone(self):
-        cloned_genotype = Genotype(self.size)
+        cloned_genotype = self.__class__(self.size)
         cloned_genotype.dna = deepcopy(self.dna)
         return cloned_genotype

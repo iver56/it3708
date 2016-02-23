@@ -96,9 +96,9 @@ class Population(object):
         fittest_individual = self.get_fittest_individual()
         average_fitness = self.get_adults_fitness_avg()
         fitness_std_dev = self.get_adults_fitness_std_dev()
-        print 'fittest phenotype', fittest_individual
-        print 'avg fitness', average_fitness
-        print 'fitness standard deviation', fitness_std_dev
+        print 'fittest phenotype:', fittest_individual
+        print 'avg fitness =', average_fitness
+        print 'fitness standard deviation =', fitness_std_dev
         log_item = {
             'max_fitness': fittest_individual.fitness,
             'avg_fitness': average_fitness,
