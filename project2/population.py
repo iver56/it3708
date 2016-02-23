@@ -5,8 +5,8 @@ import argparse
 
 
 class Population(object):
-    def __init__(self, population_size, problem_class, genotype_class, individual_class, adult_selection_method, parent_selection_method,
-                 adult_pool_size, initial_temperature=10.0, cooling_rate=1.0):
+    def __init__(self, population_size, problem_class, genotype_class, individual_class, adult_selection_method,
+                 parent_selection_method, adult_pool_size, initial_temperature=10.0, cooling_rate=1.0):
 
         self.genotypes = []
         for x in range(population_size):

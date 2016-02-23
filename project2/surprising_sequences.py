@@ -8,17 +8,12 @@ import random
 class SurprisingSequencesGenotype(Genotype):
     GENOTYPE_SIZE = 8
     ALPHABET = None
-    ASCII_OFFSET = 65  # A
 
     @staticmethod
-    def set_alphabet(alphabet_size):
+    def set_alphabet_by_size(alphabet_size):
         if alphabet_size < 2:
             raise Exception('Alphabet size must be at least 2')
-        if alphabet_size > 26:
-            raise Exception('Alphabet size must not exceed 26')
-        SurprisingSequencesGenotype.ALPHABET = []
-        for i in range(SurprisingSequencesGenotype.ASCII_OFFSET, SurprisingSequencesGenotype.ASCII_OFFSET + alphabet_size):
-            SurprisingSequencesGenotype.ALPHABET.append(chr(i))
+        SurprisingSequencesGenotype.ALPHABET = range(alphabet_size)
 
     @staticmethod
     def get_random_genotype(dna_size):
@@ -50,7 +45,7 @@ class SurprisingSequencesProblem(Problem):
         arg_parser.add_argument(
             '--alphabet-size',
             dest='alphabet_size',
-            help='Number of unique characters in the alphabet',
+            help='Number of unique "characters" in the alphabet',
             type=int,
             required=False,
             default=3
@@ -66,7 +61,7 @@ class SurprisingSequencesProblem(Problem):
         )
         args, unknown_args = arg_parser.parse_known_args()
         SurprisingSequencesGenotype.GENOTYPE_SIZE = args.genotype_size
-        SurprisingSequencesGenotype.set_alphabet(args.alphabet_size)
+        SurprisingSequencesGenotype.set_alphabet_by_size(args.alphabet_size)
         SurprisingSequencesProblem.MODE = args.surprising_sequences_mode
 
     @staticmethod
@@ -91,7 +86,7 @@ class SurprisingSequencesProblem(Problem):
 
 class SurprisingSequencesIndividual(Individual):
     def calculate_phenotype(self):
-        self.phenotype = map(lambda c: ord(c) - SurprisingSequencesGenotype.ASCII_OFFSET, self.genotype.dna)
+        self.phenotype = self.genotype.dna
 
     def get_phenotype_repr(self):
         return ', '.join(map(str, self.phenotype))
