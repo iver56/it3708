@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    arg_parser = argparse.ArgumentParser(usage=__doc__)
+    arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         "--input",
         default="logs.json",
@@ -32,7 +32,7 @@ def main():
     arg_parser.add_argument(
         '--output',
         dest='output',
-        help='Output image file (PNG)',
+        help='Output image file (PNG). If specified, interactive window won\t appear.',
         required=False,
         default=None
     )
@@ -76,9 +76,11 @@ def main():
         if args.legend:
             plt.legend(handles=[fitness_max_plot, fitness_avg_plot, fitness_std_dev_plot])
 
-    if args.output is not None:
+    if args.output is None:
+        plt.show()
+    else:
         plt.savefig(args.output, dpi=96)
-    plt.show()
+
 
 if __name__ == "__main__":
     main()
