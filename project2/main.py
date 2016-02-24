@@ -70,7 +70,7 @@ class Main(object):
             help='Probability of sexual reproduction (two parents) instead of asexual reproduction (one parent)',
             type=float,
             required=False,
-            default=0.3
+            default=0.5
         )
         arg_parser.add_argument(
             '--mutation-rate',
@@ -78,7 +78,7 @@ class Main(object):
             help='Probability of gene mutation in new genotypes',
             type=float,
             required=False,
-            default=0.9
+            default=0.5
         )
 
         self.args, unknown_args = arg_parser.parse_known_args()
