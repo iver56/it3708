@@ -1,11 +1,11 @@
 class AdultSelection(object):
     def __init__(self, population, adult_selection_method):
         self.population = population
-        if adult_selection_method == 'gm':
+        if adult_selection_method == 'generational_mixing':
             self.adult_selection_method = self.generational_mixing
-        elif adult_selection_method == 'op':
+        elif adult_selection_method == 'over_production':
             self.adult_selection_method = self.over_production
-        else:
+        elif adult_selection_method == 'full_generational_replacement':
             self.adult_selection_method = self.full_generational_replacement
 
     def select_adults(self):

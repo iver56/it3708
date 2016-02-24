@@ -56,7 +56,10 @@ class LolzProblem(Problem):
         if zero_score > LolzProblem.ZERO_CAP:
             zero_score = LolzProblem.ZERO_CAP
 
-        return max(zero_score, one_score)
+        raw_fitness = max(zero_score, one_score)
+        is_solution = raw_fitness == LolzGenotype.GENOTYPE_SIZE
+        scaled_fitness = float(raw_fitness) / LolzGenotype.GENOTYPE_SIZE
+        return scaled_fitness, is_solution
 
 
 class LolzIndividual(Individual):

@@ -25,6 +25,7 @@ class Population(object):
         self.parent_selection_handler = parent_selection.ParentSelection(self, parent_selection_method)
         self.crossover_rate = crossover_rate
         self.mutation_rate = mutation_rate
+        self.is_answer_found = False
 
     def generate_phenotypes(self):
         self.individuals = []
@@ -34,8 +35,10 @@ class Population(object):
 
     def evaluate_all(self):
         for phenotype in self.individuals:
-            fitness = self.problem_class.calculate_fitness(phenotype)
+            fitness, is_solution = self.problem_class.calculate_fitness(phenotype)
             phenotype.set_fitness(fitness)
+            if is_solution and not self.is_answer_found:
+                self.is_answer_found = True
 
     def get_fittest_individual(self):
         """
@@ -60,7 +63,8 @@ class Population(object):
         log_item = {
             'max_fitness': fittest_individual.fitness,
             'avg_fitness': average_fitness,
-            'fitness_std_dev': fitness_std_dev
+            'fitness_std_dev': fitness_std_dev,
+            'is_answer_found': 1 if self.is_answer_found else 0
         }
         self.log.append(log_item)
 

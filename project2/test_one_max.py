@@ -14,8 +14,8 @@ class TestOneMaxProblem(unittest.TestCase):
         p1 = one_max.OneMaxIndividual(g1)
         p2 = one_max.OneMaxIndividual(g2)
 
-        fitness1 = one_max.OneMaxProblem.calculate_fitness(p1)
-        fitness2 = one_max.OneMaxProblem.calculate_fitness(p2)
+        fitness1, is_solution = one_max.OneMaxProblem.calculate_fitness(p1)
+        fitness2, is_solution = one_max.OneMaxProblem.calculate_fitness(p2)
         self.assertGreater(fitness1, fitness2)
 
     def test_phenotype(self):

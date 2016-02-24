@@ -54,7 +54,8 @@ class OneMaxProblem(Problem):
         portion_above_avg = max(num_correct_bits - half, 0) / half
         num_wrong_bits = OneMaxGenotype.GENOTYPE_SIZE - num_correct_bits
         error_based_fitness = 1.0 / (1.0 + num_wrong_bits)
-        return 0.5 * portion_above_avg + 0.5 * error_based_fitness
+        is_solution = num_wrong_bits == 0
+        return 0.5 * portion_above_avg + 0.5 * error_based_fitness, is_solution
 
 
 class OneMaxIndividual(Individual):

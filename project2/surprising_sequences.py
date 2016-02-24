@@ -81,7 +81,8 @@ class SurprisingSequencesProblem(Problem):
                 else:
                     patterns.add(pattern)
 
-        return 1.0 / (1.0 + num_repeating_patterns)
+        is_solution = num_repeating_patterns == 0
+        return 1.0 / (1.0 + num_repeating_patterns), is_solution
 
 
 class SurprisingSequencesIndividual(Individual):

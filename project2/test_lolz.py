@@ -13,10 +13,10 @@ class TestLolzProblem(unittest.TestCase):
         p1 = lolz.LolzIndividual(g1)
         p2 = lolz.LolzIndividual(g2)
 
-        fitness1 = lolz.LolzProblem.calculate_fitness(p1)
-        fitness2 = lolz.LolzProblem.calculate_fitness(p2)
-        self.assertEqual(fitness1, 6)
-        self.assertEqual(fitness2, 4)
+        fitness1, is_solution = lolz.LolzProblem.calculate_fitness(p1)
+        fitness2, is_solution = lolz.LolzProblem.calculate_fitness(p2)
+        self.assertEqual(fitness1, 1.0)
+        self.assertLess(fitness2, 1.0)
 
     def test_phenotype(self):
         g1 = lolz.LolzGenotype(3)

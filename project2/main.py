@@ -18,9 +18,9 @@ class Main(object):
             '--adult-selection-method',
             dest='adult_selection_method',
             type=str,
-            choices=['fgr', 'op', 'gm'],  # full generational replacement, over production or generational mixing
+            choices=['full_generational_replacement', 'over_production', 'generational_mixing'],
             required=False,
-            default="gm"
+            default="generational_mixing"
         )
         arg_parser.add_argument(
             '--parent-selection-method',

@@ -10,7 +10,7 @@ class TestSurprisingSequencesProblem(unittest.TestCase):
         g = surprising_sequences.SurprisingSequencesGenotype(3)
         g.dna = dna
         p = surprising_sequences.SurprisingSequencesIndividual(g)
-        fitness = surprising_sequences.SurprisingSequencesProblem.calculate_fitness(p)
+        fitness, is_solution = surprising_sequences.SurprisingSequencesProblem.calculate_fitness(p)
         if should_be_surprising:
             self.assertAlmostEqual(fitness, 1.0)
         else:
