@@ -22,6 +22,15 @@ def main():
         default=False
     )
     arg_parser.add_argument(
+        '--small-font',
+        nargs='?',
+        dest='small_font',
+        help='Use a small font in the legend',
+        const=True,
+        required=False,
+        default=False
+    )
+    arg_parser.add_argument(
         '--legend',
         nargs='?',
         dest='legend',
@@ -97,7 +106,8 @@ def main():
             handles.append(is_answer_found_plot)
         if args.legend:
             font_p = FontProperties()
-            font_p.set_size('small')
+            if args.small_font:
+                font_p.set_size('small')
             plt.legend(handles=handles, prop=font_p, loc='best')
 
     ax.set_xlabel('# generations')
