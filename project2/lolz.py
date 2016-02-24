@@ -33,7 +33,7 @@ class LolzProblem(Problem):
             default=LolzProblem.ZERO_CAP
         )
         args, unknown_args = arg_parser.parse_known_args()
-        LolzProblem.GENOTYPE_SIZE = args.genotype_size
+        LolzGenotype.GENOTYPE_SIZE = args.genotype_size
         LolzProblem.ZERO_CAP = args.zero_cap
 
     @staticmethod
