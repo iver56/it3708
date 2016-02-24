@@ -79,16 +79,16 @@ class Population(object):
     def reproduce(self):
         self.genotypes = []
         for i in range(self.population_size):
-            new_genotype = self.produce_one_child()
+            new_genotype = self.produce_one_child_genotype()
             self.genotypes.append(new_genotype)
 
-    def produce_one_child(self):
+    def produce_one_child_genotype(self):
         if random.random() < self.crossover_rate:
-            parents = random.sample(self.adults, 2)
+            parents = random.sample(self.parents, 2)
             new_genotype = parents[0].genotype.clone()
             new_genotype.crossover(parents[1].genotype)
         else:
-            random_parent = random.choice(self.adults)
+            random_parent = random.choice(self.parents)
             new_genotype = random_parent.genotype.clone()
 
         if random.random() < self.mutation_rate:
