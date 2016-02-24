@@ -46,10 +46,15 @@ class OneMaxProblem(Problem):
 
     @staticmethod
     def calculate_fitness(individual):
-        return sum([
+        num_correct_bits = sum([
                        1 if individual.phenotype[i] == OneMaxProblem.TARGET_BIT_PATTERN[i] else 0
                        for i in range(OneMaxGenotype.GENOTYPE_SIZE)
                        ])
+        half = OneMaxGenotype.GENOTYPE_SIZE * 0.5
+        portion_above_avg = max(num_correct_bits - half, 0) / half
+        num_wrong_bits = OneMaxGenotype.GENOTYPE_SIZE - num_correct_bits
+        error_based_fitness = 1.0 / (1.0 + num_wrong_bits)
+        return 0.5 * portion_above_avg + 0.5 * error_based_fitness
 
 
 class OneMaxIndividual(Individual):
