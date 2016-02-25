@@ -89,6 +89,15 @@ class Main(object):
             required=False,
             default=False
         )
+        arg_parser.add_argument(
+            '--silent',
+            nargs='?',
+            dest='silent',
+            help='Add this flag for the program to be less verbose',
+            const=True,
+            required=False,
+            default=False
+        )
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
@@ -127,6 +136,8 @@ class Main(object):
             json.dump(logs, log_file)
 
     def run(self):
+        self.problem_class.pre_run_hook()
+
         population = Population(
             self.args.population_size,
             self.problem_class,
@@ -140,20 +151,23 @@ class Main(object):
         )
 
         for generation in range(self.args.num_generations):
-            print '---------'
-            print 'generation', generation
+            if not self.args.silent:
+                print '---------'
+                print 'generation', generation
 
             population.set_generation(generation)
             population.generate_phenotypes()
             population.evaluate_all()
             if self.args.stop_early and population.is_solution_found:
-                print 'A solution has been found:'
+                print 'A solution has been found in generation {}:'.format(generation)
                 print population.solution
                 break
             population.adult_selection_handler.select_adults()
-            population.log_stats()
+            population.log_stats(self.args.silent)
             population.parent_selection_handler.select_parents()
             population.reproduce()
+
+        self.problem_class.post_run_hook(population)
 
         return population
 

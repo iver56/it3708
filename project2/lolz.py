@@ -15,7 +15,6 @@ class LolzProblem(Problem):
     def parse_args():
         arg_parser = argparse.ArgumentParser()
         arg_parser.add_argument(
-            '-s',
             '--genotype-size',
             dest='genotype_size',
             help='Number of bits in a genotype',
