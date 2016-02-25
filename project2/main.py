@@ -80,6 +80,15 @@ class Main(object):
             required=False,
             default=0.5
         )
+        arg_parser.add_argument(
+            '--stop-early',
+            nargs='?',
+            dest='stop_early',
+            help='Stop when (if) a solution is found, and output a representation of the solution',
+            const=True,
+            required=False,
+            default=False
+        )
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
@@ -137,6 +146,10 @@ class Main(object):
             population.set_generation(generation)
             population.generate_phenotypes()
             population.evaluate_all()
+            if self.args.stop_early and population.is_solution_found:
+                print 'A solution has been found:'
+                print population.solution
+                break
             population.adult_selection_handler.select_adults()
             population.log_stats()
             population.parent_selection_handler.select_parents()
