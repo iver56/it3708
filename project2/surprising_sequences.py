@@ -108,6 +108,7 @@ class SurprisingSequencesProblem(Problem):
     def post_run_hook(population):
         if population.solution is None:
             if SurprisingSequencesProblem.LONGEST_SEQUENCE is None:
+                SurprisingSequencesProblem.LONGEST_SEQUENCE = population.solution
                 SurprisingSequencesProblem.IS_SATISFIED = True
             else:
                 SurprisingSequencesProblem.IS_SATISFIED = False
@@ -116,9 +117,10 @@ class SurprisingSequencesProblem(Problem):
             SurprisingSequencesProblem.LONGEST_SEQUENCE = population.solution
         if SurprisingSequencesProblem.FIND_LONGEST_SEQUENCE and SurprisingSequencesProblem.IS_SATISFIED:
             print 'Longest sequence found so far:'
-            print SurprisingSequencesProblem.LONGEST_SEQUENCE.get_phenotype_repr(), '(length: {})'.format(
-                len(SurprisingSequencesProblem.LONGEST_SEQUENCE.phenotype)
-            )
+            if SurprisingSequencesProblem.LONGEST_SEQUENCE is not None:
+                print SurprisingSequencesProblem.LONGEST_SEQUENCE.get_phenotype_repr(), '(length: {})'.format(
+                    len(SurprisingSequencesProblem.LONGEST_SEQUENCE.phenotype)
+                )
 
 
 class SurprisingSequencesIndividual(Individual):
