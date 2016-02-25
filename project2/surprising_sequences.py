@@ -99,9 +99,10 @@ class SurprisingSequencesProblem(Problem):
 
     @staticmethod
     def pre_run_hook():
-        if SurprisingSequencesProblem.FIND_LONGEST_SEQUENCE and SurprisingSequencesProblem.IS_SATISFIED:
-            SurprisingSequencesGenotype.GENOTYPE_SIZE += 1
-        print 'Trying to find a surprising sequence of length', SurprisingSequencesGenotype.GENOTYPE_SIZE
+        if SurprisingSequencesProblem.FIND_LONGEST_SEQUENCE:
+            if SurprisingSequencesProblem.IS_SATISFIED:
+                SurprisingSequencesGenotype.GENOTYPE_SIZE += 1
+                print 'Trying to find a surprising sequence of length', SurprisingSequencesGenotype.GENOTYPE_SIZE
 
     @staticmethod
     def post_run_hook(population):
@@ -113,7 +114,7 @@ class SurprisingSequencesProblem(Problem):
         else:
             SurprisingSequencesProblem.IS_SATISFIED = True
             SurprisingSequencesProblem.LONGEST_SEQUENCE = population.solution
-        if SurprisingSequencesProblem.FIND_LONGEST_SEQUENCE:
+        if SurprisingSequencesProblem.FIND_LONGEST_SEQUENCE and SurprisingSequencesProblem.IS_SATISFIED:
             print 'Longest sequence found so far:'
             print SurprisingSequencesProblem.LONGEST_SEQUENCE.get_phenotype_repr(), '(length: {})'.format(
                 len(SurprisingSequencesProblem.LONGEST_SEQUENCE.phenotype)
