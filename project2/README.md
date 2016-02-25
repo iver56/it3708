@@ -11,4 +11,14 @@
 
 
 ## Surprising sequences
-`pypy main.py --problem ss --genotype-size 12 --alphabet-size 5 --num-generations 150 --population-size 100`
+locally surprising, S = 3:
+`pypy main.py --problem ss --genotype-size 2 --alphabet-size 3 --num-generations 150 --population-size 100 --stop-early --surprising-sequences-find-longest --num-runs 15 --silent --surprising-sequences-mode local`
+
+locally surprising, S = 5:
+`pypy main.py --problem ss --genotype-size 2 --alphabet-size 5 --num-generations 150 --population-size 100 --stop-early --surprising-sequences-find-longest --num-runs 15 --silent --surprising-sequences-mode local`
+
+globally surprising, S = 3:
+`pypy main.py --problem ss --genotype-size 2 --alphabet-size 3 --num-generations 150 --population-size 100 --stop-early --surprising-sequences-find-longest --num-runs 15 --silent --surprising-sequences-mode global`
+
+globally surprising, S = 5:
+`pypy main.py --problem ss --genotype-size 2 --alphabet-size 5 --num-generations 150 --population-size 100 --stop-early --surprising-sequences-find-longest --num-runs 15 --silent --surprising-sequences-mode global`
