@@ -1,25 +1,33 @@
 import sys, pygame
+from grid import Grid, Item
 
 pygame.display.init()
 
 
 class Gfx(object):
     size = width, height = 540, 540
-    WHITE = 255, 255, 255  # undiscovered tiles
-    BLACK = 0, 0, 0  # closed tiles
+    WHITE = 255, 255, 255
+    BLACK = 0, 0, 0
+    RED = 230, 40, 40
+    GREEN = 20, 170, 20
 
-    def __init__(self, grid, fps=10):
-        self.grid = grid
-
-        self.GU_X = self.width / float(grid.n)
-        self.GU_Y = self.height / float(grid.n)
+    def __init__(self, fps=10):
+        self.GU_X = self.width / float(Grid.WIDTH)
+        self.GU_Y = self.height / float(Grid.HEIGHT)
 
         self.screen = pygame.display.set_mode(self.size)
 
         self.clock = pygame.time.Clock()  # used for limiting the fps, so one can see each step
         self.fps = fps
 
-    def draw_tile(self, x, y, color):
+    def draw_items(self, grid):
+        for i in range(len(grid.cells)):
+            if grid.cells[i] != Item.Nothing:
+                x, y = grid.convert_1d_to_2d(i)
+                color = self.RED if grid.cells[i] == Item.Food else self.GREEN
+                self.draw_item(x, y, color)
+
+    def draw_item(self, x, y, color):
         rect = pygame.Rect(
             x * self.GU_X + 1,
             y * self.GU_Y + 1,
@@ -28,9 +36,9 @@ class Gfx(object):
         )
         pygame.draw.rect(self.screen, color, rect)
 
-    def draw_grid(self):
-        line_thickness = 2
-        for y in range(self.grid.n):
+    def draw_grid_lines(self, grid):
+        line_thickness = 1
+        for y in range(grid.n):
             pygame.draw.line(
                 self.screen,
                 self.BLACK,
@@ -38,7 +46,7 @@ class Gfx(object):
                 [self.width, y * self.GU_Y],
                 line_thickness
             )
-        for x in range(self.grid.n):
+        for x in range(grid.n):
             pygame.draw.line(
                 self.screen,
                 self.BLACK,
@@ -47,7 +55,7 @@ class Gfx(object):
                 line_thickness
             )
 
-    def draw(self):
+    def draw(self, grid):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -63,6 +71,7 @@ class Gfx(object):
 
         self.screen.fill(self.WHITE)
 
-        self.draw_grid()
+        self.draw_grid_lines(grid)
+        self.draw_items(grid)
 
         pygame.display.flip()

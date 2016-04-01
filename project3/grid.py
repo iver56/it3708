@@ -11,9 +11,12 @@ class Item:
 
 
 class Grid(object):
-    def __init__(self, n=10, food_probability=0.33, poison_probability=0.33, seed=1):
-        self.n = n
-        num_cells = n * n
+    WIDTH = 10
+    HEIGHT = 10
+
+    def __init__(self, food_probability=0.33, poison_probability=0.33, seed=1):
+        self.n = self.WIDTH
+        num_cells = self.WIDTH * self.HEIGHT
         self.cells = []
 
         # Initialize cells
@@ -31,6 +34,11 @@ class Grid(object):
         for i in range(num_cells):
             if self.cells[i] == Item.Nothing and random.random() < poison_probability:
                 self.cells[i] = Item.Poison
+
+    def convert_1d_to_2d(self, i):
+        x = i % self.n
+        y = i / self.n
+        return x, y
 
     def get_cell(self, x, y):
         i = self.n * y + x
