@@ -6,6 +6,9 @@ import grid
 class TestAgent(unittest.TestCase):
     def test_agent(self):
         a = agent.Agent()
+        g = grid.Grid()
+        a.set_grid(g)
+
         init_x = a.x
         init_y = a.y
         a.move(0)
@@ -20,7 +23,6 @@ class TestAgent(unittest.TestCase):
             a.move(0)
             self.assertLess(a.x, grid.Grid.WIDTH)
             self.assertLess(a.y, grid.Grid.HEIGHT)
-
 
 if __name__ == '__main__':
     unittest.main()
