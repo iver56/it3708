@@ -15,7 +15,7 @@ class Main(object):
         self.run()
 
     def run(self):
-        self.gfx.draw(self.grid)
+        self.gfx.draw(self.grid, self.agent)
 
 
 if __name__ == '__main__':

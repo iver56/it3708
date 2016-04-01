@@ -11,6 +11,7 @@ class Gfx(object):
     RED = 230, 40, 40
     GREEN = 20, 170, 20
 
+
     def __init__(self, fps=10):
         self.GU_X = self.width / float(Grid.WIDTH)
         self.GU_Y = self.height / float(Grid.HEIGHT)
@@ -19,6 +20,8 @@ class Gfx(object):
 
         self.clock = pygame.time.Clock()  # used for limiting the fps, so one can see each step
         self.fps = fps
+
+        self.agent_sprite = pygame.image.load("agent.png")
 
     def draw_items(self, grid):
         for i in range(len(grid.cells)):
@@ -55,7 +58,18 @@ class Gfx(object):
                 line_thickness
             )
 
-    def draw(self, grid):
+    def draw_agent(self, agent):
+        self.screen.blit(
+            pygame.transform.rotate(self.agent_sprite, agent.direction),
+            (
+                agent.x * self.GU_X - 12,
+                agent.y * self.GU_Y - 12,
+                agent.x * self.GU_X + self.GU_X + 12,
+                agent.y * self.GU_Y + self.GU_Y + 12
+            )
+        )
+
+    def draw(self, grid, agent):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -73,5 +87,6 @@ class Gfx(object):
 
         self.draw_grid_lines(grid)
         self.draw_items(grid)
+        self.draw_agent(agent)
 
         pygame.display.flip()

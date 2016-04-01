@@ -52,3 +52,7 @@ class Grid(object):
                 s += cell + ' '
             s += '\n'
         return s
+
+    def clear_cell(self, x, y):
+        i = self.n * y + x
+        self.cells[i] = Item.Nothing
