@@ -53,4 +53,5 @@ class Agent(object):
                 self.reward += self.FOOD_REWARD
             elif cell == Item.Poison:
                 self.reward += self.POISON_REWARD
+            self.grid.clear_cell(self.x, self.y)
 
