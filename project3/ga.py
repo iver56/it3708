@@ -1,6 +1,7 @@
 import sys
 import os
 from ann import Ann
+from flatland import Flatland
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -10,21 +11,27 @@ from project2.problem import Problem
 
 
 class FlatLandGenotype(Genotype):
-    num_inputs = 6 + 1
+    num_inputs = 6
     num_outputs = 3
     bits_per_weight = 8
-    GENOTYPE_SIZE = num_inputs * num_outputs * bits_per_weight
+    GENOTYPE_SIZE = (num_inputs + 1) * num_outputs * bits_per_weight
 
 
 class FlatLandProblem(Problem):
-    @staticmethod
-    def parse_args():
-        pass
+    population = None
 
     @staticmethod
     def calculate_fitness(individual):
-        print individual.phenotype
-        return 1
+        grid_seed = FlatLandProblem.population.generation
+
+        flatland_universe = Flatland(
+            ann=individual.phenotype,
+            grid_seed=grid_seed
+        )
+        fitness = flatland_universe.agent.reward
+        is_solution = False
+
+        return fitness, is_solution
 
 
 class FlatLandIndividual(Individual):

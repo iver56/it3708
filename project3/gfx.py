@@ -11,8 +11,7 @@ class Gfx(object):
     RED = 230, 40, 40
     GREEN = 20, 170, 20
 
-
-    def __init__(self, fps=10):
+    def __init__(self, fps=100):
         self.GU_X = self.width / float(Grid.WIDTH)
         self.GU_Y = self.height / float(Grid.HEIGHT)
 

@@ -1,6 +1,5 @@
 import math
 from grid import Grid, Item
-import pygame
 
 
 class Direction:

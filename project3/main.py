@@ -11,14 +11,6 @@ class Main(object):
     def __init__(self):
         arg_parser = argparse.ArgumentParser()
         arg_parser.add_argument(
-            '--problem',
-            dest='problem',
-            type=str,
-            choices=['onemax', 'lolz', 'ss'],
-            required=False,
-            default="onemax"
-        )
-        arg_parser.add_argument(
             '--adult-selection-method',
             dest='adult_selection_method',
             type=str,
@@ -139,6 +131,7 @@ class Main(object):
             self.args.crossover_rate,
             self.args.mutation_rate
         )
+        self.problem_class.population = population
 
         for generation in range(self.args.num_generations):
             if not self.args.silent:
