@@ -39,3 +39,6 @@ class Ann(object):
             raise Exception('Wrong number of weights')
 
         self.weights = weights
+
+    def __repr__(self):
+        return 'ANN with {0} input(s), 1 bias and {1} output(s)'.format(self.num_inputs, self.num_outputs)
