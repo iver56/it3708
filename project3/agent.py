@@ -25,6 +25,8 @@ class Direction:
 
 
 class Agent(object):
+    FIRING_THRESHOLD = 0.0
+
     def __init__(self):
         self.x = 0
         self.y = 0
@@ -86,6 +88,8 @@ class Agent(object):
     def move_autonomously(self):
         sensor_data = self.sense()
         motor_output = self.ann.activate(sensor_data)
-        argmax = motor_output.index(max(motor_output))
-        direction = (argmax - 1) * 90
-        self.move(direction)
+        max_motor_output = max(motor_output)
+        if max_motor_output > self.FIRING_THRESHOLD:
+            argmax = motor_output.index(max_motor_output)
+            direction = (argmax - 1) * 90
+            self.move(direction)
