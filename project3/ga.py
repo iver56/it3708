@@ -2,6 +2,7 @@ import sys
 import os
 from ann import Ann
 from flatland import Flatland
+import json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -28,10 +29,17 @@ class FlatLandProblem(Problem):
             ann=individual.phenotype,
             grid_seed=grid_seed
         )
-        fitness = 1 * flatland_universe.agent.num_food_consumed - 0.2 * flatland_universe.agent.num_poison_consumed
+        flatland_universe.run()
+        fitness = 1 * flatland_universe.agent.num_food_consumed - 0.5 * flatland_universe.agent.num_poison_consumed
         is_solution = False
 
         return fitness, is_solution
+
+    @staticmethod
+    def post_run_hook(population):
+        fittest_individual = population.get_fittest_individual()
+        with open('best_individual.json', 'w') as individual_file:
+            json.dump(fittest_individual.phenotype.weights, individual_file)
 
 
 class FlatLandIndividual(Individual):
