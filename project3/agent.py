@@ -25,28 +25,30 @@ class Direction:
 
 
 class Agent(object):
-    FOOD_REWARD = 5
-    POISON_REWARD = -1
-
     def __init__(self):
         self.x = 0
         self.y = 0
         self.direction = Direction.East
         self.grid = None
-        self.reward = 0
+        self.ann = None
+        self.num_food_consumed = 0
+        self.num_poison_consumed = 0
 
     def set_grid(self, grid):
         self.grid = grid
         self.consume_item()
+
+    def set_ann(self, ann):
+        self.ann = ann
 
     def consume_item(self):
         # consume any item at the current position on the grid
         cell = self.grid.get_cell(self.x, self.y)
         if cell != Item.Nothing:
             if cell == Item.Food:
-                self.reward += self.FOOD_REWARD
+                self.num_food_consumed += 1
             elif cell == Item.Poison:
-                self.reward += self.POISON_REWARD
+                self.num_poison_consumed += 1
             self.grid.clear_cell(self.x, self.y)
 
     def move(self, relative_direction):
@@ -80,3 +82,10 @@ class Agent(object):
             1 if left_cell == Item.Poison else 0,
             1 if right_cell == Item.Poison else 0
         )
+
+    def move_autonomously(self):
+        sensor_data = self.sense()
+        motor_output = self.ann.activate(sensor_data)
+        argmax = motor_output.index(max(motor_output))
+        direction = (argmax - 1) * 90
+        self.move(direction)

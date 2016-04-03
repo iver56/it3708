@@ -28,7 +28,7 @@ class FlatLandProblem(Problem):
             ann=individual.phenotype,
             grid_seed=grid_seed
         )
-        fitness = flatland_universe.agent.reward
+        fitness = 1 * flatland_universe.agent.num_food_consumed - 0.2 * flatland_universe.agent.num_poison_consumed
         is_solution = False
 
         return fitness, is_solution
