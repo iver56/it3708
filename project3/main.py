@@ -10,6 +10,23 @@ import ga
 class Main(object):
     def __init__(self):
         arg_parser = argparse.ArgumentParser()
+
+        arg_parser.add_argument(
+            '--mode',
+            dest='mode',
+            type=str,
+            choices=['static', 'dynamic'],
+            required=False,
+            default="static"
+        )
+        arg_parser.add_argument(
+            '--num-scenarios',
+            dest='num_scenarios',
+            help='Number of scenarios per agent per generation',
+            type=int,
+            required=False,
+            default=1
+        )
         arg_parser.add_argument(
             '--adult-selection-method',
             dest='adult_selection_method',
@@ -103,9 +120,13 @@ class Main(object):
             raise Exception('crossover_rate must be between 0.0 and 1.0')
         if self.args.mutation_rate < 0.0 or self.args.mutation_rate > 1.0:
             raise Exception('mutation_rate must be between 0.0 and 1.0')
+        if self.args.num_scenarios < 1:
+            raise Exception('num_scenarios must be at least 1')
 
         ga.FlatLandProblem.parse_args()
         self.problem_class = ga.FlatLandProblem
+        self.problem_class.dynamic_grid = self.args.mode == 'dynamic'
+        self.problem_class.num_scenarios = self.args.num_scenarios
         self.genotype_class = ga.FlatLandGenotype
         self.individual_class = ga.FlatLandIndividual
 

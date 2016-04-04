@@ -20,17 +20,23 @@ class FlatLandGenotype(Genotype):
 
 class FlatLandProblem(Problem):
     population = None
+    dynamic_grid = False
+    num_scenarios = 1
 
     @staticmethod
     def calculate_fitness(individual):
-        grid_seed = FlatLandProblem.population.generation
+        fitness_sum = 0
+        for i in range(FlatLandProblem.num_scenarios):
+            grid_seed = i + (997 * FlatLandProblem.population.generation if FlatLandProblem.dynamic_grid else 0)
 
-        flatland_universe = Flatland(
-            ann=individual.phenotype,
-            grid_seed=grid_seed
-        )
-        flatland_universe.run()
-        fitness = 1 * flatland_universe.agent.num_food_consumed - 0.5 * flatland_universe.agent.num_poison_consumed
+            flatland_universe = Flatland(
+                ann=individual.phenotype,
+                grid_seed=grid_seed
+            )
+            flatland_universe.run()
+            fitness_sum += 1 * flatland_universe.agent.num_food_consumed - 0.5 * flatland_universe.agent.num_poison_consumed
+
+        fitness = fitness_sum / FlatLandProblem.num_scenarios
         is_solution = False
 
         return fitness, is_solution
