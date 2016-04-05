@@ -22,7 +22,37 @@ class Flatland(object):
 if __name__ == '__main__':
     # run best agent
     import json
+    import argparse
     from ann import Ann
+
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        '--mode',
+        dest='mode',
+        type=str,
+        choices=['static', 'dynamic'],
+        required=False,
+        default="static"
+    )
+    arg_parser.add_argument(
+        '--num-scenarios',
+        dest='num_scenarios',
+        help='Number of scenarios per agent per generation',
+        type=int,
+        required=False,
+        default=1
+    )
+    arg_parser.add_argument(
+        '-g',
+        '--generation',
+        dest='generation',
+        help='If dynamic mode, this specifies which generation to pick board(s) from',
+        type=int,
+        required=False,
+        default=0
+    )
+
+    args = arg_parser.parse_args()
 
     with open('best_individual.json') as best_agent_weights:
         weights = json.load(best_agent_weights)
@@ -31,9 +61,10 @@ if __name__ == '__main__':
     a.weights = weights
 
     g = gfx.Gfx()
-    g.fps = 10
+    g.fps = 8
 
-    for i in range(10) + range(10000000, 10000010):
+    for i in range(args.num_scenarios):
+        grid_seed = i + (997 * args.generation if args.mode == 'dynamic' else 0)
         print 'grid_seed', i
         f = Flatland(
             ann=a,
