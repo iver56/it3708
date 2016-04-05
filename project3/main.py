@@ -33,7 +33,7 @@ class Main(object):
             type=str,
             choices=['full_generational_replacement', 'over_production', 'generational_mixing'],
             required=False,
-            default="generational_mixing"
+            default="over_production"
         )
         arg_parser.add_argument(
             '--parent-selection-method',
@@ -112,7 +112,7 @@ class Main(object):
             default=False
         )
 
-        self.args, unknown_args = arg_parser.parse_known_args()
+        self.args = arg_parser.parse_args()
 
         if self.args.adult_pool_size < 1 or self.args.adult_pool_size > self.args.population_size:
             raise Exception('adult_pool_size must be a positive integer that is not greater than population_size')
@@ -122,6 +122,8 @@ class Main(object):
             raise Exception('mutation_rate must be between 0.0 and 1.0')
         if self.args.num_scenarios < 1:
             raise Exception('num_scenarios must be at least 1')
+        if self.args.adult_selection_method == 'generational_mixing' and self.args.mode == 'dynamic':
+            raise Exception('Generational mixing and dynamic mode do not work well together')
 
         ga.FlatLandProblem.parse_args()
         self.problem_class = ga.FlatLandProblem
