@@ -1,0 +1,3 @@
+python main.py -g 250 -p 50 --adult-pool-size 25 --num-scenarios 5 --mode dynamic
+python plot.py
+python flatland.py --num-scenarios 5 --mode static
