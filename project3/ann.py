@@ -2,12 +2,13 @@ import math
 
 
 class Ann(object):
+    BIAS_VALUE = 1.0
+
     def __init__(self, num_inputs, num_outputs):
         self.num_inputs = num_inputs
         self.num_outputs = num_outputs
         self.num_edges = (num_inputs + 1) * num_outputs
         self.weights = [1.0] * self.num_edges
-        self.bias_value = 1.0
 
     def convert_2d_to_1d(self, input_index, output_index):
         return input_index + output_index * self.num_inputs
@@ -21,7 +22,7 @@ class Ann(object):
         for input_index in range(self.num_inputs + 1):
             idx = self.convert_2d_to_1d(input_index, output_index)
             weight = self.weights[idx]
-            input_value = inputs[input_index] if input_index < self.num_inputs else self.bias_value
+            input_value = inputs[input_index] if input_index < self.num_inputs else self.BIAS_VALUE
             output_value += input_value * weight
 
         output_value = self.output_activation_function(output_value)
