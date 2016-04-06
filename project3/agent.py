@@ -77,11 +77,11 @@ class Agent(object):
         right_cell = self.grid.get_cell(right_x, right_y)
 
         return (
-            1 if forward_cell == Item.Food else 0,
             1 if left_cell == Item.Food else 0,
+            1 if forward_cell == Item.Food else 0,
             1 if right_cell == Item.Food else 0,
-            1 if forward_cell == Item.Poison else 0,
             1 if left_cell == Item.Poison else 0,
+            1 if forward_cell == Item.Poison else 0,
             1 if right_cell == Item.Poison else 0
         )
 
@@ -91,5 +91,5 @@ class Agent(object):
         max_motor_output = max(motor_output)
         if max_motor_output > self.FIRING_THRESHOLD:
             argmax = motor_output.index(max_motor_output)
-            direction = (argmax - 1) * 90
+            direction = (1 - argmax) * 90  # argmax = 0 => left, argmax = 1 => forward, argmax = 2 => right
             self.move(direction)

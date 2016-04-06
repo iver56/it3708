@@ -7,7 +7,7 @@ nodes = [
         'x': 1,
         'y': 0,
         'size': 1,
-        'label': 'food_forward',
+        'label': 'food_left',
         'type': 'input'
     },
     {
@@ -15,7 +15,7 @@ nodes = [
         'x': 2,
         'y': 0,
         'size': 1,
-        'label': 'food_left',
+        'label': 'food_forward',
         'type': 'input'
     },
     {
@@ -31,7 +31,7 @@ nodes = [
         'x': 4,
         'y': 0,
         'size': 1,
-        'label': 'poison_forward',
+        'label': 'poison_left',
         'type': 'input'
     },
     {
@@ -39,7 +39,7 @@ nodes = [
         'x': 5,
         'y': 0,
         'size': 1,
-        'label': 'poison_left',
+        'label': 'poison_forward',
         'type': 'input'
     },
     {
@@ -63,7 +63,7 @@ nodes = [
         'x': 2,
         'y': 3,
         'size': 1,
-        'label': 'motor_right',
+        'label': 'motor_left',
         'type': 'output'
     },
     {
@@ -79,7 +79,7 @@ nodes = [
         'x': 6,
         'y': 3,
         'size': 1,
-        'label': 'motor_left',
+        'label': 'motor_right',
         'type': 'output'
     }
 ]
