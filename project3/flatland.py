@@ -64,11 +64,11 @@ if __name__ == '__main__':
     g.fps = 8
 
     for i in range(args.num_scenarios):
-        grid_seed = i + (997 * args.generation if args.mode == 'dynamic' else 0)
-        print 'grid_seed', i
+        grid_seed = i + ((997 * args.generation) if args.mode == 'dynamic' else 0)
+        print 'grid_seed', grid_seed
         f = Flatland(
             ann=a,
-            grid_seed=i,
+            grid_seed=grid_seed,
             should_visualize=True
         )
         f.gfx = g
