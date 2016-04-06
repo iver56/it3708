@@ -37,8 +37,9 @@ def main():
         fitness_avg_plot, = plt.plot(x, avg_fitness, label='fitness avg')
         fitness_std_dev_plot, = plt.plot(x, fitness_std_dev, label='fitness std dev')
         handles = [fitness_max_plot, fitness_avg_plot, fitness_std_dev_plot]
+
         font_p = FontProperties()
-        font_p.set_size('small')
+        #font_p.set_size('small')
         plt.legend(handles=handles, prop=font_p, loc='best')
 
     ax.set_xlabel('# generations')
