@@ -73,4 +73,5 @@ if __name__ == '__main__':
         )
         f.gfx = g
         f.run()
+        print '{0} food items, {1} poison items'.format(f.agent.num_food_consumed, f.agent.num_poison_consumed)
 
