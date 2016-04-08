@@ -21,7 +21,10 @@ class BeerTracker(object):
             # update
             self.agent.move_autonomously()
             self.world.move_item_down()
+            self.agent.try_capture()
+
             if self.world.item.y >= self.world.HEIGHT:
+                # spawn new item
                 random_x = random.randint(0, self.world.WIDTH - 1)
                 random_width = random.randint(1, 6)
                 self.world.set_item(x=random_x, y=0, width=random_width)
@@ -82,12 +85,15 @@ if __name__ == '__main__':
     for i in range(args.num_scenarios):
         seed = i + ((997 * args.generation) if args.mode == 'dynamic' else 0)
         print 'seed', seed
-        f = BeerTracker(
+        bt = BeerTracker(
             nn=a,
             seed=seed,
             should_visualize=True
         )
-        f.gfx = g
-        f.run()
-        # print '{0} food items, {1} poison items'.format(f.agent.num_food_consumed, f.agent.num_poison_consumed)
+        bt.gfx = g
+        bt.run()
+        print bt.world.agent.num_misses, 'miss(es)'
+        print bt.world.agent.num_partial_captures, 'partial capture(s)'
+        print bt.world.agent.num_small_captures, 'small capture(s)'
+        print bt.world.agent.num_large_captures, 'large capture(s)'
 

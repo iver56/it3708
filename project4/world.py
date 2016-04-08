@@ -14,6 +14,10 @@ class Agent(object):
         self.world = world
         self.y = World.HEIGHT - 1
         self.nn = None
+        self.num_small_captures = 0
+        self.num_large_captures = 0
+        self.num_partial_captures = 0
+        self.num_misses =  0
 
     def set_nn(self, nn):
         self.nn = nn
@@ -34,13 +38,29 @@ class Agent(object):
         neural_output = self.nn.activate(sensor_data)
         max_neural_output = max(neural_output)
         if max_neural_output > self.FIRING_THRESHOLD:
-            num_steps = int(2 * max_neural_output)
+            num_steps = int(round(4 * max_neural_output))
             argmax = neural_output.index(max_neural_output)
             if argmax == 0:
                 # move left
                 num_steps *= -1
 
             self.move(num_steps)
+
+    def try_capture(self):
+        if self.world.item.y == self.y:
+            num_shadowed_cells = sum(self.sense())
+            if num_shadowed_cells == self.WIDTH:
+                # entire agent is shadowed, so the item is wider than or as wide as the agent
+                self.num_large_captures += 1
+            elif self.world.item.width == num_shadowed_cells:
+                # not all of the agent's cells are shadowed, hence the item is smaller than the agent
+                self.num_small_captures += 1
+            elif 0 < num_shadowed_cells < self.world.item.width:
+                # item partially shadows agent, so it is not fully captured
+                self.num_partial_captures += 1
+            elif num_shadowed_cells == 0:
+                # none of the agent's cells are shadowed, so the item is avoided
+                self.num_misses += 1
 
 
 class World(object):
