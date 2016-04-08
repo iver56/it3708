@@ -1,10 +1,11 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from project2.population import Population
 import argparse
 import json
 import ga
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from project2.population import Population
 
 
 class Main(object):
@@ -94,15 +95,6 @@ class Main(object):
             default=0.5
         )
         arg_parser.add_argument(
-            '--stop-early',
-            nargs='?',
-            dest='stop_early',
-            help='Stop when (if) a solution is found, and output a representation of the solution',
-            const=True,
-            required=False,
-            default=False
-        )
-        arg_parser.add_argument(
             '--silent',
             nargs='?',
             dest='silent',
@@ -164,10 +156,6 @@ class Main(object):
             population.set_generation(generation)
             population.generate_phenotypes()
             population.evaluate_all()
-            if self.args.stop_early and population.is_solution_found:
-                print 'A solution has been found in generation {}:'.format(generation)
-                print population.solution
-                break
             population.adult_selection_handler.select_adults()
             population.log_stats(self.args.silent)
             population.parent_selection_handler.select_parents()
