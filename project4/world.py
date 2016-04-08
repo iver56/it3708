@@ -7,6 +7,7 @@ class Item(object):
 
 class Agent(object):
     WIDTH = 5
+    FIRING_THRESHOLD = 0
 
     def __init__(self, x, world):
         self.x = x
@@ -29,9 +30,17 @@ class Agent(object):
         return tuple([(1 if self.world.is_shadowed(x) else 0) for x in self.get_occupied_x_positions()])
 
     def move_autonomously(self):
-        self.move(1)
-        # TODO
-        pass
+        sensor_data = self.sense()
+        neural_output = self.nn.activate(sensor_data)
+        max_neural_output = max(neural_output)
+        if max_neural_output > self.FIRING_THRESHOLD:
+            num_steps = int(2 * max_neural_output)
+            argmax = neural_output.index(max_neural_output)
+            if argmax == 0:
+                # move left
+                num_steps *= -1
+
+            self.move(num_steps)
 
 
 class World(object):
