@@ -12,6 +12,10 @@ class Agent(object):
         self.x = x
         self.world = world
         self.y = World.HEIGHT - 1
+        self.nn = None
+
+    def set_nn(self, nn):
+        self.nn = nn
 
     def move(self, num_steps):
         if abs(num_steps) > 4:
@@ -23,6 +27,11 @@ class Agent(object):
 
     def sense(self):
         return tuple([(1 if self.world.is_shadowed(x) else 0) for x in self.get_occupied_x_positions()])
+
+    def move_autonomously(self):
+        self.move(1)
+        # TODO
+        pass
 
 
 class World(object):
@@ -42,8 +51,8 @@ class World(object):
     def set_item(self, x, y, width):
         self.item = Item(x, y, width)
 
-    def set_agent(self, x):
-        self.agent = Agent(x, self)
+    def set_agent(self, agent):
+        self.agent = agent
 
     def move_item_down(self):
         self.item.y += 1
