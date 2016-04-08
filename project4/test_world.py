@@ -25,6 +25,8 @@ class TestWorld(unittest.TestCase):
         self.assertTrue(6 in positions)
         self.assertTrue(7 not in positions)
 
+        self.assertEqual(w.agent.sense(), (1, 0, 0, 0, 0))
+
         # test agent wraparound
         w.agent.move(-3)
         self.assertEqual(w.agent.x, world.World.WIDTH - 1)

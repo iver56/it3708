@@ -6,18 +6,23 @@ class Item(object):
 
 
 class Agent(object):
-    DEFAULT_WIDTH = 5
+    WIDTH = 5
 
-    def __init__(self, x):
+    def __init__(self, x, world):
         self.x = x
+        self.world = world
         self.y = World.HEIGHT - 1
-        self.width = Agent.DEFAULT_WIDTH
 
     def move(self, num_steps):
+        if abs(num_steps) > 4:
+            num_steps = 4 if num_steps > 0 else -4
         self.x = (self.x + num_steps) % World.WIDTH
 
     def get_occupied_x_positions(self):
-        return [(x % World.WIDTH) for x in range(self.x, self.x + self.width)]
+        return [(x % World.WIDTH) for x in range(self.x, self.x + self.WIDTH)]
+
+    def sense(self):
+        return tuple([(1 if self.world.is_shadowed(x) else 0) for x in self.get_occupied_x_positions()])
 
 
 class World(object):
@@ -38,7 +43,7 @@ class World(object):
         self.item = Item(x, y, width)
 
     def set_agent(self, x):
-        self.agent = Agent(x)
+        self.agent = Agent(x, self)
 
     def move_item_down(self):
         self.item.y += 1
