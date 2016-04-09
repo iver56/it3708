@@ -26,7 +26,7 @@ class Main(object):
             help='Number of scenarios per agent per generation',
             type=int,
             required=False,
-            default=1
+            default=5
         )
         arg_parser.add_argument(
             '--adult-selection-method',
@@ -50,7 +50,7 @@ class Main(object):
             help='Max number of adults in the adult pool',
             type=int,
             required=False,
-            default=10
+            default=50
         )
         arg_parser.add_argument(
             '-p',
@@ -59,7 +59,7 @@ class Main(object):
             help='Number of genotypes in a population',
             type=int,
             required=False,
-            default=20
+            default=100
         )
         arg_parser.add_argument(
             '-g',
@@ -68,7 +68,7 @@ class Main(object):
             help='Number of generations',
             type=int,
             required=False,
-            default=20
+            default=50
         )
         arg_parser.add_argument(
             '--num-runs',
@@ -119,7 +119,7 @@ class Main(object):
 
         ga.BeerTrackerProblem.parse_args()
         self.problem_class = ga.BeerTrackerProblem
-        self.problem_class.dynamic_grid = self.args.mode == 'dynamic'
+        self.problem_class.dynamic_mode = self.args.mode == 'dynamic'
         self.problem_class.num_scenarios = self.args.num_scenarios
         self.genotype_class = ga.BeerTrackerGenotype
         self.individual_class = ga.BeerTrackerIndividual
