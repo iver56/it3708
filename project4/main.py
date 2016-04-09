@@ -26,7 +26,7 @@ class Main(object):
             help='Number of scenarios per agent per generation',
             type=int,
             required=False,
-            default=5
+            default=3
         )
         arg_parser.add_argument(
             '--adult-selection-method',
@@ -34,7 +34,7 @@ class Main(object):
             type=str,
             choices=['full_generational_replacement', 'over_production', 'generational_mixing'],
             required=False,
-            default="full_generational_replacement"
+            default="over_production"
         )
         arg_parser.add_argument(
             '--parent-selection-method',

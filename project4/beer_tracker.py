@@ -1,5 +1,4 @@
 from world import Agent, World
-import gfx
 import random
 
 
@@ -12,7 +11,11 @@ class BeerTracker(object):
         self.agent = Agent(agent_x, self.world)
         self.agent.set_nn(nn)
         self.world.set_agent(self.agent)
-        self.gfx = gfx.Gfx() if should_visualize else None
+        if should_visualize:
+            import gfx
+            self.gfx = gfx.Gfx()
+        else:
+            self.gfx = None
         self.num_time_steps = num_time_steps
         random.seed(seed)
 
@@ -39,9 +42,10 @@ if __name__ == '__main__':
     import argparse
     import sys
     import os
+    import gfx
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    from project3.ann import Ann
+    from rnn import Rnn
 
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
@@ -71,13 +75,11 @@ if __name__ == '__main__':
     )
 
     args = arg_parser.parse_args()
-    """
     with open('best_individual.json') as best_agent_weights:
         weights = json.load(best_agent_weights)
-    """
-    weights = [1, -1, 1, 0.5, -0.5, 0, 2, 1.5, -1.5, -2, 1, -0.5]  # something random, just for testing....
-    a = Ann(num_inputs=5, num_outputs=2)
-    a.weights = weights
+
+    nn = Rnn(num_input_nodes=5, num_hidden_nodes=2, num_output_nodes=2)
+    nn.set_weights(weights)
 
     g = gfx.Gfx()
     g.fps = 8
@@ -86,7 +88,7 @@ if __name__ == '__main__':
         seed = i + ((997 * args.generation) if args.mode == 'dynamic' else 0)
         print 'seed', seed
         bt = BeerTracker(
-            nn=a,
+            nn=nn,
             seed=seed,
             should_visualize=True
         )
