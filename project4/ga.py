@@ -39,7 +39,7 @@ class BeerTrackerProblem(Problem):
             fitness = (
                 1 * beer_tracker.world.agent.num_small_captures +
                 (-0.5) * beer_tracker.world.agent.num_partial_captures +
-                (-0.5) * beer_tracker.world.agent.num_misses +
+                (-0.5) * beer_tracker.world.agent.num_small_misses +
                 0 * beer_tracker.world.agent.num_large_captures
             )
             fitness = max(0.01, fitness)

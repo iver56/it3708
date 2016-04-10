@@ -52,6 +52,13 @@ class Neuroevolution(object):
             default=False
         )
         arg_parser.add_argument(
+            '--visualize-every',
+            dest='visualize_every',
+            type=int,
+            required=False,
+            default=1
+        )
+        arg_parser.add_argument(
             '--allow-clones',
             nargs='?',
             dest='allow_clones',
@@ -112,6 +119,11 @@ class Neuroevolution(object):
         )
         self.args = arg_parser.parse_args()
 
+        if self.args.visualize:
+            import gfx
+            self.beer_tracker_gfx = gfx.Gfx()
+            self.beer_tracker_gfx.fps = 8
+
         self.run()
 
     def run(self):
@@ -145,6 +157,7 @@ class Neuroevolution(object):
         )
 
         for generation in range(1, self.args.num_generations + 1):
+            print '--------------------------'
             generation_start_time = time.time()
             print('generation {}'.format(generation))
             # retrieve a list of all genomes in the population
@@ -175,13 +188,29 @@ class Neuroevolution(object):
             }
             pprint.pprint(stats_item)
 
-            if self.args.visualize:
+            if self.args.visualize and generation % self.args.visualize_every == 0:
                 net = NEAT.NeuralNetwork()
                 genotype_fitness_values[-1][1].BuildPhenotype(net)  # build phenotype from best genotype
                 img = np.zeros((500, 500, 3), dtype=np.uint8)
                 NEAT.DrawPhenotype(img, (0, 0, 500, 500), net)
                 cv2.imshow("NN", img)
                 cv2.waitKey(1)
+
+                nn = neat_net_wrapper.NeatNetWrapper(net)
+
+                seed = generation
+                bt = BeerTracker(
+                    nn=nn,
+                    seed=seed
+                )
+                bt.gfx = self.beer_tracker_gfx
+                bt.run()
+                print bt.world.agent.num_small_misses, 'small miss(es)'
+                print bt.world.agent.num_large_misses, 'large miss(es)'
+                print bt.world.agent.num_partial_captures, 'partial capture(s)'
+                print bt.world.agent.num_small_captures, 'small capture(s)'
+                print bt.world.agent.num_large_captures, 'large capture(s)'
+
 
             # advance to the next generation
             pop.Epoch()
@@ -201,13 +230,15 @@ class Neuroevolution(object):
             seed=seed
         )
         beer_tracker.run()
+
+        punishment = 0.1 * generation
+
         fitness = (
             1 * beer_tracker.world.agent.num_small_captures +
-            (-0.5) * beer_tracker.world.agent.num_partial_captures +
-            (-0.5) * beer_tracker.world.agent.num_misses +
-            0 * beer_tracker.world.agent.num_large_captures
+            (-punishment) * beer_tracker.world.agent.num_partial_captures +
+            (-punishment) * beer_tracker.world.agent.num_small_misses +
+            (-punishment) * beer_tracker.world.agent.num_large_captures
         )
-        fitness = max(0.01, fitness)
 
         return fitness
 

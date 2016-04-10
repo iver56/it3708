@@ -17,7 +17,8 @@ class Agent(object):
         self.num_small_captures = 0
         self.num_large_captures = 0
         self.num_partial_captures = 0
-        self.num_misses =  0
+        self.num_small_misses = 0
+        self.num_large_misses = 0
 
     def set_nn(self, nn):
         self.nn = nn
@@ -58,9 +59,12 @@ class Agent(object):
             elif 0 < num_shadowed_cells < self.world.item.width:
                 # item partially shadows agent, so it is not fully captured
                 self.num_partial_captures += 1
-            elif num_shadowed_cells == 0:
-                # none of the agent's cells are shadowed, so the item is avoided
-                self.num_misses += 1
+            elif num_shadowed_cells == 0 and self.world.item.width < self.WIDTH:
+                # small item avoided
+                self.num_small_misses += 1
+            elif num_shadowed_cells == 0 and self.world.item.width >= self.WIDTH:
+                # large item avoided
+                self.num_large_misses += 1
 
 
 class World(object):

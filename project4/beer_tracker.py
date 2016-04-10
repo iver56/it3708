@@ -3,7 +3,7 @@ import random
 
 
 class BeerTracker(object):
-    def __init__(self, nn, seed=1, num_time_steps=600, should_visualize=False):
+    def __init__(self, nn, seed=1, num_time_steps=600):
         self.world = World()
         item_x, item_y, item_width = 0, self.world.HEIGHT, 1
         self.world.set_item(item_x, item_y, item_width)
@@ -11,11 +11,7 @@ class BeerTracker(object):
         self.agent = Agent(agent_x, self.world)
         self.agent.set_nn(nn)
         self.world.set_agent(self.agent)
-        if should_visualize:
-            import gfx
-            self.gfx = gfx.Gfx()
-        else:
-            self.gfx = None
+        self.gfx = None
         self.num_time_steps = num_time_steps
         random.seed(seed)
 
@@ -89,12 +85,12 @@ if __name__ == '__main__':
         print 'seed', seed
         bt = BeerTracker(
             nn=nn,
-            seed=seed,
-            should_visualize=True
+            seed=seed
         )
         bt.gfx = g
         bt.run()
-        print bt.world.agent.num_misses, 'miss(es)'
+        print bt.world.agent.num_small_misses, 'small miss(es)'
+        print bt.world.agent.num_large_misses, 'large miss(es)'
         print bt.world.agent.num_partial_captures, 'partial capture(s)'
         print bt.world.agent.num_small_captures, 'small capture(s)'
         print bt.world.agent.num_large_captures, 'large capture(s)'
