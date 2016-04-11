@@ -26,7 +26,7 @@ class Gfx(object):
         for i in range(len(grid.cells)):
             if grid.cells[i] != Item.Nothing:
                 x, y = grid.convert_1d_to_2d(i)
-                color = self.RED if grid.cells[i] == Item.Food else self.GREEN
+                color = self.GREEN if grid.cells[i] == Item.Food else self.RED
                 self.draw_item(x, y, color)
 
     def draw_item(self, x, y, color):
