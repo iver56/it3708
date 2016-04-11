@@ -32,9 +32,9 @@ class Rnn(object):
 
         self.num_edges = sum(self.edge_chunks.values())
         self.weights = None
-        self.input_buffer = [0.0] * num_input_nodes
-        self.hidden_buffer = [0.0] * num_hidden_nodes
-        self.output_buffer = [0.0] * num_output_nodes
+        self.input_buffer = [0.0] * self.num_input_nodes
+        self.hidden_buffer = [0.0] * self.num_hidden_nodes
+        self.output_buffer = [0.0] * self.num_output_nodes
 
     def set_weights(self, weights):
         if len(weights) != self.num_edges:
@@ -96,3 +96,8 @@ class Rnn(object):
         self.calculate_hidden_values()
         self.calculate_output_values()
         return self.output_buffer
+
+    def flush(self):
+        self.input_buffer = [0.0] * self.num_input_nodes
+        self.hidden_buffer = [0.0] * self.num_hidden_nodes
+        self.output_buffer = [0.0] * self.num_output_nodes

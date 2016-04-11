@@ -6,3 +6,6 @@ class NeatNetWrapper(object):
         self.net.Input(list(input_values))
         self.net.Activate()
         return list(self.net.Output())
+
+    def flush(self):
+        self.net.Flush()

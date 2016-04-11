@@ -5,6 +5,7 @@ import time
 import pprint
 import neat_net_wrapper
 from beer_tracker import BeerTracker
+import json
 
 
 try:
@@ -57,6 +58,21 @@ class Neuroevolution(object):
             type=int,
             required=False,
             default=1
+        )
+        arg_parser.add_argument(
+            '--num-scenarios',
+            dest='num_scenarios',
+            type=int,
+            required=False,
+            default=5
+        )
+        arg_parser.add_argument(
+            '--mode',
+            dest='mode',
+            type=str,
+            choices=['static', 'dynamic'],
+            required=False,
+            default="dynamic"
         )
         arg_parser.add_argument(
             '--allow-clones',
@@ -124,7 +140,11 @@ class Neuroevolution(object):
             self.beer_tracker_gfx = gfx.Gfx()
             self.beer_tracker_gfx.fps = 8
 
+        self.log = []
         self.run()
+
+        with open('logs.json', 'w') as log_file:
+            json.dump([self.log], log_file)
 
     def run(self):
         params = NEAT.Parameters()
@@ -152,7 +172,7 @@ class Neuroevolution(object):
             num_hidden_nodes,
             num_outputs,
             self.args.fs_neat,
-            NEAT.ActivationFunction.UNSIGNED_SIGMOID,  # OutputActType
+            NEAT.ActivationFunction.TANH,  # OutputActType
             NEAT.ActivationFunction.UNSIGNED_SIGMOID,  # HiddenActType
             0,  # SeedType
             params  # Parameters
@@ -190,11 +210,12 @@ class Neuroevolution(object):
             fitness_std_dev = statistics.pstdev(flat_fitness_list)
             stats_item = {
                 'generation': generation,
-                'fitness_min': min_fitness,
-                'fitness_max': max_fitness,
-                'fitness_avg': avg_fitness,
+                'min_fitness': min_fitness,
+                'max_fitness': max_fitness,
+                'avg_fitness': avg_fitness,
                 'fitness_std_dev': fitness_std_dev,
             }
+            self.log.append(stats_item)
             pprint.pprint(stats_item)
 
             if self.args.visualize and generation % self.args.visualize_every == 0:
@@ -222,7 +243,6 @@ class Neuroevolution(object):
 
                 net.Save('best_neat_net.txt')
 
-
             # advance to the next generation
             pop.Epoch()
             print("Generation execution time: %s seconds" % (time.time() - generation_start_time))
@@ -234,24 +254,31 @@ class Neuroevolution(object):
 
         nn = neat_net_wrapper.NeatNetWrapper(net)
 
-        seed = generation  # assuming dynamic mode, 1 scenario per fitness evaluation
+        fitness_sum = 0.0
+        punishment = 3.0  # punishment for partial captures, small misses and large captures
 
-        beer_tracker = BeerTracker(
-            nn=nn,
-            seed=seed
-        )
-        beer_tracker.run()
+        for i in range(self.args.num_scenarios):
+            nn.flush()
 
-        punishment = min(0.1 * generation, 10)
+            seed = i + (997 * generation if self.args.mode == 'dynamic' else 0)
 
-        fitness = (
-            1 * beer_tracker.world.agent.num_small_captures +
-            (-punishment) * beer_tracker.world.agent.num_partial_captures +
-            (-punishment) * beer_tracker.world.agent.num_small_misses +
-            (-punishment) * beer_tracker.world.agent.num_large_captures
-        )
+            beer_tracker = BeerTracker(
+                nn=nn,
+                seed=seed
+            )
+            beer_tracker.run()
 
-        return fitness
+            fitness_value = (
+                1 * beer_tracker.world.agent.num_small_captures +
+                (-punishment) * beer_tracker.world.agent.num_partial_captures +
+                (-punishment) * beer_tracker.world.agent.num_small_misses +
+                (-punishment) * beer_tracker.world.agent.num_large_captures
+            )
+            fitness_sum += fitness_value
+
+        fitness_sum /= self.args.num_scenarios
+
+        return fitness_sum
 
 
 if __name__ == '__main__':
