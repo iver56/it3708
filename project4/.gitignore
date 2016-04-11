@@ -2,3 +2,4 @@
 *.png
 log
 best_neat_net.txt
+*.backup

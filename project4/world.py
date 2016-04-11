@@ -39,7 +39,7 @@ class Agent(object):
         neural_output = self.nn.activate(sensor_data)
         max_neural_output = max(neural_output)
         if max_neural_output > self.FIRING_THRESHOLD:
-            num_steps = int(round(4 * max_neural_output))
+            num_steps = int(round(5 * max_neural_output))
             argmax = neural_output.index(max_neural_output)
             if argmax == 0:
                 # move left
