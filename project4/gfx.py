@@ -12,6 +12,7 @@ class Gfx(object):
     RED = 230, 40, 40
     DARK_RED = 160, 20, 20
     GREEN = 20, 170, 20
+    BLUE = 20, 120, 240
 
     def __init__(self, fps=100):
         self.GU_X = self.width / float(world.World.WIDTH)
@@ -23,7 +24,7 @@ class Gfx(object):
         self.fps = fps
 
     def draw_item(self, that_world):
-        color = self.GREEN
+        color = self.GREEN if that_world.item.width < that_world.agent.WIDTH else self.BLUE
 
         for x in range(that_world.item.x, that_world.item.x + that_world.item.width):
             rect = pygame.Rect(
