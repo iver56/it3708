@@ -219,6 +219,8 @@ class Neuroevolution(object):
                 print bt.world.agent.num_small_captures, 'small capture(s)'
                 print bt.world.agent.num_large_captures, 'large capture(s)'
 
+                net.Save('best_neat_net.txt')
+
 
             # advance to the next generation
             pop.Epoch()
@@ -239,7 +241,7 @@ class Neuroevolution(object):
         )
         beer_tracker.run()
 
-        punishment = 0.1 * generation
+        punishment = min(0.1 * generation, 10)
 
         fitness = (
             1 * beer_tracker.world.agent.num_small_captures +

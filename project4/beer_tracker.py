@@ -31,5 +31,3 @@ class BeerTracker(object):
             # draw
             if self.gfx:
                 self.gfx.draw(self.world)
-
-
