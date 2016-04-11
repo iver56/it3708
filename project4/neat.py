@@ -134,6 +134,14 @@ class Neuroevolution(object):
         params.MutateAddLinkProb = self.args.add_link_probability
         params.MutateRemLinkProb = self.args.remove_link_probability
         params.MutateRemSimpleNeuronProb = self.args.remove_simple_neuron_probability
+        params.TimeConstantMutationMaxPower = 1.0
+        params.MutateNeuronTimeConstantsProb = 0.2
+        params.MutateNeuronBiasesProb = 0.03
+        params.MinNeuronTimeConstant = 1.0
+        params.MaxNeuronTimeConstant = 2.0
+        params.MinNeuronBias = -1.0
+        params.MaxNeuronBias = 1.0
+
         num_inputs = 5 + 1  # always add one extra input, see http://multineat.com/docs.html
         num_hidden_nodes = 2
         num_outputs = 2
