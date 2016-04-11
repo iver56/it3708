@@ -141,6 +141,7 @@ class Neuroevolution(object):
         params.MaxNeuronTimeConstant = 2.0
         params.MinNeuronBias = -1.0
         params.MaxNeuronBias = 1.0
+        params.Elitism = 0.1  # fraction of population
 
         num_inputs = 5 + 1  # always add one extra input, see http://multineat.com/docs.html
         num_hidden_nodes = 2
