@@ -100,7 +100,17 @@ class BeerTrackerIndividual(Individual):
         for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_output']):
             weight = self.calculate_weight(i, 'weight')
             weights.append(weight)
-
-        # TODO: calculate and set values for gain and time constants
+        for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_gains']):
+            weight = self.calculate_weight(i, 'gain')
+            weights.append(weight)
+        for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_gains']):
+            weight = self.calculate_weight(i, 'gain')
+            weights.append(weight)
+        for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_time_constants']):
+            weight = self.calculate_weight(i, 'time_constant')
+            weights.append(weight)
+        for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_time_constants']):
+            weight = self.calculate_weight(i, 'time_constant')
+            weights.append(weight)
 
         self.phenotype.set_weights(weights)
