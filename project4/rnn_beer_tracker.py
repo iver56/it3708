@@ -1,16 +1,12 @@
 from beer_tracker import BeerTracker
+import json
+import argparse
+import gfx
+from rnn import Rnn
+from ga import BeerTrackerGenotype
 
 
 if __name__ == '__main__':
-    import json
-    import argparse
-    import sys
-    import os
-    import gfx
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-    from rnn import Rnn
-
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument(
         '--mode',
@@ -42,7 +38,11 @@ if __name__ == '__main__':
     with open('best_individual.json') as best_agent_weights:
         weights = json.load(best_agent_weights)
 
-    nn = Rnn(num_input_nodes=5, num_hidden_nodes=2, num_output_nodes=2)
+    nn = Rnn(
+        num_input_nodes=BeerTrackerGenotype.num_input_nodes,
+        num_hidden_nodes=BeerTrackerGenotype.num_hidden_nodes,
+        num_output_nodes=BeerTrackerGenotype.num_output_nodes
+    )
     nn.set_weights(weights)
 
     g = gfx.Gfx()

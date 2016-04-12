@@ -6,6 +6,7 @@ import pprint
 import neat_net_wrapper
 from beer_tracker import BeerTracker
 import json
+from ga import BeerTrackerGenotype
 
 
 try:
@@ -163,7 +164,7 @@ class Neuroevolution(object):
         params.MaxNeuronBias = 1.0
         params.Elitism = 0.1  # fraction of population
 
-        num_inputs = 5 + 1  # always add one extra input, see http://multineat.com/docs.html
+        num_inputs = BeerTrackerGenotype.num_input_nodes + 1  # always add one extra input, see http://multineat.com/docs.html
         num_hidden_nodes = 2
         num_outputs = 2
         genome = NEAT.Genome(

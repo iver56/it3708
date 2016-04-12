@@ -13,7 +13,7 @@ from project2.problem import Problem
 
 class BeerTrackerGenotype(Genotype):
     num_input_nodes = 5
-    num_hidden_nodes = 2
+    num_hidden_nodes = 5
     num_output_nodes = 2
     bits_per_weight = 8
     rnn = Rnn(num_input_nodes, num_hidden_nodes, num_output_nodes)
