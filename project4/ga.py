@@ -40,19 +40,22 @@ class BeerTrackerProblem(Problem):
             beer_tracker.run()
             fitness = (
                 1 * beer_tracker.world.agent.num_small_captures +
-                (-punishment) * beer_tracker.world.agent.num_partial_captures +
+                1 * beer_tracker.world.agent.num_large_misses +
+                (-0.5 * punishment) * beer_tracker.world.agent.num_partial_captures +
                 (-punishment) * beer_tracker.world.agent.num_small_misses +
                 (-punishment) * beer_tracker.world.agent.num_large_captures
             )
 
+            """
             if fitness < 0:
                 fitness = math.exp(0.1 * fitness)
             else:
                 fitness += 1
+            """
 
             fitness_sum += fitness
 
-        fitness = fitness_sum / BeerTrackerProblem.num_scenarios
+        fitness = float(fitness_sum) / BeerTrackerProblem.num_scenarios
         is_solution = False  # I could implement this, but it seems I don't need it
 
         return fitness, is_solution
@@ -67,7 +70,7 @@ class BeerTrackerProblem(Problem):
 class BeerTrackerIndividual(Individual):
     range_map = {
         'weight': (-5.0, 5.0),
-        'bias_weight': (-10.0, 0.0),
+        'internal_bias': (-10.0, 0.0),
         'gain': (1.0, 5.0),
         'time_constant': (1.0, 2.0)
     }
@@ -107,13 +110,13 @@ class BeerTrackerIndividual(Individual):
             weight = self.calculate_bitshifted_weight(i, 'weight')
             weights.append(weight)
         for i in range(BeerTrackerGenotype.rnn.edge_chunks['bias_hidden']):
-            weight = self.calculate_bitshifted_weight(i, 'bias_weight')
+            weight = self.calculate_bitshifted_weight(i, 'internal_bias')
             weights.append(weight)
         for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_output']):
             weight = self.calculate_bitshifted_weight(i, 'weight')
             weights.append(weight)
         for i in range(BeerTrackerGenotype.rnn.edge_chunks['bias_output']):
-            weight = self.calculate_bitshifted_weight(i, 'bias_weight')
+            weight = self.calculate_bitshifted_weight(i, 'internal_bias')
             weights.append(weight)
         for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_output']):
             weight = self.calculate_bitshifted_weight(i, 'weight')
