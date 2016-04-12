@@ -7,6 +7,7 @@ import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from project2.population import Population
+from beer_tracker import BeerTracker
 
 
 class Main(object):
@@ -112,6 +113,13 @@ class Main(object):
             required=False,
             default=False
         )
+        arg_parser.add_argument(
+            '--visualize-every',
+            dest='visualize_every',
+            type=int,
+            required=False,
+            default=-1
+        )
 
         self.args = arg_parser.parse_args()
 
@@ -139,6 +147,11 @@ class Main(object):
             self.genotype_class = ga.BeerTrackerGenotype
         self.individual_class = ga.BeerTrackerIndividual
         self.individual_class.genotype_class = self.genotype_class
+
+        if self.args.visualize_every >= 1:
+            import gfx
+            self.beer_tracker_gfx = gfx.Gfx()
+            self.beer_tracker_gfx.fps = 8
 
         logs = []
         for i in range(self.args.num_runs):
@@ -179,6 +192,23 @@ class Main(object):
             population.reproduce()
             if not self.args.silent:
                 print "execution time: %s seconds" % (time.time() - start_time)
+
+            if self.args.visualize_every >= 1 and generation % self.args.visualize_every == 0:
+                fittest_individual = population.get_fittest_individual()
+
+                seed = generation
+                bt = BeerTracker(
+                    nn=fittest_individual.phenotype,
+                    seed=seed,
+                    scenario=self.args.scenario
+                )
+                bt.gfx = self.beer_tracker_gfx
+                bt.run()
+                print bt.world.agent.num_small_misses, 'small miss(es)'
+                print bt.world.agent.num_large_misses, 'large miss(es)'
+                print bt.world.agent.num_partial_captures, 'partial capture(s)'
+                print bt.world.agent.num_small_captures, 'small capture(s)'
+                print bt.world.agent.num_large_captures, 'large capture(s)'
 
         self.problem_class.post_run_hook(population)
 
