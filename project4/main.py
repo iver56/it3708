@@ -14,6 +14,14 @@ class Main(object):
         arg_parser = argparse.ArgumentParser()
 
         arg_parser.add_argument(
+            '--scenario',
+            dest='scenario',
+            type=str,
+            choices=['standard', 'pull', 'wall'],
+            required=False,
+            default="standard"
+        )
+        arg_parser.add_argument(
             '--mode',
             dest='mode',
             type=str,
@@ -122,8 +130,15 @@ class Main(object):
         self.problem_class = ga.BeerTrackerProblem
         self.problem_class.dynamic_mode = self.args.mode == 'dynamic'
         self.problem_class.num_scenarios = self.args.num_scenarios
-        self.genotype_class = ga.BeerTrackerGenotype
+        self.problem_class.scenario = self.args.scenario
+        if self.args.scenario == 'pull':
+            self.genotype_class = ga.BeerTrackerPullGenotype
+        elif self.args.scenario == 'wall':
+            self.genotype_class = ga.BeerTrackerWallGenotype
+        else:
+            self.genotype_class = ga.BeerTrackerGenotype
         self.individual_class = ga.BeerTrackerIndividual
+        self.individual_class.genotype_class = self.genotype_class
 
         logs = []
         for i in range(self.args.num_runs):

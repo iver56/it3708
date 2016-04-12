@@ -3,7 +3,6 @@ import os
 from beer_tracker import BeerTracker
 import json
 from rnn import Rnn
-import math
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -21,10 +20,29 @@ class BeerTrackerGenotype(Genotype):
     GENOTYPE_SIZE = rnn.num_edges * bits_per_weight
 
 
+class BeerTrackerPullGenotype(BeerTrackerGenotype):
+    num_input_nodes = 5
+    num_hidden_nodes = 5
+    num_output_nodes = 3
+    bits_per_weight = 8
+    rnn = Rnn(num_input_nodes, num_hidden_nodes, num_output_nodes)
+    GENOTYPE_SIZE = rnn.num_edges * bits_per_weight
+
+
+class BeerTrackerWallGenotype(BeerTrackerGenotype):
+    num_input_nodes = 7
+    num_hidden_nodes = 5
+    num_output_nodes = 2
+    bits_per_weight = 8
+    rnn = Rnn(num_input_nodes, num_hidden_nodes, num_output_nodes)
+    GENOTYPE_SIZE = rnn.num_edges * bits_per_weight
+
+
 class BeerTrackerProblem(Problem):
     population = None
     dynamic_mode = False
     num_scenarios = 1
+    scenario = 'standard'
 
     @staticmethod
     def calculate_fitness(individual):
@@ -35,13 +53,14 @@ class BeerTrackerProblem(Problem):
 
             beer_tracker = BeerTracker(
                 nn=individual.phenotype,
-                seed=seed
+                seed=seed,
+                scenario=BeerTrackerProblem.scenario
             )
             beer_tracker.run()
             fitness = (
                 1 * beer_tracker.world.agent.num_small_captures +
-                1 * beer_tracker.world.agent.num_large_misses +
-                (-0.5 * punishment) * beer_tracker.world.agent.num_partial_captures +
+                2 * beer_tracker.world.agent.num_large_misses +
+                (-punishment) * beer_tracker.world.agent.num_partial_captures +
                 (-punishment) * beer_tracker.world.agent.num_small_misses +
                 (-punishment) * beer_tracker.world.agent.num_large_captures
             )
@@ -74,63 +93,64 @@ class BeerTrackerIndividual(Individual):
         'gain': (1.0, 5.0),
         'time_constant': (1.0, 2.0)
     }
+    genotype_class = None
 
     def calculate_summed_weight(self, i, range_key):
-        j = i * BeerTrackerGenotype.bits_per_weight
-        weight = sum(self.genotype.dna[j:j + BeerTrackerGenotype.bits_per_weight])
+        j = i * BeerTrackerIndividual.genotype_class.bits_per_weight
+        weight = sum(self.genotype.dna[j:j + BeerTrackerIndividual.genotype_class.bits_per_weight])
         weight = self.range_map[range_key][0] + \
                  (self.range_map[range_key][1] - self.range_map[range_key][0]) * \
-                 float(weight) / BeerTrackerGenotype.bits_per_weight
+                 float(weight) / BeerTrackerIndividual.genotype_class.bits_per_weight
         return weight
 
     def calculate_bitshifted_weight(self, i, range_key):
-        j = i * BeerTrackerGenotype.bits_per_weight
-        bits = self.genotype.dna[j:j + BeerTrackerGenotype.bits_per_weight]
+        j = i * BeerTrackerIndividual.genotype_class.bits_per_weight
+        bits = self.genotype.dna[j:j + BeerTrackerIndividual.genotype_class.bits_per_weight]
         weight = 0
         for bit in bits:
             weight = (weight << 1) | bit
         weight = self.range_map[range_key][0] + \
                  (self.range_map[range_key][1] - self.range_map[range_key][0]) * \
-                 float(weight) / (2 ** BeerTrackerGenotype.bits_per_weight)
+                 float(weight) / (2 ** BeerTrackerIndividual.genotype_class.bits_per_weight)
         return weight
 
     def calculate_phenotype(self):
         self.phenotype = Rnn(
-            BeerTrackerGenotype.num_input_nodes,
-            BeerTrackerGenotype.num_hidden_nodes,
-            BeerTrackerGenotype.num_output_nodes
+            BeerTrackerIndividual.genotype_class.num_input_nodes,
+            BeerTrackerIndividual.genotype_class.num_hidden_nodes,
+            BeerTrackerIndividual.genotype_class.num_output_nodes
         )
 
         weights = []
 
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['input_hidden']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['input_hidden']):
             weight = self.calculate_bitshifted_weight(i, 'weight')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_hidden']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['hidden_hidden']):
             weight = self.calculate_bitshifted_weight(i, 'weight')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['bias_hidden']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['bias_hidden']):
             weight = self.calculate_bitshifted_weight(i, 'internal_bias')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_output']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['hidden_output']):
             weight = self.calculate_bitshifted_weight(i, 'weight')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['bias_output']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['bias_output']):
             weight = self.calculate_bitshifted_weight(i, 'internal_bias')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_output']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['output_output']):
             weight = self.calculate_bitshifted_weight(i, 'weight')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_gains']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['hidden_gains']):
             weight = self.calculate_bitshifted_weight(i, 'gain')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_gains']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['output_gains']):
             weight = self.calculate_bitshifted_weight(i, 'gain')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['hidden_time_constants']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['hidden_time_constants']):
             weight = self.calculate_bitshifted_weight(i, 'time_constant')
             weights.append(weight)
-        for i in range(BeerTrackerGenotype.rnn.edge_chunks['output_time_constants']):
+        for i in range(BeerTrackerIndividual.genotype_class.rnn.edge_chunks['output_time_constants']):
             weight = self.calculate_bitshifted_weight(i, 'time_constant')
             weights.append(weight)
 

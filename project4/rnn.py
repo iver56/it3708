@@ -111,9 +111,7 @@ class Rnn(object):
                 weight = self.hidden_to_hidden_weight(hidden_index, other_hidden_index)
                 s_i += self.hidden_output[other_hidden_index] * weight
 
-            # s_i += self.BIAS_VALUE * self.bias_to_hidden_weight(hidden_index)  # should I have this? is bias external output?
-
-            theta_i = self.BIAS_VALUE * self.bias_to_hidden_weight(hidden_index)  # bias
+            theta_i = self.BIAS_VALUE * self.bias_to_hidden_weight(hidden_index)  # internal bias
             tau_i = self.hidden_time_constant(hidden_index)
             dy_i = (-self.hidden_state[hidden_index] + s_i + theta_i) / tau_i
             self.hidden_state[hidden_index] += dy_i
@@ -127,7 +125,6 @@ class Rnn(object):
             for hidden_index in range(self.num_hidden_nodes):
                 weight = self.hidden_to_output_weight(hidden_index, output_index)
                 value += self.hidden_output[hidden_index] * weight  # TODO
-            # value += self.BIAS_VALUE * self.bias_to_output_weight(output_index)  # should I have this?
 
             # TODO: CTRNNify (use output_state etc)
 

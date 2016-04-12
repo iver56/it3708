@@ -3,11 +3,19 @@ import json
 import argparse
 import gfx
 from rnn import Rnn
-from ga import BeerTrackerGenotype
+from ga import BeerTrackerGenotype, BeerTrackerPullGenotype, BeerTrackerWallGenotype
 
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument(
+        '--scenario',
+        dest='scenario',
+        type=str,
+        choices=['standard', 'pull', 'wall'],
+        required=False,
+        default="standard"
+    )
     arg_parser.add_argument(
         '--mode',
         dest='mode',
@@ -38,10 +46,17 @@ if __name__ == '__main__':
     with open('best_individual.json') as best_agent_weights:
         weights = json.load(best_agent_weights)
 
+    if args.scenario == 'pull':
+        genotype_class = BeerTrackerPullGenotype
+    elif args.scenario == 'wall':
+        genotype_class = BeerTrackerWallGenotype
+    else:
+        genotype_class = BeerTrackerGenotype
+
     nn = Rnn(
-        num_input_nodes=BeerTrackerGenotype.num_input_nodes,
-        num_hidden_nodes=BeerTrackerGenotype.num_hidden_nodes,
-        num_output_nodes=BeerTrackerGenotype.num_output_nodes
+        num_input_nodes=genotype_class.num_input_nodes,
+        num_hidden_nodes=genotype_class.num_hidden_nodes,
+        num_output_nodes=genotype_class.num_output_nodes
     )
     nn.set_weights(weights)
 
@@ -50,10 +65,11 @@ if __name__ == '__main__':
 
     for i in range(args.num_scenarios):
         seed = i + ((997 * args.generation) if args.mode == 'dynamic' else 0)
-        print 'seed', seed
+        print '---', 'seed', seed, '---'
         bt = BeerTracker(
             nn=nn,
-            seed=seed
+            seed=seed,
+            scenario=args.scenario
         )
         bt.gfx = g
         bt.run()
@@ -62,3 +78,5 @@ if __name__ == '__main__':
         print bt.world.agent.num_partial_captures, 'partial capture(s)'
         print bt.world.agent.num_small_captures, 'small capture(s)'
         print bt.world.agent.num_large_captures, 'large capture(s)'
+        if args.scenario == 'pull':
+            print bt.world.agent.num_pulls, 'pulls'

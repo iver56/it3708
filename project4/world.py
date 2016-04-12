@@ -23,18 +23,18 @@ class Agent(object):
     def set_nn(self, nn):
         self.nn = nn
 
-    def move(self, num_steps):
-        if abs(num_steps) > 4:
-            num_steps = 4 if num_steps > 0 else -4
-        self.x = (self.x + num_steps) % World.WIDTH
-
     def get_occupied_x_positions(self):
         return [(x % World.WIDTH) for x in range(self.x, self.x + self.WIDTH)]
 
     def sense(self):
         return tuple([(1 if self.world.is_shadowed(x) else 0) for x in self.get_occupied_x_positions()])
 
-    def move_autonomously(self):
+    def move(self, num_steps):
+        if abs(num_steps) > 4:
+            num_steps = 4 if num_steps > 0 else -4
+        self.x = (self.x + num_steps) % World.WIDTH
+
+    def act(self):
         sensor_data = self.sense()
         neural_output = self.nn.activate(sensor_data)
         max_neural_output = max(neural_output)
@@ -67,6 +67,51 @@ class Agent(object):
                 self.num_large_misses += 1
 
 
+class PullAgent(Agent):
+    PULL_THRESHOLD = 0.5
+
+    def __init__(self, x, world):
+        super(PullAgent, self).__init__(x, world)
+        self.num_pulls = 0
+
+    def act(self):
+        sensor_data = self.sense()
+        neural_output = self.nn.activate(sensor_data)
+        max_neural_output = max(neural_output)
+
+        if neural_output[2] > self.PULL_THRESHOLD:
+            self.world.pull_item_down()
+            self.num_pulls += 1
+        else:
+            argmax = neural_output.index(max_neural_output)
+            num_steps = int(round(5 * max_neural_output))
+
+            if argmax == 0:
+                # move left
+                num_steps *= -1
+
+            self.move(num_steps)
+
+
+class WallAgent(Agent):
+    def sense(self):
+        sensor_data = [(1 if self.world.is_shadowed(x) else 0) for x in self.get_occupied_x_positions()]
+        sensor_data.append(1 if self.x <= 0 else 0)
+        sensor_data.append(1 if self.x >= (self.world.WIDTH - self.WIDTH) else 0)
+        return tuple(sensor_data)
+
+    def move(self, num_steps):
+        if abs(num_steps) > 4:
+            num_steps = 4 if num_steps > 0 else -4
+        self.x += num_steps
+        if self.x < 0:
+            self.x = 0
+        elif self.x > (self.world.WIDTH - self.WIDTH):
+            self.x = self.world.WIDTH - self.WIDTH
+
+    # TODO
+
+
 class World(object):
     WIDTH = 30
     HEIGHT = 15
@@ -89,6 +134,9 @@ class World(object):
 
     def move_item_down(self):
         self.item.y += 1
+
+    def pull_item_down(self):
+        self.item.y = self.agent.y - 1
 
     def is_shadowed(self, x):
         if x < self.item.x:
