@@ -14,12 +14,8 @@ class Rnn(object):
             'hidden_hidden': num_hidden_nodes * num_hidden_nodes,
             'bias_hidden': num_hidden_nodes,
             'hidden_output': num_hidden_nodes * num_output_nodes,
-            'bias_output': num_output_nodes,
-            'output_output': num_output_nodes * num_output_nodes,
             'hidden_gains': num_hidden_nodes,
-            'output_gains': num_output_nodes,
             'hidden_time_constants': num_hidden_nodes,
-            'output_time_constants': num_output_nodes
         }
         i = 0
         self.edge_chunk_indexes = {'input_hidden': i}
@@ -30,25 +26,17 @@ class Rnn(object):
         i += self.edge_chunks['bias_hidden']
         self.edge_chunk_indexes['hidden_output'] = i
         i += self.edge_chunks['hidden_output']
-        self.edge_chunk_indexes['bias_output'] = i
-        i += self.edge_chunks['bias_output']
-        self.edge_chunk_indexes['output_output'] = i
-        i += self.edge_chunks['output_output']
         self.edge_chunk_indexes['hidden_gains'] = i
         i += self.edge_chunks['hidden_gains']
-        self.edge_chunk_indexes['output_gains'] = i
-        i += self.edge_chunks['output_gains']
         self.edge_chunk_indexes['hidden_time_constants'] = i
         i += self.edge_chunks['hidden_time_constants']
-        self.edge_chunk_indexes['output_time_constants'] = i
-        i += self.edge_chunks['output_time_constants']
 
         self.num_edges = sum(self.edge_chunks.values())
         self.weights = None
         self.input_buffer = None
         self.hidden_state = [0.0] * self.num_hidden_nodes
         self.hidden_output = [0.0] * self.num_hidden_nodes
-        self.output_state = [0.0] * self.num_output_nodes
+        self.output_state = [0.5] * self.num_output_nodes
         self.output_output = [0.0] * self.num_output_nodes
 
     def set_weights(self, weights):
