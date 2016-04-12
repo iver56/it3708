@@ -3,6 +3,7 @@ import os
 import argparse
 import json
 import ga
+import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from project2.population import Population
@@ -42,7 +43,7 @@ class Main(object):
             type=str,
             choices=['fitness_proportionate', 'sigma_scaling', 'boltzmann_selection', 'tournament_selection'],
             required=False,
-            default="fitness_proportionate"
+            default="tournament_selection"
         )
         arg_parser.add_argument(
             '--adult-pool-size',
@@ -149,6 +150,7 @@ class Main(object):
         self.problem_class.population = population
 
         for generation in range(self.args.num_generations):
+            start_time = time.time()
             if not self.args.silent:
                 print '---------'
                 print 'generation', generation
@@ -160,6 +162,8 @@ class Main(object):
             population.log_stats(self.args.silent)
             population.parent_selection_handler.select_parents()
             population.reproduce()
+            if not self.args.silent:
+                print "execution time: %s seconds" % (time.time() - start_time)
 
         self.problem_class.post_run_hook(population)
 

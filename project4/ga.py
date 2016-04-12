@@ -3,6 +3,7 @@ import os
 from beer_tracker import BeerTracker
 import json
 from rnn import Rnn
+import math
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -27,6 +28,7 @@ class BeerTrackerProblem(Problem):
 
     @staticmethod
     def calculate_fitness(individual):
+        punishment = 3.0  # punishment for partial captures, small misses and large captures
         fitness_sum = 0
         for i in range(BeerTrackerProblem.num_scenarios):
             seed = i + (997 * BeerTrackerProblem.population.generation if BeerTrackerProblem.dynamic_mode else 0)
@@ -38,15 +40,20 @@ class BeerTrackerProblem(Problem):
             beer_tracker.run()
             fitness = (
                 1 * beer_tracker.world.agent.num_small_captures +
-                (-0.5) * beer_tracker.world.agent.num_partial_captures +
-                (-0.5) * beer_tracker.world.agent.num_small_misses +
-                0 * beer_tracker.world.agent.num_large_captures
+                (-punishment) * beer_tracker.world.agent.num_partial_captures +
+                (-punishment) * beer_tracker.world.agent.num_small_misses +
+                (-punishment) * beer_tracker.world.agent.num_large_captures
             )
-            fitness = max(0.01, fitness)
+
+            if fitness < 0:
+                fitness = math.exp(0.1 * fitness)
+            else:
+                fitness += 1
+
             fitness_sum += fitness
 
         fitness = fitness_sum / BeerTrackerProblem.num_scenarios
-        is_solution = False
+        is_solution = False  # I could implement this, but it seems I don't need it
 
         return fitness, is_solution
 
