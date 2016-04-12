@@ -2,7 +2,7 @@ from individual import Individual
 from genotype import Genotype
 from problem import Problem
 import argparse
-import random
+from my_random import random
 
 
 class SurprisingSequencesGenotype(Genotype):

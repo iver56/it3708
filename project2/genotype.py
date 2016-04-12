@@ -1,4 +1,4 @@
-import random
+from my_random import random
 from copy import deepcopy
 
 

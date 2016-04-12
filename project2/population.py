@@ -1,4 +1,4 @@
-import random
+from my_random import random
 import statistics
 import adult_selection
 import parent_selection

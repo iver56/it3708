@@ -1,5 +1,5 @@
 import argparse
-import random
+from my_random import random
 import math
 
 

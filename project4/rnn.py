@@ -1,7 +1,5 @@
 import math
 
-# TODO: could create Rnn edge_chunk and edge_chunk_indexes cache and use that instead of calculating indexes every time
-
 
 class Rnn(object):
     BIAS_VALUE = 1.0
