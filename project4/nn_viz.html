@@ -1,0 +1,90 @@
+<html>
+<head>
+    <style type="text/css">
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            border: 1px solid grey;
+        }
+    </style>
+</head>
+<body>
+<div id="container"></div>
+<script src="js/lib/jquery.min.js"></script>
+<script src="js/lib/sigma.js"></script>
+<script>
+    var s = new sigma({
+        container: 'container',
+        settings: {
+            defaultNodeColor: '#ec5148',
+            sideMargin: 0.5
+        }
+    });
+
+    // START COLOR SERVICE
+    var colorService = {};
+
+    var maxDeviation = 3;
+
+    colorService.negativeColor = [12, 108, 204]; // -maxDeviation
+    colorService.neutralColor = [255, 255, 255]; // 0
+    colorService.positiveColor = [204, 12, 60]; //[0, 109, 44]; // maxDeviation
+
+    colorService.getColor = function(standardizedValue) {
+        var amountToMix = Math.min(Math.abs(standardizedValue), maxDeviation) / maxDeviation;
+        if (standardizedValue < 0) {
+            return colorService.colorMixer(colorService.neutralColor, colorService.negativeColor, amountToMix);
+        } else {
+            return colorService.colorMixer(colorService.neutralColor, colorService.positiveColor, amountToMix);
+        }
+    };
+
+    // http://stackoverflow.com/a/32171077/2319697
+    // colorChannelA and colorChannelB are ints ranging from 0 to 255
+    colorService.colorChannelMixer = function(colorChannelA, colorChannelB, amountToMix) {
+        var channelA = colorChannelA * (1 - amountToMix);
+        var channelB = colorChannelB * amountToMix;
+        return parseInt(channelA + channelB);
+    };
+
+    // rgb1 and rgb2 are arrays, amountToMix ranges from 0.0 to 1.0
+    // example (red): rgb1 = [255,0,0]
+    colorService.colorMixer = function(rgb1, rgb2, amountToMix) {
+        var r = colorService.colorChannelMixer(rgb1[0], rgb2[0], amountToMix);
+        var g = colorService.colorChannelMixer(rgb1[1], rgb2[1], amountToMix);
+        var b = colorService.colorChannelMixer(rgb1[2], rgb2[2], amountToMix);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    };
+    // END COLOR SERVICE
+
+    var graph = {};
+
+    var nodeColors = {
+        input: '#FF4F86',
+        bias: '#60E246',
+        hidden: '#1F77B4',
+        output: '#FF8F54'
+    };
+
+    function preProcessGraph() {
+        for (var i = 0; i < graph.nodes.length; i++) {
+            graph.nodes[i].color = nodeColors[graph.nodes[i].type];
+            delete graph.nodes[i].type;
+        }
+
+        for (i = 0; i < graph.edges.length; i++) {
+            graph.edges[i].color = colorService.getColor(graph.edges[i].weight);
+        }
+    }
+
+    $.getJSON('best_individual_nn.json', function (response) {
+        graph = response;
+        preProcessGraph();
+        s.graph.read(graph);
+        s.refresh();
+        //renderTooltip();
+    });
+</script>
+</body>
+</html>

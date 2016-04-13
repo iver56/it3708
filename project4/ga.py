@@ -68,13 +68,6 @@ class BeerTrackerProblem(Problem):
                 fitness += beer_tracker.world.agent.num_good_pulls
                 fitness -= beer_tracker.world.agent.num_bad_pulls
 
-            """
-            if fitness < 0:
-                fitness = math.exp(0.1 * fitness)
-            else:
-                fitness += 1
-            """
-
             fitness_sum += fitness
 
         fitness = float(fitness_sum) / BeerTrackerProblem.num_scenarios
