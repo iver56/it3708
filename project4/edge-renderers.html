@@ -1,0 +1,161 @@
+<!-- START SIGMA IMPORTS -->
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+    <script src="js/sigma_002.js"></script>
+    <script src="js/conrad.js"></script>
+    <script src="js/sigma_036.js"></script>
+    <script src="js/sigma_017.js"></script>
+    <script src="js/sigma_021.js"></script>
+    <script src="js/sigma_004.js"></script>
+    <script src="js/sigma_040.js"></script>
+    <script src="js/sigma_003.js"></script>
+    <script src="js/sigma_030.js"></script>
+    <script src="js/sigma_046.js"></script>
+    <script src="js/sigma_044.js"></script>
+    <script src="js/sigma_022.js"></script>
+    <script src="js/sigma_016.js"></script>
+    <script src="js/sigma_028.js"></script>
+    <script src="js/sigma_031.js"></script>
+    <script src="js/sigma_005.js"></script>
+    <script src="js/sigma_010.js"></script>
+    <script src="js/sigma_027.js"></script>
+    <script src="js/sigma_033.js"></script>
+    <script src="js/sigma_019.js"></script>
+    <script src="js/sigma_048.js"></script>
+    <script src="js/sigma_018.js"></script>
+    <script src="js/sigma_045.js"></script>
+    <script src="js/sigma_039.js"></script>
+    <script src="js/sigma_025.js"></script>
+    <script src="js/sigma_043.js"></script>
+    <script src="js/sigma_013.js"></script>
+    <script src="js/sigma_014.js"></script>
+    <script src="js/sigma_006.js"></script>
+    <script src="js/sigma_024.js"></script>
+    <script src="js/sigma_042.js"></script>
+    <script src="js/sigma_037.js"></script>
+    <script src="js/sigma_015.js"></script>
+    <script src="js/sigma_007.js"></script>
+    <script src="js/sigma_035.js"></script>
+    <script src="js/sigma_023.js"></script>
+    <script src="js/sigma_032.js"></script>
+    <script src="js/sigma.js"></script>
+    <script src="js/sigma_029.js"></script>
+    <script src="js/sigma_012.js"></script>
+    <script src="js/sigma_034.js"></script>
+    <script src="js/sigma_008.js"></script>
+    <script src="js/sigma_038.js"></script>
+    <script src="js/sigma_020.js"></script>
+    <script src="js/sigma_026.js"></script>
+    <script src="js/sigma_011.js"></script>
+    <!-- END SIGMA IMPORTS -->
+    <script src="js/settings.js"></script>
+    <script src="js/sigma_009.js"></script>
+    <script src="js/sigma_041.js"></script>
+    <script src="js/sigma_047.js"></script>
+    <script src="js/jquery.min.js"></script>
+</head>
+<body>
+<div id="container">
+    <style>
+        #graph-container {
+            width: 100%;
+            height: 100%;
+            margin: auto;
+            border: 1px solid grey;
+        }
+    </style>
+    <div id="graph-container">
+        <canvas height="913.75px" width="1920px" class="sigma-scene"
+                style="position: absolute; width: 1536px; height: 731px;"></canvas>
+        <canvas height="913.75px" width="1920px" class="sigma-mouse"
+                style="position: absolute; width: 1536px; height: 731px;"></canvas>
+    </div>
+</div>
+<script>
+    /**
+     * This example shows the available edge label renderers for the canvas
+     * renderer.
+     */
+
+// Instantiate sigma:
+    s = new sigma({
+        renderer: {
+            container: document.getElementById('graph-container'),
+            type: 'canvas'
+        },
+        settings: {
+            defaultNodeColor: '#ec5148',
+            sideMargin: 0.5,
+            edgeLabelSize: 'proportional'
+        }
+    });
+
+
+    // START COLOR SERVICE
+    var colorService = {};
+
+    var maxDeviation = 5;
+
+    colorService.negativeColor = [12, 108, 204]; // -maxDeviation
+    colorService.neutralColor = [255, 255, 255]; // 0
+    colorService.positiveColor = [204, 12, 60]; //[0, 109, 44]; // maxDeviation
+
+    colorService.getColor = function (standardizedValue) {
+        var amountToMix = Math.min(Math.abs(standardizedValue), maxDeviation) / maxDeviation;
+        if (standardizedValue < 0) {
+            return colorService.colorMixer(colorService.neutralColor, colorService.negativeColor, amountToMix);
+        } else {
+            return colorService.colorMixer(colorService.neutralColor, colorService.positiveColor, amountToMix);
+        }
+    };
+
+    // http://stackoverflow.com/a/32171077/2319697
+    // colorChannelA and colorChannelB are ints ranging from 0 to 255
+    colorService.colorChannelMixer = function (colorChannelA, colorChannelB, amountToMix) {
+        var channelA = colorChannelA * (1 - amountToMix);
+        var channelB = colorChannelB * amountToMix;
+        return parseInt(channelA + channelB);
+    };
+
+    // rgb1 and rgb2 are arrays, amountToMix ranges from 0.0 to 1.0
+    // example (red): rgb1 = [255,0,0]
+    colorService.colorMixer = function (rgb1, rgb2, amountToMix) {
+        var r = colorService.colorChannelMixer(rgb1[0], rgb2[0], amountToMix);
+        var g = colorService.colorChannelMixer(rgb1[1], rgb2[1], amountToMix);
+        var b = colorService.colorChannelMixer(rgb1[2], rgb2[2], amountToMix);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    };
+    // END COLOR SERVICE
+
+    var graph = {};
+
+    var nodeColors = {
+        input: '#FF4F86',
+        bias: '#60E246',
+        hidden: '#1F77B4',
+        output: '#FF8F54'
+    };
+
+    function preProcessGraph() {
+        for (var i = 0; i < graph.nodes.length; i++) {
+            graph.nodes[i].color = nodeColors[graph.nodes[i].type];
+            delete graph.nodes[i].type;
+        }
+
+        for (i = 0; i < graph.edges.length; i++) {
+            graph.edges[i].color = colorService.getColor(graph.edges[i].weight);
+        }
+    }
+
+
+    $.getJSON('best_individual_nn.json', function (response) {
+        graph = response;
+        preProcessGraph();
+        s.graph.read(graph);
+        s.refresh();
+    });
+
+</script>
+</body>
+</html>
