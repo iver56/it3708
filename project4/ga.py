@@ -31,7 +31,7 @@ class BeerTrackerPullGenotype(BeerTrackerGenotype):
 
 class BeerTrackerWallGenotype(BeerTrackerGenotype):
     num_input_nodes = 7
-    num_hidden_nodes = 5
+    num_hidden_nodes = 8
     num_output_nodes = 2
     bits_per_weight = 8
     rnn = Rnn(num_input_nodes, num_hidden_nodes, num_output_nodes)
@@ -67,6 +67,16 @@ class BeerTrackerProblem(Problem):
             if BeerTrackerProblem.scenario == 'pull':
                 fitness += beer_tracker.world.agent.num_good_pulls
                 fitness -= beer_tracker.world.agent.num_bad_pulls
+            elif BeerTrackerProblem.scenario == 'wall':
+                left_proportion = float(beer_tracker.world.agent.num_left_half) / \
+                (beer_tracker.world.agent.num_left_half + beer_tracker.world.agent.num_right_half)
+
+                deviation = abs(0.5 - left_proportion)
+
+                reward = 15.0 / (1.0 + 4 * deviation)
+                fitness += reward
+
+                fitness += beer_tracker.world.agent.num_small_captures
 
             fitness_sum += fitness
 

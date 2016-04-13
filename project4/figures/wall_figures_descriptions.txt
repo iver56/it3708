@@ -1,0 +1,6 @@
+wall_1.png - 7 hid, 100 pop, time constant [0.5, 2.0]
+wall_2.png - 4 hid, 300 pop, time constant [1, 2]
+wall_3.png - 4 hid, 400 pop
+wall_4.png - 8 hid, 400 pop, 2 scenarios
+wall_5.png - 8 hid, 400 pop, 1 scenario
+wall_6.png - 8 hid, 400 pop, 3 scenarios. 70 generations is enough (5 sec per generation)

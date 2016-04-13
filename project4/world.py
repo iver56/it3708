@@ -100,6 +100,11 @@ class PullAgent(Agent):
 
 
 class WallAgent(Agent):
+    def __init__(self, x, world):
+        super(WallAgent, self).__init__(x, world)
+        self.num_left_half = 0
+        self.num_right_half = 0
+
     def sense(self):
         sensor_data = [(1 if self.world.is_shadowed(x) else 0) for x in self.get_occupied_x_positions()]
         sensor_data.append(1 if self.x <= 0 else 0)
@@ -115,7 +120,10 @@ class WallAgent(Agent):
         elif self.x > (self.world.WIDTH - self.WIDTH):
             self.x = self.world.WIDTH - self.WIDTH
 
-    # TODO
+        if self.x + 2 < 0.5 * self.world.WIDTH:
+            self.num_left_half += 1
+        else:
+            self.num_right_half += 1
 
 
 class World(object):

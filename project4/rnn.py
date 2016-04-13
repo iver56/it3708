@@ -112,9 +112,7 @@ class Rnn(object):
             value = 0
             for hidden_index in range(self.num_hidden_nodes):
                 weight = self.hidden_to_output_weight(hidden_index, output_index)
-                value += self.hidden_output[hidden_index] * weight  # TODO
-
-            # TODO: CTRNNify (use output_state etc)
+                value += self.hidden_output[hidden_index] * weight
 
             self.output_output[output_index] = self.sigmoid(value)
 

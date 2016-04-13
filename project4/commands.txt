@@ -3,3 +3,6 @@ pypy main.py -g 190 && python plot.py && python simulate.py
 
 # evolve an agent for the pull scenario
 pypy main.py --scenario pull -g 100 && python plot.py && python simulate.py --scenario pull
+
+# evolve an agent for the wall scenario
+pypy main.py --scenario wall -g 75 -p 400 --adult-pool-size 200 && python plot.py && python simulate.py --scenario wall
