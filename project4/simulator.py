@@ -79,4 +79,5 @@ if __name__ == '__main__':
         print bt.world.agent.num_small_captures, 'small capture(s)'
         print bt.world.agent.num_large_captures, 'large capture(s)'
         if args.scenario == 'pull':
-            print bt.world.agent.num_pulls, 'pulls'
+            print bt.world.agent.num_good_pulls, 'good pulls'
+            print bt.world.agent.num_bad_pulls, 'bad pulls'

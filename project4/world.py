@@ -72,7 +72,8 @@ class PullAgent(Agent):
 
     def __init__(self, x, world):
         super(PullAgent, self).__init__(x, world)
-        self.num_pulls = 0
+        self.num_good_pulls = 0
+        self.num_bad_pulls = 0
 
     def act(self):
         sensor_data = self.sense()
@@ -81,7 +82,12 @@ class PullAgent(Agent):
 
         if neural_output[2] > self.PULL_THRESHOLD:
             self.world.pull_item_down()
-            self.num_pulls += 1
+
+            num_shadowed_cells = sum(self.sense())
+            if num_shadowed_cells == 0 and self.world.item.width >= self.WIDTH or self.world.item.width == num_shadowed_cells:
+                self.num_good_pulls += 1
+            else:
+                self.num_bad_pulls += 1
         else:
             argmax = neural_output.index(max_neural_output)
             num_steps = int(round(5 * max_neural_output))

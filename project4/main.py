@@ -66,7 +66,7 @@ class Main(object):
             '-p',
             '--population-size',
             dest='population_size',
-            help='Number of genotypes in a population',
+            help='Number of individuals in a population',
             type=int,
             required=False,
             default=100

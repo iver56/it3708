@@ -59,11 +59,14 @@ class BeerTrackerProblem(Problem):
             beer_tracker.run()
             fitness = (
                 1 * beer_tracker.world.agent.num_small_captures +
-                2 * beer_tracker.world.agent.num_large_misses +
+                1.5 * beer_tracker.world.agent.num_large_misses +
                 (-punishment) * beer_tracker.world.agent.num_partial_captures +
                 (-punishment) * beer_tracker.world.agent.num_small_misses +
                 (-punishment) * beer_tracker.world.agent.num_large_captures
             )
+            if BeerTrackerProblem.scenario == 'pull':
+                fitness += beer_tracker.world.agent.num_good_pulls
+                fitness -= beer_tracker.world.agent.num_bad_pulls
 
             """
             if fitness < 0:
