@@ -76,8 +76,8 @@ for i in range(nn.num_output_nodes):
     x = float(i) / (nn.num_output_nodes - 1)
     node = {
         'id': 'o{}'.format(i),
-        'x': x,
-        'y': 1.0,
+        'x': 0.2 + 0.6 * x,
+        'y': 0.8,
         'size': 1,
         'label': 'output{}'.format(i),
         'type': 'output'

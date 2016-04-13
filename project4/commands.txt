@@ -1,0 +1,5 @@
+# evolve an agent for the standard scenario
+pypy main.py -g 190 && python plot.py && python simulate.py
+
+# evolve an agent for the pull scenario
+pypy main.py --scenario pull -g 100 && python plot.py && python simulate.py --scenario pull
