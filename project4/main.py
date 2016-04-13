@@ -78,7 +78,7 @@ class Main(object):
             help='Number of generations',
             type=int,
             required=False,
-            default=250
+            default=190
         )
         arg_parser.add_argument(
             '--num-runs',
