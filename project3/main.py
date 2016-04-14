@@ -42,7 +42,7 @@ class Main(object):
             type=str,
             choices=['fitness_proportionate', 'sigma_scaling', 'boltzmann_selection', 'tournament_selection'],
             required=False,
-            default="fitness_proportionate"
+            default="tournament_selection"
         )
         arg_parser.add_argument(
             '--adult-pool-size',

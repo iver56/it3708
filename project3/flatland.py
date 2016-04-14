@@ -1,6 +1,9 @@
 import agent
 import grid
-import gfx
+try:
+    import gfx
+except:
+    pass
 
 
 class Flatland(object):

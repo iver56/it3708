@@ -34,7 +34,7 @@ class FlatLandProblem(Problem):
                 grid_seed=grid_seed
             )
             flatland_universe.run()
-            fitness_sum += 1 * flatland_universe.agent.num_food_consumed - 0.5 * flatland_universe.agent.num_poison_consumed
+            fitness_sum += 1 * flatland_universe.agent.num_food_consumed - 1.4 * flatland_universe.agent.num_poison_consumed
 
         fitness = fitness_sum / FlatLandProblem.num_scenarios
         is_solution = False
