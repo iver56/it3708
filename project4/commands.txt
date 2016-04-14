@@ -1,8 +1,14 @@
 # evolve an agent for the standard scenario
-pypy main.py -g 190 && python plot.py && python simulate.py
+pypy main.py -g 190
+python plot.py && python simulator.py
+python nn_repr.py && start nn_viz.html
 
 # evolve an agent for the pull scenario
-pypy main.py --scenario pull -g 100 && python plot.py && python simulate.py --scenario pull
+pypy main.py --scenario pull -g 100
+python plot.py && python simulate.py --scenario pull
+python nn_repr.py --scenario pull && start nn_viz.html
 
 # evolve an agent for the wall scenario
-pypy main.py --scenario wall -g 75 -p 400 --adult-pool-size 200 && python plot.py && python simulate.py --scenario wall
+pypy main.py --scenario wall -g 75 -p 400 --adult-pool-size 200
+python plot.py && python simulate.py --scenario wall
+python nn_repr.py --scenario wall && start nn_viz.html
