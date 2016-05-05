@@ -33,6 +33,7 @@ class DataManager(object):
             return self.distance_matrix[city2_id][city1_id]
         return self.distance_matrix[city1_id][city2_id]
 
+    def get_num_cities(self):
+        return len(self.cost_matrix) - 1
 
-if __name__ == '__main__':
-    dm = DataManager()
+dm = DataManager()
