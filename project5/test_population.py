@@ -13,9 +13,14 @@ class TestPopulation(unittest.TestCase):
         p = population.Population()
         p.set_individuals(individuals)
 
-        non_dominated_individuals = p.get_non_dominated_individuals()
-        self.assertGreaterEqual(len(non_dominated_individuals), 1)
-        self.assertLessEqual(len(non_dominated_individuals), len(individuals))
+        fronts = p.fast_non_dominated_sort()
+        self.assertGreaterEqual(len(fronts[1]), 1)
+
+        num_individuals = 0
+        for rank in fronts:
+            num_individuals += len(fronts[rank])
+
+        self.assertEqual(num_individuals, len(individuals))
 
 
 if __name__ == '__main__':
