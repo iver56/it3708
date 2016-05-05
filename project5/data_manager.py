@@ -5,6 +5,7 @@ class DataManager(object):
     def __init__(self):
         self.cost_matrix = self.read_csv('cost.csv')
         self.distance_matrix = self.read_csv('distance.csv')
+        self.city_ids = range(1, self.get_num_cities() + 1)
 
     @staticmethod
     def read_csv(csv_filename):

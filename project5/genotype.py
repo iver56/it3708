@@ -1,5 +1,6 @@
 import random
 from data_manager import dm
+import copy
 
 
 class Genotype(object):
@@ -11,7 +12,12 @@ class Genotype(object):
 
     @staticmethod
     def get_random_genotype():
-        num_cities = dm.get_num_cities()
-        city_ids = range(1, num_cities + 1)
+        city_ids = copy.deepcopy(dm.city_ids)
         random.shuffle(city_ids)
         return Genotype(city_ids)
+
+    def mutate(self):
+        random_city_id1, random_city_id2 = random.sample(dm.city_ids, 2)
+        tmp = self.city_ids[random_city_id1]
+        self.city_ids[random_city_id1] = self.city_ids[random_city_id2]
+        self.city_ids[random_city_id2] = tmp
