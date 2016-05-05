@@ -2,8 +2,19 @@ from data_manager import dm
 
 
 class Individual(object):
+    id = 0
+
     def __init__(self, genotype):
+        self.id = Individual.id
+        Individual.id += 1
         self.genotype = genotype
+        self.is_dominated = None
+
+    def __repr__(self):
+        return 'Individual ' + str(self.id) + ' with ' + repr(self.genotype)
+
+    def __eq__(self, other):
+        return self.id == other.id
 
     def calculate_tour_distance(self):
         # TODO: should be sped up by caching
