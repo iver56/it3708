@@ -1,12 +1,11 @@
 import unittest
-from data_manager import dm
 import population
 import genotype
 import individual
 import plot
 
 
-class TestIndividual(unittest.TestCase):
+class TestPlotter(unittest.TestCase):
     def test_scatter_plot(self):
         # create random population
         n = 30
