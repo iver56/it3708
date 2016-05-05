@@ -36,7 +36,7 @@ class Genotype(object):
 
         counter = 0
         i = min(interval)
-        while counter <= len_interval:
+        while counter < len_interval:
             tmp_city_ids[i] = self.city_ids[i]
 
             i = (i + 1) % len(tmp_city_ids)
@@ -52,7 +52,7 @@ class Genotype(object):
         i = max(interval) + 1
         indexer = (max(interval) + 1) % len(tmp_city_ids)
         counter = 0
-        while counter < len_not_interval:
+        while counter < len_not_interval - 1:
             if other.get_gene(indexer) not in tmp_city_ids:
                 tmp_city_ids[i] = other.get_gene(indexer)
 
