@@ -16,3 +16,6 @@ class Individual(object):
             dm.get_cost(self.genotype.city_ids[i], self.genotype.city_ids[i + 1])
             for i in range(len(self.genotype.city_ids) - 1)
         )
+
+    def get_gene(self, n):
+        return self.genotype.city_ids[n]

@@ -1,7 +1,7 @@
 import unittest
 import genotype
 import copy
-
+import individual
 
 class TestGenotype(unittest.TestCase):
     def test_random_genotype(self):
@@ -15,6 +15,25 @@ class TestGenotype(unittest.TestCase):
         g.mutate()
         self.assertNotEqual(first_city_list, g.city_ids)
         self.assertEqual(set(first_city_list), set(g.city_ids))
+
+    def test_crossover(self):
+        g_1 = genotype.Genotype.get_random_genotype()
+        parent_1 = individual.Individual(g_1)
+
+        g_2 = genotype.Genotype.get_random_genotype()
+        parent_2 = individual.Individual(g_2)
+
+        new_g = parent_1.genotype.crossover(parent_2)
+        for i in range(len(new_g)):
+            count = 0
+            for j in range(len(new_g)):
+                if j != i and new_g[j] == new_g[i]:
+                    if new_g[j] != None:
+                        count += 1
+            self.assertTrue(count == 0)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
