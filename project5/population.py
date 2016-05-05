@@ -4,3 +4,4 @@ class Population(object):
 
     def set_individuals(self, individuals):
         self.individuals = individuals
+
