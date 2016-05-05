@@ -37,8 +37,4 @@ class DataManager(object):
             return self.distance_matrix[city2_id][city1_id]
         return self.distance_matrix[city1_id][city2_id]
 
-    def get_num_cities(self):
-        # TODO: this method is deprecated. Use .num_cities directly instead
-        return self.num_cities
-
 dm = DataManager()

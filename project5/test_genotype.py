@@ -3,6 +3,7 @@ import genotype
 import copy
 import individual
 
+
 class TestGenotype(unittest.TestCase):
     def test_random_genotype(self):
         g = genotype.Genotype.get_random_genotype()
