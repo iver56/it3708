@@ -2,6 +2,7 @@ import unittest
 import data_manager
 import genotype
 import individual
+import population
 
 
 class TestIndividual(unittest.TestCase):
@@ -24,6 +25,20 @@ class TestIndividual(unittest.TestCase):
 
         self.assertTrue(i2.dominates(i1))
         self.assertFalse(i1.dominates(i2))
+
+    def test_crowding_distace(self):
+        p = population.Population()
+        p.generate_individuals(20)
+
+        pareto_front = p.get_non_dominated_individuals()
+        max_dist = float(pareto_front[-1].tour_distance)
+        min_dist = float(pareto_front[0].tour_distance)
+
+        for i in range(len(pareto_front)):
+            pareto_front[i].calculate_crowding_distance(i, pareto_front, max_dist, min_dist)
+            print pareto_front[i].crowding_distance
+
+
 
 if __name__ == '__main__':
     unittest.main()
