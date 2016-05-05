@@ -1,6 +1,5 @@
 from data_manager import dm
 
-
 class Individual(object):
     id = 0
 
@@ -11,6 +10,7 @@ class Individual(object):
         self.is_dominated = None
         self.tour_distance = self.calculate_tour_distance(self.genotype.city_ids)
         self.tour_cost = self.calculate_tour_cost(self.genotype.city_ids)
+        self.crowding_distance = 0
 
     def __repr__(self):
         return 'Individual ' + str(self.id) + ' with ' + repr(self.genotype)
@@ -32,6 +32,9 @@ class Individual(object):
             for i in range(len(city_ids) - 1)
         )
 
+    def set_crowding_distance(self, d):
+        self.crowding_distance = d
+
     def get_gene(self, n):
         return self.genotype.city_ids[n]
 
@@ -44,3 +47,14 @@ class Individual(object):
                 self.tour_cost < other_individual.tour_cost  # cost is better
             )
         )
+
+    def calculate_crowding_distance(self, index, pareto_front, max_dist, min_dist):
+        crowding_distance = 0
+        for i in range(1, len(pareto_front) - 2):
+            if i == index:
+                continue
+            crowding_distance += \
+            (pareto_front[i + 1].tour_distance - pareto_front[i - 1].tour_distance)/\
+            (max_dist - min_dist)
+
+        self.crowding_distance = crowding_distance
