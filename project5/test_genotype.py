@@ -17,7 +17,7 @@ class TestGenotype(unittest.TestCase):
         self.assertNotEqual(first_city_list, g.city_ids)
         self.assertEqual(set(first_city_list), set(g.city_ids))
 
-    def test_crossover(self):
+    def test_crossover_no_double_elements(self):
         g_1 = genotype.Genotype.get_random_genotype()
         parent_1 = individual.Individual(g_1)
 
@@ -33,8 +33,21 @@ class TestGenotype(unittest.TestCase):
                         count += 1
             self.assertTrue(count == 0)
 
+    def test_crossover_distinct_count(self):
+        g_1 = genotype.Genotype.get_random_genotype()
+        parent_1 = individual.Individual(g_1)
 
+        g_2 = genotype.Genotype.get_random_genotype()
+        parent_2 = individual.Individual(g_2)
 
+        new_g = parent_1.genotype.crossover(parent_2)
+        key_map = {}
+        for i in range(len(new_g)):
+            if new_g[i] not in key_map:
+                key_map[new_g[i]] = 1
+
+        for k,v in key_map.iteritems():
+            self.assertTrue(v == 1)
 
 if __name__ == '__main__':
     unittest.main()
