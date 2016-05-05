@@ -7,16 +7,24 @@ class Individual(object):
         self.id = Individual.id
         Individual.id += 1
         self.genotype = genotype
-        self.is_dominated = None
         self.tour_distance = self.calculate_tour_distance(self.genotype.city_ids)
         self.tour_cost = self.calculate_tour_cost(self.genotype.city_ids)
         self.crowding_distance = 0
+        self.is_dominated = None  # TODO: This attribute is deprecated. Remove it.
+
+        # the following fields are used in the fast_non_dominated_sort method
+        self.individuals_dominated = None  # the set of individuals that are dominated by this individual
+        self.domination_counter = None  # the number of individuals that dominate this individual
+        self.rank = None
 
     def __repr__(self):
         return 'Individual ' + str(self.id) + ' with ' + repr(self.genotype)
 
     def __eq__(self, other):
         return self.id == other.id
+
+    def __hash__(self):
+        return hash(self.id)
 
     @staticmethod
     def calculate_tour_distance(city_ids):

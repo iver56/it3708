@@ -1,37 +1,30 @@
 import matplotlib.pyplot as plt
+from itertools import cycle
 
 
 class Plotter(object):
     @staticmethod
     def scatter_plot(population):
-        non_dominated_invividuals = population.get_non_dominated_individuals()
-        non_dominated_invividuals = sorted(non_dominated_invividuals, key=lambda i: i.tour_distance)
-        non_dominated_individual_ids = set(i.id for i in non_dominated_invividuals)
+        fronts = population.fast_non_dominated_sort()
 
-        dominated_individuals = [i for i in population.individuals if i.id not in non_dominated_individual_ids]
+        color_cycle = cycle('bgrcmyk').next
+        marker_cycle = cycle('*oD8sh+Hdx').next
 
-        dominated_distances = [i.tour_distance for i in dominated_individuals]
-        dominated_costs = [i.tour_cost for i in dominated_individuals]
+        for rank in fronts:
+            individuals = sorted(fronts[rank], key=lambda i: i.tour_distance)
+            distances = [ind.tour_distance for ind in individuals]
+            costs = [ind.tour_cost for ind in individuals]
 
-        non_dominated_distances = [i.tour_distance for i in non_dominated_invividuals]
-        non_dominated_costs = [i.tour_cost for i in non_dominated_invividuals]
+            color = color_cycle()
+            marker = marker_cycle()
 
-        plt.scatter(
-            dominated_distances,
-            dominated_costs,
-            marker='o',
-            s=50,
-            c=(.5, .5, .5),
-            alpha=0.5
-        )
-
-        plt.plot(non_dominated_distances, non_dominated_costs, c='#ff0000')
-        plt.scatter(
-            non_dominated_distances,
-            non_dominated_costs,
-            marker='*',
-            s=200,
-            c='#ff0000',
-            alpha=0.5
-        )
+            plt.plot(distances, costs, c=color)
+            plt.scatter(
+                distances,
+                costs,
+                marker=marker,
+                s=150,
+                c=color,
+                alpha=0.5
+            )
         plt.show()
