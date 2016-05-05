@@ -19,3 +19,11 @@ class Population(object):
             if not i1.is_dominated:
                 non_dominated_individuals.append(i1)
         return non_dominated_individuals
+
+    def generate_individuals(self, n):
+        genotypes = [genotype.Genotype.get_random_genotype() for _ in range(n)]
+        individuals = [individual.Individual(g) for g in genotypes]
+        self.individuals = individuals
+
+        return individuals
+
