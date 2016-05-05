@@ -1,9 +1,7 @@
 import unittest
-from data_manager import dm
 import population
 import genotype
 import individual
-import plot
 
 
 class TestPopulation(unittest.TestCase):
