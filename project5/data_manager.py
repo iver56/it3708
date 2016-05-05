@@ -5,7 +5,8 @@ class DataManager(object):
     def __init__(self):
         self.cost_matrix = self.read_csv('cost.csv')
         self.distance_matrix = self.read_csv('distance.csv')
-        self.city_ids = range(1, self.get_num_cities() + 1)
+        self.num_cities = len(self.cost_matrix) - 1
+        self.city_ids = range(1, self.num_cities + 1)
 
     @staticmethod
     def read_csv(csv_filename):
@@ -35,6 +36,7 @@ class DataManager(object):
         return self.distance_matrix[city1_id][city2_id]
 
     def get_num_cities(self):
-        return len(self.cost_matrix) - 1
+        # TODO: this method is deprecated. Use .num_cities directly instead
+        return self.num_cities
 
 dm = DataManager()

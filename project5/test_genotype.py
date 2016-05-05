@@ -6,7 +6,7 @@ import copy
 class TestGenotype(unittest.TestCase):
     def test_random_genotype(self):
         g = genotype.Genotype.get_random_genotype()
-        self.assertEqual(len(g.city_ids), genotype.dm.get_num_cities())
+        self.assertEqual(len(g.city_ids), genotype.dm.num_cities)
         self.assertTrue(1 in g.city_ids)
 
     def test_mutate(self):
