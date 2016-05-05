@@ -9,6 +9,8 @@ class Individual(object):
         Individual.id += 1
         self.genotype = genotype
         self.is_dominated = None
+        self.tour_distance = self.calculate_tour_distance(self.genotype.city_ids)
+        self.tour_cost = self.calculate_tour_cost(self.genotype.city_ids)
 
     def __repr__(self):
         return 'Individual ' + str(self.id) + ' with ' + repr(self.genotype)
@@ -16,18 +18,18 @@ class Individual(object):
     def __eq__(self, other):
         return self.id == other.id
 
-    def calculate_tour_distance(self):
-        # TODO: should be sped up by caching
+    @staticmethod
+    def calculate_tour_distance(city_ids):
         return sum(
-            dm.get_distance(self.genotype.city_ids[i], self.genotype.city_ids[i + 1])
-            for i in range(len(self.genotype.city_ids) - 1)
+            dm.get_distance(city_ids[i], city_ids[i + 1])
+            for i in range(len(city_ids) - 1)
         )
 
-    def calculate_tour_cost(self):
-        # TODO: should be sped up by caching
+    @staticmethod
+    def calculate_tour_cost(city_ids):
         return sum(
-            dm.get_cost(self.genotype.city_ids[i], self.genotype.city_ids[i + 1])
-            for i in range(len(self.genotype.city_ids) - 1)
+            dm.get_cost(city_ids[i], city_ids[i + 1])
+            for i in range(len(city_ids) - 1)
         )
 
     def get_gene(self, n):
@@ -35,10 +37,10 @@ class Individual(object):
 
     def dominates(self, other_individual):
         return (
-            self.calculate_tour_distance() <= other_individual.calculate_tour_distance() and  # distance not worse
-            self.calculate_tour_cost() <= other_individual.calculate_tour_cost() and  # cost not worse
+            self.tour_distance <= other_individual.tour_distance and  # distance not worse
+            self.tour_cost <= other_individual.tour_cost and  # cost not worse
             (
-                self.calculate_tour_distance() < other_individual.calculate_tour_distance() or  # distance is better
-                self.calculate_tour_cost() < other_individual.calculate_tour_cost()  # cost is better
+                self.tour_distance < other_individual.tour_distance or  # distance is better
+                self.tour_cost < other_individual.tour_cost  # cost is better
             )
         )

@@ -53,7 +53,7 @@ class Genotype(object):
         indexer = (max(interval) + 1) % len(tmp_city_ids)
         counter = 0
         while counter < len_not_interval - 1:
-            if other.get_gene(indexer) not in tmp_city_ids:
+            if other.get_gene(indexer) not in tmp_city_ids:  # TODO: fix performance
                 tmp_city_ids[i] = other.get_gene(indexer)
 
                 i = (i + 1) % len(tmp_city_ids)

@@ -6,16 +6,16 @@ class Plotter(object):
     @staticmethod
     def scatter_plot(population):
         non_dominated_invividuals = population.get_non_dominated_individuals()
-        non_dominated_invividuals = sorted(non_dominated_invividuals, key=lambda i: i.calculate_tour_distance())
+        non_dominated_invividuals = sorted(non_dominated_invividuals, key=lambda i: i.tour_distance)
         non_dominated_individual_ids = set(i.id for i in non_dominated_invividuals)
 
         dominated_individuals = [i for i in population.individuals if i.id not in non_dominated_individual_ids]
 
-        dominated_distances = [i.calculate_tour_distance() for i in dominated_individuals]
-        dominated_costs = [i.calculate_tour_cost() for i in dominated_individuals]
+        dominated_distances = [i.tour_distance for i in dominated_individuals]
+        dominated_costs = [i.tour_cost for i in dominated_individuals]
 
-        non_dominated_distances = [i.calculate_tour_distance() for i in non_dominated_invividuals]
-        non_dominated_costs = [i.calculate_tour_cost() for i in non_dominated_invividuals]
+        non_dominated_distances = [i.tour_distance for i in non_dominated_invividuals]
+        non_dominated_costs = [i.tour_cost for i in non_dominated_invividuals]
 
         plt.scatter(
             dominated_distances,
