@@ -22,6 +22,18 @@ class TestPopulation(unittest.TestCase):
 
         self.assertEqual(num_individuals, len(individuals))
 
+    def test_calculate_all_crowding_distances(self):
+        n = 30
+        p = population.Population()
+        individuals = p.generate_individuals(30)
+        pareto_front = p.get_non_dominated_individuals()
+        p.calcualte_all_crowding_distances(pareto_front)
+
+        for i in range(len(pareto_front)):
+            self.assertTrue(pareto_front[i].crowding_distance > -1)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
