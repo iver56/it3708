@@ -26,6 +26,8 @@ class Population(object):
         """
         front is a list of individuals
         """
+        if len(front) == 0:
+            return
 
         for i in range(2):
             front = sorted(front, key=lambda x: x.objectives[i])
@@ -34,8 +36,9 @@ class Population(object):
 
             max_dist = float(front[-1].objectives[i])
             min_dist = float(front[0].objectives[i])
+
             if max_dist == min_dist:
-                # all the individuals in the front have the same behavior
+                # TODO: handle this case
                 pass
 
             for j in range(1, len(front) - 1):

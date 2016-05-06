@@ -1,5 +1,7 @@
 import unittest
 import population
+import genotype
+import individual
 
 
 class TestPopulation(unittest.TestCase):
@@ -29,6 +31,22 @@ class TestPopulation(unittest.TestCase):
         for i in range(len(pareto_front)):
             self.assertGreaterEqual(pareto_front[i].crowding_distance, 0)
 
+    def test_calculate_all_crowding_distances_edge_case(self):
+        g1 = genotype.Genotype.get_random_genotype()
+        i1 = individual.Individual(g1)
+        i2 = individual.Individual(g1.clone())
+        i3 = individual.Individual(g1.clone())
+
+        p = population.Population(
+            population_size=2,
+            crossover_rate=0.5,
+            mutation_rate=0.5,
+            individuals=[i1, i2, i3]
+        )
+        fronts = p.fast_non_dominated_sort()
+        for rank in fronts:
+            front = fronts[rank]
+            population.Population.calculate_all_crowding_distances(front)
 
 if __name__ == '__main__':
     unittest.main()

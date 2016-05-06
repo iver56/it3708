@@ -100,8 +100,7 @@ class Main(object):
 
             for rank in fronts:
                 front = fronts[rank]
-                if len(front) > 0:
-                    population.Population.calculate_all_crowding_distances(front)
+                population.Population.calculate_all_crowding_distances(front)
 
             offspring_genotypes = self.population.create_offspring()
             offspring_individuals = [
@@ -128,6 +127,7 @@ class Main(object):
                     front = sorted(front, key=lambda x: x.crowding_distance, reverse=True)[:num_more_individuals_needed]
                     new_individuals = new_individuals.union(front)
                     break
+
             self.population = population.Population(
                 population_size=self.args.population_size,
                 crossover_rate=self.args.crossover_rate,
