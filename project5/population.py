@@ -34,7 +34,7 @@ class Population(object):
             max_dist = float(front[-1].objectives[i])
             min_dist = float(front[0].objectives[i])
 
-            for j in range(1, len(front) - 2):
+            for j in range(1, len(front) - 1):
                 front[j].calculate_crowding_distance(j, front, max_dist, min_dist, i)
 
     def fast_non_dominated_sort(self):
