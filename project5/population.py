@@ -32,30 +32,16 @@ class Population(object):
         return individuals
 
     def calcualte_all_crowding_distances(self, pareto_front):
-        '''
-        TODO: Might want to refactor objective functions for easier
-        calculation.  We write everything twice, since it is hard to sort on
-        different distances in a general function.
-        '''
-        pareto_front = sorted(pareto_front, key=lambda x: x.tour_distance)
-        pareto_front[0].set_crowding_distance(float("inf"))
-        pareto_front[-1].set_crowding_distance(float("inf"))
+        for i in range(2):
+            pareto_front = sorted(pareto_front, key=lambda x: x.objectives[i])
+            pareto_front[0].set_crowding_distance(float("inf"))
+            pareto_front[-1].set_crowding_distance(float("inf"))
 
-        max_dist = float(pareto_front[-1].tour_distance)
-        min_dist = float(pareto_front[0].tour_distance)
+            max_dist = float(pareto_front[-1].objectives[i])
+            min_dist = float(pareto_front[0].objectives[i])
 
-        for i in range(1, len(self.individuals) - 2):
-            self.individuals[i].calculate_crowding_distance_distance(i, pareto_front, max_dist, min_dist)
-
-        pareto_front = sorted(pareto_front, key=lambda x: x.tour_cost)
-        pareto_front[0].set_crowding_distance(float("inf"))
-        pareto_front[-1].set_crowding_distance(float("inf"))
-
-        max_dist = float(pareto_front[-1].tour_cost)
-        min_dist = float(pareto_front[0].tour_cost)
-
-        for i in range(1, len(self.individuals) -2):
-            self.individuals[i].calculate_crowding_distance_cost(i, pareto_front, max_dist, min_dist)
+            for j in range(1, len(pareto_front) - 2):
+                pareto_front[j].calculate_crowding_distance(j, pareto_front, max_dist, min_dist, i)
 
     def fast_non_dominated_sort(self):
         """

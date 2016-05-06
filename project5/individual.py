@@ -9,7 +9,11 @@ class Individual(object):
         self.genotype = genotype
         self.tour_distance = self.calculate_tour_distance(self.genotype.city_ids)
         self.tour_cost = self.calculate_tour_cost(self.genotype.city_ids)
+
+        # fields used in crowding distance method
+        self.objectives = (self.tour_distance, self.tour_cost)
         self.crowding_distance = 0
+
         self.is_dominated = None  # TODO: This attribute is deprecated. Remove it.
 
         # the following fields are used in the fast_non_dominated_sort method
@@ -56,14 +60,7 @@ class Individual(object):
             )
         )
 
-    def calculate_crowding_distance_distance(self, i, pareto_front, max_dist, min_dist):
-        # pareto_front is already sorted
+    def calculate_crowding_distance(self, i, pareto_front, max_dist, min_dist, objective):
         self.crowding_distance += \
-        (pareto_front[i + 1].tour_distance - pareto_front[i - 1].tour_distance)/\
-        (max_dist - min_dist)
-
-    def calculate_crowding_distance_cost(self, i, pareto_front, max_dist, min_dist):
-        # pareto_front is already sorted
-        self.crowding_distance += \
-        (pareto_front[i + 1].tour_cost - pareto_front[i - 1].tour_cost)/\
+        (pareto_front[i + 1].objectives[objective] - pareto_front[i - 1].objectives[objective])/\
         (max_dist - min_dist)
