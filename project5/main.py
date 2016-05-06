@@ -124,8 +124,9 @@ class Main(object):
                 else:
                     front = fronts[rank]
                     self.population.calculate_all_crowding_distances(front)
-                    front = sorted(front, key=lambda x: x.crowding_distance)[:num_more_individuals_needed]
+                    front = sorted(front, key=lambda x: x.crowding_distance, reverse=True)[:num_more_individuals_needed]
                     new_individuals = new_individuals.union(front)
+                    break
             self.population = population.Population(
                 population_size=self.args.population_size,
                 crossover_rate=self.args.crossover_rate,
