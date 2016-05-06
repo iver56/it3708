@@ -56,26 +56,14 @@ class Individual(object):
             )
         )
 
-    def calculate_crowding_distance_distance(self, index, pareto_front, max_dist, min_dist):
+    def calculate_crowding_distance_distance(self, i, pareto_front, max_dist, min_dist):
         # pareto_front is already sorted
-        crowding_distance = 0
-        for i in range(1, len(pareto_front) - 2):
-            if i == index:
-                continue
-            crowding_distance += \
-            (pareto_front[i + 1].tour_distance - pareto_front[i - 1].tour_distance)/\
-            (max_dist - min_dist)
+        self.crowding_distance += \
+        (pareto_front[i + 1].tour_distance - pareto_front[i - 1].tour_distance)/\
+        (max_dist - min_dist)
 
-        self.crowding_distance += crowding_distance
-
-    def calculate_crowding_distance_distance(self, index, pareto_front, max_dist, min_dist):
+    def calculate_crowding_distance_cost(self, i, pareto_front, max_dist, min_dist):
         # pareto_front is already sorted
-        crowding_distance = 0
-        for i in range(1, len(pareto_front) - 2):
-            if i == index:
-                continue
-            crowding_distance += \
-            (pareto_front[i + 1].tour_cost - pareto_front[i - 1].tour_cost)/\
-            (max_dist - min_dist)
-
-        self.crowding_distance += crowding_distance
+        self.crowding_distance += \
+        (pareto_front[i + 1].tour_cost - pareto_front[i - 1].tour_cost)/\
+        (max_dist - min_dist)

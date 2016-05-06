@@ -36,9 +36,9 @@ class TestIndividual(unittest.TestCase):
 
         for i in range(len(pareto_front)):
             pareto_front[i].calculate_crowding_distance(i, pareto_front, max_dist, min_dist)
-            print pareto_front[i].crowding_distance
 
-
+        for i in range(len(pareto_front)):
+            self.assertTrue(pareto_front[i].crowding_distance > -1)
 
 if __name__ == '__main__':
     unittest.main()
