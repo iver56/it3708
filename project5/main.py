@@ -79,9 +79,14 @@ class Main(object):
         )
 
         for generation in range(self.args.num_generations):
-            self.population.fast_non_dominated_sort()
+            fronts = self.population.fast_non_dominated_sort()
             if self.args.plot:
                 plot.Plotter.scatter_plot(self.population, output_filename='plot_{0:04d}.png'.format(generation))
+
+            for rank in fronts:
+                front = fronts[rank]
+                if len(front) > 0:
+                    self.population.calculate_all_crowding_distances(front)
 
             offspring_genotypes = self.population.create_offspring()
             offspring_individuals = [
@@ -103,11 +108,10 @@ class Main(object):
                 if len(fronts[rank]) <= num_more_individuals_needed:
                     new_individuals = new_individuals.union(fronts[rank])
                 else:
-                    # TODO: sort by crowding distance and pick the best
-                    # temporarily, I'll just sample randomly
-                    new_individuals = new_individuals.union(
-                        random.sample(fronts[rank], num_more_individuals_needed)
-                    )
+                    front = fronts[rank]
+                    self.population.calculate_all_crowding_distances(front)
+                    front = sorted(front, key=lambda x: x.crowding_distance)[:num_more_individuals_needed]
+                    new_individuals = new_individuals.union(front)
             self.population = population.Population(
                 population_size=self.args.population_size,
                 crossover_rate=self.args.crossover_rate,
