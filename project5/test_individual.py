@@ -26,19 +26,42 @@ class TestIndividual(unittest.TestCase):
         self.assertTrue(i2.dominates(i1))
         self.assertFalse(i1.dominates(i2))
 
-    def test_crowding_distace(self):
+    def test_crowding_distace_distance(self):
         p = population.Population()
         p.generate_individuals(20)
 
         pareto_front = p.get_non_dominated_individuals()
+        pareto_front = sorted(pareto_front, key=lambda x: x.tour_distance)
+
+        pareto_front[0].set_crowding_distance(float("inf"))
+        pareto_front[-1].set_crowding_distance(float("inf"))
+
         max_dist = float(pareto_front[-1].tour_distance)
         min_dist = float(pareto_front[0].tour_distance)
 
-        for i in range(len(pareto_front)):
-            pareto_front[i].calculate_crowding_distance(i, pareto_front, max_dist, min_dist)
+        for i in range(1, len(pareto_front) - 1):
+            pareto_front[i].calculate_crowding_distance_distance(i, pareto_front, max_dist, min_dist)
 
         for i in range(len(pareto_front)):
             self.assertTrue(pareto_front[i].crowding_distance > -1)
 
+    def test_crowding_distace_cost(self):
+        p = population.Population()
+        p.generate_individuals(20)
+
+        pareto_front = p.get_non_dominated_individuals()
+        pareto_front = sorted(pareto_front, key=lambda x: x.tour_cost)
+
+        pareto_front[0].set_crowding_distance(float("inf"))
+        pareto_front[-1].set_crowding_distance(float("inf"))
+
+        max_dist = float(pareto_front[-1].tour_cost)
+        min_dist = float(pareto_front[0].tour_cost)
+
+        for i in range(1, len(pareto_front) - 1):
+            pareto_front[i].calculate_crowding_distance_cost(i, pareto_front, max_dist, min_dist)
+
+        for i in range(len(pareto_front)):
+            self.assertTrue(pareto_front[i].crowding_distance > -1)
 if __name__ == '__main__':
     unittest.main()
