@@ -45,7 +45,7 @@ class Population(object):
         # TODO: remove this function
         raise Exception('Removed. Use constructor with individuals=None instead')
 
-    def calcualte_all_crowding_distances(self, pareto_front):
+    def calculate_all_crowding_distances(self, pareto_front):
         for i in range(2):
             pareto_front = sorted(pareto_front, key=lambda x: x.objectives[i])
             pareto_front[0].set_crowding_distance(float("inf"))

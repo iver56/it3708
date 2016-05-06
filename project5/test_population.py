@@ -1,7 +1,5 @@
 import unittest
 import population
-import genotype
-import individual
 
 
 class TestPopulation(unittest.TestCase):
@@ -18,16 +16,17 @@ class TestPopulation(unittest.TestCase):
         self.assertEqual(num_individuals, len(p.individuals))
 
     def test_calculate_all_crowding_distances(self):
-        n = 30
-        p = population.Population()
-        individuals = p.generate_individuals(30)
+        p = population.Population(
+            population_size=30,
+            crossover_rate=0.5,
+            mutation_rate=0.5,
+            individuals=None  # generated randomly in constructor
+        )
         pareto_front = p.get_non_dominated_individuals()
-        p.calcualte_all_crowding_distances(pareto_front)
+        p.calculate_all_crowding_distances(pareto_front)
 
         for i in range(len(pareto_front)):
             self.assertTrue(pareto_front[i].crowding_distance > -1)
-
-
 
 
 if __name__ == '__main__':
