@@ -38,3 +38,5 @@ class Plotter(object):
             plt.show()
         else:
             plt.savefig(os.path.join('plots', output_filename), dpi=96)
+
+        plt.close(fig)
