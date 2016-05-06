@@ -37,6 +37,14 @@ class Main(object):
             default=1
         )
         arg_parser.add_argument(
+            '--seed',
+            dest='seed',
+            help='PRNG seed',
+            type=int,
+            required=False,
+            default=1337
+        )
+        arg_parser.add_argument(
             '--crossover-rate',
             dest='crossover_rate',
             help='Probability of sexual reproduction (two parents) instead of asexual reproduction (one parent)',
@@ -63,6 +71,8 @@ class Main(object):
         )
 
         self.args, unknown_args = arg_parser.parse_known_args()
+
+        random.seed(self.args.seed)
 
         start_time = time.time()
         self.population = None
