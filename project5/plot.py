@@ -5,11 +5,16 @@ import os
 
 class Plotter(object):
     @staticmethod
-    def scatter_plot(population, output_filename=None):
-        fronts = population.fast_non_dominated_sort()
+    def scatter_plot(population, title='', output_filename=None):
+        fronts = population.fast_non_dominated_sort()  # TODO take in fronts as a parameter instead
 
         color_cycle = cycle('bgrcmyk').next
         marker_cycle = cycle('*oD8sh+Hdx').next
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        if len(title) > 0:
+            ax.set_title(title)
 
         for rank in fronts:
             individuals = sorted(fronts[rank], key=lambda i: i.tour_distance)
@@ -19,8 +24,11 @@ class Plotter(object):
             color = color_cycle()
             marker = marker_cycle()
 
-            plt.plot(distances, costs, c=color)
-            plt.scatter(
+            ax.set_xlabel('Traveling distance')
+            ax.set_ylabel('Traveling cost')
+
+            ax.plot(distances, costs, c=color)
+            ax.scatter(
                 distances,
                 costs,
                 marker=marker,

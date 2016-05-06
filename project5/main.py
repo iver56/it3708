@@ -91,7 +91,11 @@ class Main(object):
         for generation in range(self.args.num_generations):
             fronts = self.population.fast_non_dominated_sort()
             if self.args.plot:
-                plot.Plotter.scatter_plot(self.population, output_filename='plot_{0:04d}.png'.format(generation))
+                plot.Plotter.scatter_plot(
+                    self.population,
+                    title='Generation {}'.format(generation),
+                    output_filename='plot_{0:04d}.png'.format(generation)
+                )
 
             for rank in fronts:
                 front = fronts[rank]

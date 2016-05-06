@@ -6,7 +6,11 @@ import plot
 class TestPlotter(unittest.TestCase):
     def test_scatter_plot(self):
         p = population.Population(population_size=30, crossover_rate=0.5, mutation_rate=0.5)
-        plot.Plotter.scatter_plot(p, output_filename='test.png')
+        plot.Plotter.scatter_plot(
+            p,
+            title='Just a test plot. Nothing to see here.',
+            output_filename='test.png'
+        )
 
 
 if __name__ == '__main__':
