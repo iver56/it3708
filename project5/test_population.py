@@ -6,12 +6,7 @@ import individual
 
 class TestPopulation(unittest.TestCase):
     def test_non_dominated_individuals(self):
-        # create random population
-        n = 30
-        genotypes = [genotype.Genotype.get_random_genotype() for _ in range(n)]
-        individuals = [individual.Individual(g) for g in genotypes]
-        p = population.Population()
-        p.set_individuals(individuals)
+        p = population.Population(population_size=30, crossover_rate=0.5, mutation_rate=0.5)
 
         fronts = p.fast_non_dominated_sort()
         self.assertGreaterEqual(len(fronts[1]), 1)
@@ -20,7 +15,7 @@ class TestPopulation(unittest.TestCase):
         for rank in fronts:
             num_individuals += len(fronts[rank])
 
-        self.assertEqual(num_individuals, len(individuals))
+        self.assertEqual(num_individuals, len(p.individuals))
 
     def test_calculate_all_crowding_distances(self):
         n = 30

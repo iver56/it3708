@@ -1,11 +1,28 @@
 import genotype
 import individual
+import random
+
 
 class Population(object):
-    def __init__(self):
-        self.individuals = None
+    def __init__(self, population_size, crossover_rate, mutation_rate, individuals=None):
+        if individuals is None:
+            # generate random individuals
+            genotypes = [genotype.Genotype.get_random_genotype() for _ in range(population_size)]
+            individuals = [individual.Individual(g) for g in genotypes]
+            self.individuals = individuals
+        else:
+            self.individuals = individuals
+
+        self.population_size = len(self.individuals)
+
+        self.crossover_rate = crossover_rate
+        self.mutation_rate = mutation_rate
+        self.tournament_selection_k = 2
+        self.tournament_selection_epsilon = 0.1
+        self.parents = []
 
     def set_individuals(self, individuals):
+        # TODO: this method is deprecated. Remove it.
         self.individuals = individuals
 
     def get_non_dominated_individuals(self):
@@ -25,11 +42,8 @@ class Population(object):
         return non_dominated_individuals
 
     def generate_individuals(self, n):
-        genotypes = [genotype.Genotype.get_random_genotype() for _ in range(n)]
-        individuals = [individual.Individual(g) for g in genotypes]
-        self.individuals = individuals
-
-        return individuals
+        # TODO: remove this function
+        raise Exception('Removed. Use constructor with individuals=None instead')
 
     def calcualte_all_crowding_distances(self, pareto_front):
         for i in range(2):
@@ -74,3 +88,41 @@ class Population(object):
             i += 1
             fronts[i] = new_front
         return fronts
+
+    def create_offspring(self):
+        self.tournament_selection()  # select parents
+
+        genotypes = []
+        for i in range(len(self.individuals)):
+            new_genotype = self.produce_one_child_genotype()
+            genotypes.append(new_genotype)
+        return genotypes
+
+    def produce_one_child_genotype(self):
+        if random.random() < self.crossover_rate:
+            parents = random.sample(self.parents, 2)
+            new_genotype = parents[0].genotype.clone()
+            new_genotype.crossover(parents[1].genotype)
+        else:
+            random_parent = random.choice(self.parents)
+            new_genotype = random_parent.genotype.clone()
+
+        if random.random() < self.mutation_rate:
+            new_genotype.mutate()
+
+        return new_genotype
+
+    def tournament_selection(self):
+        self.parents = []
+        for i in range(len(self.individuals)):
+            parent = self.do_one_tournament()
+            self.parents.append(parent)
+
+    def do_one_tournament(self):
+        contestants = random.sample(self.individuals, self.tournament_selection_k)
+        r = random.random()
+        if r < self.tournament_selection_epsilon:
+            return random.choice(contestants)
+        else:
+            sorted_contestants = sorted(contestants, key=lambda p: p.rank)  # TODO: sort by rank, then crowding distance
+            return sorted_contestants[0]

@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 from itertools import cycle
+import os
 
 
 class Plotter(object):
     @staticmethod
-    def scatter_plot(population):
+    def scatter_plot(population, output_filename=None):
         fronts = population.fast_non_dominated_sort()
 
         color_cycle = cycle('bgrcmyk').next
@@ -27,4 +28,7 @@ class Plotter(object):
                 c=color,
                 alpha=0.5
             )
-        plt.show()
+        if output_filename is None:
+            plt.show()
+        else:
+            plt.savefig(os.path.join('plots', output_filename), dpi=96)
