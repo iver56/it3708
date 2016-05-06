@@ -42,7 +42,7 @@ class Population(object):
                 pass
 
             for j in range(1, len(front) - 1):
-                front[j].calculate_crowding_distance(j, front, max_dist, min_dist, i)
+                front[j].calculate_crowding_distance(j, front, max_dist, min_dist, objective=i)
 
     def fast_non_dominated_sort(self):
         """

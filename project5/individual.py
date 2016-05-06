@@ -56,7 +56,7 @@ class Individual(object):
             )
         )
 
-    def calculate_crowding_distance(self, i, pareto_front, max_dist, min_dist, objective):
+    def calculate_crowding_distance(self, i, front, max_dist, min_dist, objective):
         self.crowding_distance += \
-            (pareto_front[i + 1].objectives[objective] - pareto_front[i - 1].objectives[objective]) / \
+            (front[i + 1].objectives[objective] - front[i - 1].objectives[objective]) / \
             (max_dist - min_dist)
