@@ -44,7 +44,7 @@ class Population(object):
         max_dist = float(pareto_front[-1].tour_distance)
         min_dist = float(pareto_front[0].tour_distance)
 
-        for i in range(len(self.individuals)):
+        for i in range(1, len(self.individuals) - 2):
             self.individuals[i].calculate_crowding_distance_distance(i, pareto_front, max_dist, min_dist)
 
         pareto_front = sorted(pareto_front, key=lambda x: x.tour_cost)
@@ -54,7 +54,7 @@ class Population(object):
         max_dist = float(pareto_front[-1].tour_cost)
         min_dist = float(pareto_front[0].tour_cost)
 
-        for i in range(len(self.individuals)):
+        for i in range(1, len(self.individuals) -2):
             self.individuals[i].calculate_crowding_distance_cost(i, pareto_front, max_dist, min_dist)
 
     def fast_non_dominated_sort(self):
