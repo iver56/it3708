@@ -104,5 +104,5 @@ class Population(object):
         if r < self.tournament_selection_epsilon:
             return random.choice(contestants)
         else:
-            sorted_contestants = sorted(contestants, key=lambda p: (p.rank, p.crowding_distance))
+            sorted_contestants = sorted(contestants, key=lambda p: (p.rank, -p.crowding_distance))
             return sorted_contestants[0]
