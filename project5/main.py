@@ -89,6 +89,7 @@ class Main(object):
         )
 
         for generation in range(self.args.num_generations):
+            print 'Generation {}'.format(generation)
             fronts = self.population.fast_non_dominated_sort()
             if self.args.plot:
                 plot.Plotter.scatter_plot(
@@ -100,7 +101,7 @@ class Main(object):
             for rank in fronts:
                 front = fronts[rank]
                 if len(front) > 0:
-                    self.population.calculate_all_crowding_distances(front)
+                    population.Population.calculate_all_crowding_distances(front)
 
             offspring_genotypes = self.population.create_offspring()
             offspring_individuals = [
@@ -123,7 +124,7 @@ class Main(object):
                     new_individuals = new_individuals.union(fronts[rank])
                 else:
                     front = fronts[rank]
-                    self.population.calculate_all_crowding_distances(front)
+                    population.Population.calculate_all_crowding_distances(front)
                     front = sorted(front, key=lambda x: x.crowding_distance, reverse=True)[:num_more_individuals_needed]
                     new_individuals = new_individuals.union(front)
                     break

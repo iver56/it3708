@@ -21,7 +21,8 @@ class Population(object):
         self.tournament_selection_epsilon = 0.1
         self.parents = []
 
-    def calculate_all_crowding_distances(self, front):
+    @staticmethod
+    def calculate_all_crowding_distances(front):
         """
         front is a list of individuals
         """
@@ -33,6 +34,9 @@ class Population(object):
 
             max_dist = float(front[-1].objectives[i])
             min_dist = float(front[0].objectives[i])
+            if max_dist == min_dist:
+                # all the individuals in the front have the same behavior
+                pass
 
             for j in range(1, len(front) - 1):
                 front[j].calculate_crowding_distance(j, front, max_dist, min_dist, i)

@@ -24,7 +24,7 @@ class TestPopulation(unittest.TestCase):
         )
         fronts = p.fast_non_dominated_sort()
         pareto_front = list(fronts[1])
-        p.calculate_all_crowding_distances(pareto_front)
+        population.Population.calculate_all_crowding_distances(pareto_front)
 
         for i in range(len(pareto_front)):
             self.assertGreaterEqual(pareto_front[i].crowding_distance, 0)
