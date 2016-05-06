@@ -1,19 +1,12 @@
 import unittest
 import population
-import genotype
-import individual
 import plot
 
 
 class TestPlotter(unittest.TestCase):
     def test_scatter_plot(self):
-        # create random population
-        n = 30
-        genotypes = [genotype.Genotype.get_random_genotype() for _ in range(n)]
-        individuals = [individual.Individual(g) for g in genotypes]
-        p = population.Population()
-        p.set_individuals(individuals)
-        plot.Plotter.scatter_plot(p)
+        p = population.Population(population_size=30, crossover_rate=0.5, mutation_rate=0.5)
+        plot.Plotter.scatter_plot(p, output_filename='test.png')
 
 
 if __name__ == '__main__':
