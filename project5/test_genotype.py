@@ -45,6 +45,8 @@ class TestGenotype(unittest.TestCase):
         for i in range(len(new_g)):
             if new_g[i] not in key_map:
                 key_map[new_g[i]] = 1
+            else:
+                key_map[new_g[i]] += 1
 
         for k,v in key_map.iteritems():
             self.assertTrue(v == 1)
