@@ -21,41 +21,21 @@ class Population(object):
         self.tournament_selection_epsilon = 0.1
         self.parents = []
 
-    def set_individuals(self, individuals):
-        # TODO: this method is deprecated. Remove it.
-        self.individuals = individuals
+    def calculate_all_crowding_distances(self, front):
+        """
+        front is a list of individuals
+        """
 
-    def get_non_dominated_individuals(self):
-        # TODO: This method is deprecated. Remove it. Use fast_non_dominated_sort instead.
-        non_dominated_individuals = []
-        for i1 in self.individuals:
-            # check if i1 is dominated by any other individual
-            i1.is_dominated = False
-            for i2 in self.individuals:
-                if i1 == i2:
-                    continue
-                if i2.dominates(i1):
-                    i1.is_dominated = True
-                    break
-            if not i1.is_dominated:
-                non_dominated_individuals.append(i1)
-        return non_dominated_individuals
-
-    def generate_individuals(self, n):
-        # TODO: remove this function
-        raise Exception('Removed. Use constructor with individuals=None instead')
-
-    def calculate_all_crowding_distances(self, pareto_front):
         for i in range(2):
-            pareto_front = sorted(pareto_front, key=lambda x: x.objectives[i])
-            pareto_front[0].set_crowding_distance(float("inf"))
-            pareto_front[-1].set_crowding_distance(float("inf"))
+            front = sorted(front, key=lambda x: x.objectives[i])
+            front[0].set_crowding_distance(float("inf"))
+            front[-1].set_crowding_distance(float("inf"))
 
-            max_dist = float(pareto_front[-1].objectives[i])
-            min_dist = float(pareto_front[0].objectives[i])
+            max_dist = float(front[-1].objectives[i])
+            min_dist = float(front[0].objectives[i])
 
-            for j in range(1, len(pareto_front) - 2):
-                pareto_front[j].calculate_crowding_distance(j, pareto_front, max_dist, min_dist, i)
+            for j in range(1, len(front) - 2):
+                front[j].calculate_crowding_distance(j, front, max_dist, min_dist, i)
 
     def fast_non_dominated_sort(self):
         """

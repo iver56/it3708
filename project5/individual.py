@@ -1,5 +1,6 @@
 from data_manager import dm
 
+
 class Individual(object):
     id = 0
 
@@ -13,8 +14,6 @@ class Individual(object):
         # fields used in crowding distance method
         self.objectives = (self.tour_distance, self.tour_cost)
         self.crowding_distance = 0
-
-        self.is_dominated = None  # TODO: This attribute is deprecated. Remove it.
 
         # the following fields are used in the fast_non_dominated_sort method
         self.individuals_dominated = None  # the set of individuals that are dominated by this individual  # TODO: this variable may be moved to fast_non_dominated_sort, as it is temporary
@@ -59,5 +58,5 @@ class Individual(object):
 
     def calculate_crowding_distance(self, i, pareto_front, max_dist, min_dist, objective):
         self.crowding_distance += \
-        (pareto_front[i + 1].objectives[objective] - pareto_front[i - 1].objectives[objective])/\
-        (max_dist - min_dist)
+            (pareto_front[i + 1].objectives[objective] - pareto_front[i - 1].objectives[objective]) / \
+            (max_dist - min_dist)

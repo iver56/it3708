@@ -20,13 +20,14 @@ class TestPopulation(unittest.TestCase):
             population_size=30,
             crossover_rate=0.5,
             mutation_rate=0.5,
-            individuals=None  # generated randomly in constructor
+            individuals=None  # individuals are generated randomly in population constructor
         )
-        pareto_front = p.get_non_dominated_individuals()
+        fronts = p.fast_non_dominated_sort()
+        pareto_front = list(fronts[1])
         p.calculate_all_crowding_distances(pareto_front)
 
         for i in range(len(pareto_front)):
-            self.assertTrue(pareto_front[i].crowding_distance > -1)
+            self.assertGreaterEqual(pareto_front[i].crowding_distance, 0)
 
 
 if __name__ == '__main__':
