@@ -13,7 +13,7 @@ class Individual(object):
         self.is_dominated = None  # TODO: This attribute is deprecated. Remove it.
 
         # the following fields are used in the fast_non_dominated_sort method
-        self.individuals_dominated = None  # the set of individuals that are dominated by this individual
+        self.individuals_dominated = None  # the set of individuals that are dominated by this individual  # TODO: this variable may be moved to fast_non_dominated_sort, as it is temporary
         self.domination_counter = None  # the number of individuals that dominate this individual
         self.rank = None
 
@@ -42,9 +42,6 @@ class Individual(object):
 
     def set_crowding_distance(self, d):
         self.crowding_distance = d
-
-    def get_gene(self, n):
-        return self.genotype.city_ids[n]
 
     def dominates(self, other_individual):
         return (

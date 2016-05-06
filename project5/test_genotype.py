@@ -24,12 +24,12 @@ class TestGenotype(unittest.TestCase):
         g_2 = genotype.Genotype.get_random_genotype()
         parent_2 = individual.Individual(g_2)
 
-        new_g = parent_1.genotype.crossover(parent_2)
+        new_g = parent_1.genotype.crossover(parent_2.genotype)
         for i in range(len(new_g)):
             count = 0
             for j in range(len(new_g)):
                 if j != i and new_g[j] == new_g[i]:
-                    if new_g[j] != None:
+                    if new_g[j] != None:  # TODO use 'is not' instead of '!='
                         count += 1
             self.assertTrue(count == 0)
 
@@ -40,7 +40,7 @@ class TestGenotype(unittest.TestCase):
         g_2 = genotype.Genotype.get_random_genotype()
         parent_2 = individual.Individual(g_2)
 
-        new_g = parent_1.genotype.crossover(parent_2)
+        new_g = parent_1.genotype.crossover(parent_2.genotype)
         key_map = {}
         for i in range(len(new_g)):
             if new_g[i] not in key_map:

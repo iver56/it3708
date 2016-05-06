@@ -25,8 +25,8 @@ class Genotype(object):
         self.city_ids[random_city_id1] = self.city_ids[random_city_id2]
         self.city_ids[random_city_id2] = tmp
 
-    def crossover(self, other):
-        tmp_city_ids = [None for i in range(len(self.city_ids))]
+    def crossover(self, other_genotype):
+        tmp_city_ids = [None for _ in range(len(self.city_ids))]
 
         # Random crossover interval
         interval = random.sample(range(0, len(self.city_ids)), 2)
@@ -43,10 +43,10 @@ class Genotype(object):
         len_not_interval = len(tmp_city_ids) - len_interval
         for i in range(len(tmp_city_ids) - len_not_interval):
             index_result_city_ids = (max(interval) + i) % len(tmp_city_ids)
-            for j in range(len(other.genotype.city_ids)):
-                index_other_city_ids = (index_result_city_ids + 1 + j) % len(other.genotype.city_ids)
-                if other.get_gene(index_other_city_ids) not in tmp_city_ids:
-                    tmp_city_ids[index_result_city_ids] = other.get_gene(index_other_city_ids)
+            for j in range(len(other_genotype.city_ids)):
+                index_other_city_ids = (index_result_city_ids + 1 + j) % len(other_genotype.city_ids)
+                if other_genotype.city_ids[index_other_city_ids] not in tmp_city_ids:
+                    tmp_city_ids[index_result_city_ids] = other_genotype.city_ids[index_other_city_ids]
                     break
 
         return tmp_city_ids
