@@ -92,7 +92,7 @@ class Main(object):
             fronts = self.population.fast_non_dominated_sort()
             if self.args.plot:
                 plot.Plotter.scatter_plot(
-                    self.population,
+                    fronts,
                     title='Generation {}'.format(generation),
                     output_filename='plot_{0:04d}.png'.format(generation)
                 )

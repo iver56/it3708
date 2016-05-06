@@ -5,9 +5,7 @@ import os
 
 class Plotter(object):
     @staticmethod
-    def scatter_plot(population, title='', output_filename=None):
-        fronts = population.fast_non_dominated_sort()  # TODO take in fronts as a parameter instead
-
+    def scatter_plot(fronts, title='', output_filename=None):
         color_cycle = cycle('bgrcmyk').next
         marker_cycle = cycle('*oD8sh+Hdx').next
 
