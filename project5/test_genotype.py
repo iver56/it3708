@@ -29,7 +29,7 @@ class TestGenotype(unittest.TestCase):
             count = 0
             for j in range(len(new_g)):
                 if j != i and new_g[j] == new_g[i]:
-                    if new_g[j] != None:  # TODO use 'is not' instead of '!='
+                    if new_g[j] is not None:
                         count += 1
             self.assertTrue(count == 0)
 
