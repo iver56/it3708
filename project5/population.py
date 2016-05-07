@@ -38,7 +38,8 @@ class Population(object):
             min_dist = float(front[0].objectives[i])
 
             if max_dist == min_dist:
-                min_dist = max_dist - 1
+                # Crowding distance will be zero for each individual in front[1:-1]. There's no need to calculate it.
+                continue
 
             for j in range(1, len(front) - 1):
                 front[j].calculate_crowding_distance(j, front, max_dist, min_dist, objective=i)
