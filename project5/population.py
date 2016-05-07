@@ -113,3 +113,10 @@ class Population(object):
         else:
             sorted_contestants = sorted(contestants, key=lambda p: (p.rank, -p.crowding_distance))
             return sorted_contestants[0]
+
+    @staticmethod
+    def serialize_fronts(fronts):
+        fronts_serialized = {}
+        for rank in fronts:
+            fronts_serialized[rank] = [ind.get_serialized_representation() for ind in fronts[rank]]
+        return fronts_serialized

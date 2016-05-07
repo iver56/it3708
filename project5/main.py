@@ -1,9 +1,9 @@
 import argparse
 import time
 import population
-import plot
 import individual
 import random
+import json
 
 
 class Main(object):
@@ -60,24 +60,20 @@ class Main(object):
             required=False,
             default=0.5
         )
-        arg_parser.add_argument(
-            '--plot',
-            nargs='?',
-            dest='plot',
-            help='Plot population for each generation. The plots are stored as png files',
-            const=True,
-            required=False,
-            default=False
-        )
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
         random.seed(self.args.seed)
 
+        self.log = []
+
         start_time = time.time()
         self.population = None
 
         self.run()
+
+        with open('log.json', 'w') as output_file:
+            json.dump(self.log, output_file)
 
         print "Execution time: {} seconds".format(time.time() - start_time)
 
@@ -91,12 +87,9 @@ class Main(object):
         for generation in range(self.args.num_generations):
             print 'Generation {}'.format(generation)
             fronts = self.population.fast_non_dominated_sort()
-            if self.args.plot:
-                plot.Plotter.scatter_plot(
-                    fronts,
-                    title='Generation {}'.format(generation),
-                    output_filename='plot_{0:04d}.png'.format(generation)
-                )
+
+            fronts_serialized = population.Population.serialize_fronts(fronts)
+            self.log.append(fronts_serialized)
 
             for rank in fronts:
                 front = fronts[rank]

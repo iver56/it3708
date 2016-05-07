@@ -60,3 +60,9 @@ class Individual(object):
         self.crowding_distance += \
             (front[i + 1].objectives[objective] - front[i - 1].objectives[objective]) / \
             (max_dist - min_dist)
+
+    def get_serialized_representation(self):
+        return {
+            'tour_cost': self.tour_cost,
+            'tour_distance': self.tour_distance
+        }
