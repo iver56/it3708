@@ -121,7 +121,7 @@ if __name__ == '__main__':
         data = json.load(log_file)
 
     for generation, fronts in enumerate(data):
-        if generation % args.plot_every == 0:
+        if generation % args.plot_every == 0 or generation == len(data) - 1:
             print 'Plotting generation', generation
             Plotter.scatter_plot(
                 fronts,
