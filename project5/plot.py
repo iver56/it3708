@@ -122,10 +122,10 @@ if __name__ == '__main__':
 
     for generation, fronts in enumerate(data):
         if generation % args.plot_every == 0 or generation == len(data) - 1:
-            print 'Plotting generation', generation
+            print 'Plotting generation', generation + 1
             Plotter.scatter_plot(
                 fronts,
-                title='Generation {}'.format(generation),
-                output_filename='plot_{0:04d}.png'.format(generation)
+                title='Generation {}'.format(generation + 1),
+                output_filename='plot_{0:04d}.png'.format(generation + 1)
             )
     print 'Done'
