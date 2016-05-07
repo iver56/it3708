@@ -51,5 +51,22 @@ class TestGenotype(unittest.TestCase):
         for k,v in key_map.iteritems():
             self.assertTrue(v == 1)
 
+    def test_crossover_has_all_cities(self):
+        g_1 = genotype.Genotype.get_random_genotype()
+        parent_1 = individual.Individual(g_1)
+
+        g_2 = genotype.Genotype.get_random_genotype()
+        parent_2 = individual.Individual(g_2)
+
+        new_g = parent_1.genotype.crossover(parent_2.genotype)
+
+        print new_g
+        for i in range(len(new_g)):
+            print i
+            self.assertTrue(i in new_g)
+
+
+
+
 if __name__ == '__main__':
     unittest.main()
