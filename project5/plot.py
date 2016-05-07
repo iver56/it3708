@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
 from itertools import cycle
 import os
-import json
 
 
 class Plotter(object):
@@ -43,14 +42,29 @@ class Plotter(object):
         plt.close(fig)
 
 if __name__ == '__main__':
+    import argparse
+    import json
+    arg_parser = argparse.ArgumentParser()
+
+    arg_parser.add_argument(
+        '--plot-every',
+        dest='plot_every',
+        type=int,
+        required=False,
+        default=1
+    )
+
+    args, unknown_args = arg_parser.parse_known_args()
+
     with open('log.json', 'r') as log_file:
         data = json.load(log_file)
 
     for generation, fronts in enumerate(data):
-        print 'Plotting generation', generation
-        Plotter.scatter_plot(
-            fronts,
-            title='Generation {}'.format(generation),
-            output_filename='plot_{0:04d}.png'.format(generation)
-        )
+        if generation % args.plot_every == 0:
+            print 'Plotting generation', generation
+            Plotter.scatter_plot(
+                fronts,
+                title='Generation {}'.format(generation),
+                output_filename='plot_{0:04d}.png'.format(generation)
+            )
     print 'Done'
