@@ -60,6 +60,13 @@ class Main(object):
             required=False,
             default=0.5
         )
+        arg_parser.add_argument(
+            '--log-filename',
+            dest='log_filename',
+            type=str,
+            required=False,
+            default='log.json'
+        )
 
         self.args, unknown_args = arg_parser.parse_known_args()
 
@@ -72,7 +79,7 @@ class Main(object):
 
         self.run()
 
-        with open('log.json', 'w') as output_file:
+        with open(self.args.log_filename, 'w') as output_file:
             json.dump(self.log, output_file)
 
         print "Execution time: {} seconds".format(time.time() - start_time)

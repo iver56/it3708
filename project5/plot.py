@@ -15,30 +15,10 @@ class Plotter(object):
         if len(title) > 0:
             ax.set_title(title)
 
-        min_distance_line = None
-        min_cost_line = None
-
         for rank in fronts:
             individuals = sorted(fronts[rank], key=lambda i: i['tour_distance'])
             distances = [ind['tour_distance'] for ind in individuals]
             costs = [ind['tour_cost'] for ind in individuals]
-
-            if int(rank) == 1:
-                min_distance = min(distances)
-                min_distance_line = ax.axvline(
-                    min_distance,
-                    color='g',
-                    linestyle='-.',
-                    label='Min distance = {}'.format(min_distance)
-                )
-
-                min_cost = min(costs)
-                min_cost_line = ax.axhline(
-                    min_cost,
-                    color='g',
-                    linestyle='-.',
-                    label='Min cost = {}'.format(min_cost)
-                )
 
             color = color_cycle()
             marker = marker_cycle()
@@ -55,6 +35,30 @@ class Plotter(object):
                 c=color,
                 alpha=0.5
             )
+
+        min_distance = min(
+            min(
+                ind['tour_distance'] for ind in fronts[rank]
+            ) for rank in fronts if len(fronts[rank]) > 0
+        )
+        min_distance_line = ax.axvline(
+            min_distance,
+            color='g',
+            linestyle='-.',
+            label='Min distance = {}'.format(min_distance)
+        )
+
+        min_cost = min(
+            min(
+                ind['tour_cost'] for ind in fronts[rank]
+            ) for rank in fronts if len(fronts[rank]) > 0
+        )
+        min_cost_line = ax.axhline(
+            min_cost,
+            color='g',
+            linestyle='-.',
+            label='Min cost = {}'.format(min_cost)
+        )
 
         max_distance = max(
             max(
@@ -108,6 +112,14 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
 
     arg_parser.add_argument(
+        '--filename',
+        dest='filename',
+        type=str,
+        required=False,
+        default='log.json'
+    )
+
+    arg_parser.add_argument(
         '--plot-every',
         dest='plot_every',
         type=int,
@@ -115,17 +127,41 @@ if __name__ == '__main__':
         default=1
     )
 
-    args, unknown_args = arg_parser.parse_known_args()
+    arg_parser.add_argument(
+        '--pareto-front-comparison',
+        dest='pareto_front_comparison',
+        nargs='+',
+        type=str,
+        required=False,
+        default=None
+    )
 
-    with open('log.json', 'r') as log_file:
-        data = json.load(log_file)
+    args = arg_parser.parse_args()
 
-    for generation, fronts in enumerate(data):
-        if generation % args.plot_every == 0 or generation == len(data) - 1:
-            print 'Plotting generation', generation + 1
-            Plotter.scatter_plot(
-                fronts,
-                title='Generation {}'.format(generation + 1),
-                output_filename='plot_{0:04d}.png'.format(generation + 1)
-            )
+    if args.pareto_front_comparison is not None:
+        pareto_fronts = {}
+        for i, filename in enumerate(args.pareto_front_comparison):
+            with open(filename, 'r') as log_file:
+                data = json.load(log_file)
+            last_generation_fronts = data[len(data) - 1]
+            pareto_front = last_generation_fronts['1']
+            pareto_fronts[i + 1] = pareto_front
+        Plotter.scatter_plot(
+            pareto_fronts,
+            title='Pareto front comparison',
+            output_filename='plot_pareto_front_comparison.png'
+        )
+    else:
+        with open(args.filename, 'r') as log_file:
+            data = json.load(log_file)
+
+        for generation, fronts in enumerate(data):
+            if generation % args.plot_every == 0 or generation == len(data) - 1:
+                print 'Plotting generation', generation + 1
+                Plotter.scatter_plot(
+                    fronts,
+                    title='Generation {}'.format(generation + 1),
+                    output_filename='plot_{0:04d}.png'.format(generation + 1)
+                )
+
     print 'Done'
