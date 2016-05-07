@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from itertools import cycle
 import os
+from matplotlib.font_manager import FontProperties
 
 
 class Plotter(object):
@@ -14,10 +15,30 @@ class Plotter(object):
         if len(title) > 0:
             ax.set_title(title)
 
+        min_distance_line = None
+        min_cost_line = None
+
         for rank in fronts:
             individuals = sorted(fronts[rank], key=lambda i: i['tour_distance'])
             distances = [ind['tour_distance'] for ind in individuals]
             costs = [ind['tour_cost'] for ind in individuals]
+
+            if int(rank) == 1:
+                min_distance = min(distances)
+                min_distance_line = ax.axvline(
+                    min_distance,
+                    color='g',
+                    linestyle='-.',
+                    label='Min distance = {}'.format(min_distance)
+                )
+
+                min_cost = min(costs)
+                min_cost_line = ax.axhline(
+                    min_cost,
+                    color='g',
+                    linestyle='-.',
+                    label='Min cost = {}'.format(min_cost)
+                )
 
             color = color_cycle()
             marker = marker_cycle()
@@ -34,6 +55,44 @@ class Plotter(object):
                 c=color,
                 alpha=0.5
             )
+
+        max_distance = max(
+            max(
+                ind['tour_distance'] for ind in fronts[rank]
+            ) for rank in fronts if len(fronts[rank]) > 0
+        )
+        max_distance_line = ax.axvline(
+            max_distance,
+            color='r',
+            linestyle='--',
+            label='Max distance = {}'.format(max_distance)
+        )
+
+        max_cost = max(
+            max(
+                ind['tour_cost'] for ind in fronts[rank]
+            ) for rank in fronts if len(fronts[rank]) > 0
+        )
+        max_cost_line = ax.axhline(
+            max_cost,
+            color='r',
+            linestyle='--',
+            label='Max cost = {}'.format(max_cost)
+        )
+
+        font_p = FontProperties()
+        font_p.set_size('small')
+        ax.legend(
+            handles=[
+                min_distance_line,
+                min_cost_line,
+                max_distance_line,
+                max_cost_line
+            ],
+            loc='best',
+            prop=font_p
+        )
+
         if output_filename is None:
             plt.show()
         else:
@@ -41,9 +100,11 @@ class Plotter(object):
 
         plt.close(fig)
 
+
 if __name__ == '__main__':
     import argparse
     import json
+
     arg_parser = argparse.ArgumentParser()
 
     arg_parser.add_argument(
