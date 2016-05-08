@@ -34,14 +34,14 @@ class Genotype(object):
         len_interval = ((len_gtype - interval[0]) + interval[1]) % len_gtype
 
         for i in range(interval[0], interval[0] + len_interval):
-            i = i % len_gtype
+            i %= len_gtype
             tmp_city_ids[i] = self.city_ids[i]
 
         for i in range(interval[1], interval[1] + 1 + len_gtype - len_interval):
-            i = i % len_gtype
+            i %= len_gtype
             for j in range(i, i + len_gtype):
-                j = j % len_gtype
-                if other_genotype.city_ids[j] not in tmp_city_ids:
+                j %= len_gtype
+                if other_genotype.city_ids[j] not in tmp_city_ids:  # TODO: is faster if tmp_city_ids is dict or set
                     tmp_city_ids[i] = other_genotype.city_ids[j]
                     break
 
