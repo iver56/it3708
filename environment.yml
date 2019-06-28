@@ -1,0 +1,11 @@
+name: it3708
+channels:
+- defaults
+dependencies:
+- matplotlib>=2,<3
+- pip>=9.0.1,<=19
+- python=2.7
+- pip:
+  - numpy>=1.11,<2
+  - nose
+  - pygame==1.9
